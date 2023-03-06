@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.ExerciseApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.ExerciseApp" parent="Theme.MaterialComponents.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -12,5 +12,24 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Title_TextView">
+        <item name="android:textSize">32sp</item>
+        <item name="android:layout_marginTop">20sp</item>
+        <item name="android:layout_marginBottom">20sp</item>
+        <item name="android:typeface">serif</item>
+    </style>
+
+    <style name="Subtitle_TextView">
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginTop">10sp</item>
+        <item name="android:layout_marginBottom">10sp</item>
+        <item name="android:typeface">serif</item>
+    </style>
+    
+    <style name="main_Button">
+        <item name="textAllCaps">false</item>
+        <item name="android:typeface">serif</item>
     </style>
 </resources>

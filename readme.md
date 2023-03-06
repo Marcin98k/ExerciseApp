@@ -1,38 +1,38 @@
-ExerciseApp
 
+#Application structure {
 
-
-Application structure {
-
-    Main Activity {
-        Fragments:
-            Sign-in;
-            Sign-up;
+    ##Main Activity {
+        ###Fragments:
             News $list $calendar;
             $workouts
     }
-    Library Activity {
-        Fragments:
+    ##Library Activity {
+        ###Fragments:
             $workouts;
             $search;
             $exercise;
     }
-    Exercise Activity {
-        Fragments:
+    ##Exercise Activity {
+        ###Fragments:
             $exercise;
             $clock;
     }
-    User Activity {
-        Fragments:
+    ##User Activity {
+        ###Fragments:
             $workouts $calendar;
             Completed $workouts;
     }
-    Settings Activity {
-        Fragments:
+    ##Settings Activity {
+        ###Fragments:
             Settings $list;
     }
+    ##Welcome Activity {
+        ###Fragments:
+            Sign-in;
+            Sign-up;
+    }
 
-    Fragments {
+    ##Fragments {
         $calendar -> Calendar;
         $workouts -> Workouts;
         $exercise -> Exercise;
