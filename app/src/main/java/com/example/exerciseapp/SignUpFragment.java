@@ -7,58 +7,81 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SignUpFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class SignUpFragment extends Fragment {
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class SignUpFragment extends Fragment implements FragmentRespond{
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
+    private EditText username;
+    private EditText email;
+    private EditText password;
+
+    private String usernameStr, emailStr, passwordStr;
+
+    private String regexUsername = "^[a-zA-Z0-9_!#$%&'*+/=?'{|}~^.-]+@[a-zA-Z0-9.-]+$";
+    String regexEmail = "^[\\w!#$%&amp;'*+/=?'{|}~^-]+(?:\\.[\\w!#$%&'*+/=?'{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+    String regexPassword = "";
+
+    Pattern patternUsername;
+    Matcher matcherUsername;
+    Pattern patternEmail;
+    Matcher matcherEmail;
+    Pattern patternPassword;
+    Matcher matcherPassword;
+
+    SharedViewModel sharedViewModel;
 
     public SignUpFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SignUpFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SignUpFragment newInstance(String param1, String param2) {
-        SignUpFragment fragment = new SignUpFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sign_up, container, false);
+        View mView = inflater.inflate(R.layout.fragment_sign_up, container, false);
+
+        username = mView.findViewById(R.id.fSignUp_ET_username);
+        email = mView.findViewById(R.id.fSignUp_ET_email);
+        password = mView.findViewById(R.id.fSignUp_ET_password);
+
+        usernameStr = username.getText().toString();
+        emailStr = email.getText().toString();
+        passwordStr = password.getText().toString();
+
+        patternUsername = Pattern.compile(regexUsername);
+        matcherUsername = patternUsername.matcher(usernameStr);
+
+        patternEmail = Pattern.compile(regexEmail);
+        matcherEmail = patternEmail.matcher(emailStr);
+
+        patternPassword = Pattern.compile(regexPassword);
+        matcherPassword = patternPassword.matcher(passwordStr);
+
+        return mView;
+    }
+
+    @Override
+    public void fragmentMessage() {
+
+//        StringBuilder stringBuilder = new StringBuilder();
+//        stringBuilder.append(0);
+//        if (matcherUsername.matches()) {
+//            sharedViewModel.setShareStr(usernameStr);
+//        } else {
+//            stringBuilder.append(1);
+//        }
+//        if (matcherEmail.matches()) {
+//            sharedViewModel.setShareStr(emailStr);
+//        } else {
+//            stringBuilder.append(2);
+//        }
+//        if (matcherPassword.matches()) {
+//            sharedViewModel.setShareStr(passwordStr);
+//        } else {
+//            stringBuilder.append(3);
+//        }
     }
 }

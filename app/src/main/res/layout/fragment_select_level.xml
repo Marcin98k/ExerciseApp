@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SelectLevelFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioGroup
+            android:id="@+id/fSelectLevel_levelGroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="30dp">
+
+            <RadioButton
+                android:id="@+id/fSelectLevel_firstOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:background="@drawable/actual_state_one"
+                android:button="@color/transparent"
+                android:text="First Level"
+                android:textAlignment="center"/>
+
+            <RadioButton
+                android:id="@+id/fSelectLevel_secondOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:background="@drawable/actual_state_one"
+                android:button="@color/transparent"
+                android:text="Second Level"
+                android:textAlignment="center"/>
+
+            <RadioButton
+                android:id="@+id/fSelectLevel_thirdOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:background="@drawable/actual_state_one"
+                android:button="@color/transparent"
+                android:text="Third Level"
+                android:textAlignment="center"/>
+
+            <RadioButton
+                android:id="@+id/fSelectLevel_forthOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:background="@drawable/actual_state_one"
+                android:button="@color/transparent"
+                android:text="Forth Level"
+                android:textAlignment="center"/>
+
+        </RadioGroup>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

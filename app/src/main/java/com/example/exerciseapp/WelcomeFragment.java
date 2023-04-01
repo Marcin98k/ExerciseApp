@@ -23,8 +23,8 @@ public class WelcomeFragment extends Fragment {
         Button signIn = mView.findViewById(R.id.fWelcome_Btn_signIn);
         Button signUp = mView.findViewById(R.id.fWelcome_Btn_signUp);
 
-        signIn.setOnClickListener(v -> sendByte.mByte((byte) 0));
-        signUp.setOnClickListener(v -> sendByte.mByte((byte) 1));
+//        signIn.setOnClickListener(v -> sendByte.mByte((byte) 0));
+//        signUp.setOnClickListener(v -> sendByte.mByte((byte) 1));
 
         return mView;
     }

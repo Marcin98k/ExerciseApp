@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SelectGenderFragment">
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:layout_margin="10dp">
+
+            <RadioButton
+                android:id="@+id/fSelectGender_rBtn_male"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:text="Male"
+                android:button="@color/transparent"
+                android:background="@drawable/actual_state_one"
+                android:layout_marginRight="5dp"/>
+
+            <RadioButton
+                android:id="@+id/fSelectGender_rBtn_female"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:text="Female"
+                android:button="@color/transparent"
+                android:background="@drawable/actual_state_one"
+                android:layout_marginLeft="5dp"/>
+        </LinearLayout>
+
+        <RadioButton
+            android:id="@+id/fSelectGender_rBtn_other"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Other"
+            android:textAlignment="center"
+            android:button="@color/transparent"
+            android:background="@drawable/actual_state_one"
+            android:layout_margin="10dp"/>
+    </RadioGroup>
+</LinearLayout>

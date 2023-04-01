@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SelectHeightFragment">
+
+    <NumberPicker
+        android:id="@+id/fSelectHeight_numberPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/fSelectHeight_unitGroup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="30dp"
+        android:weightSum="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fSelectHeight_numberPicker"
+        app:layout_constraintVertical_bias="0.20">
+
+        <RadioButton
+            android:id="@+id/fSelectHeight_firstUnit"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:background="@drawable/actual_state_two_left"
+            android:button="@color/transparent"
+            android:text="firstUnit"
+            android:textAlignment="center" />
+
+        <RadioButton
+            android:id="@+id/fSelectHeight_secondUnit"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:background="@drawable/actual_state_two_right"
+            android:button="@color/transparent"
+            android:text="secondUnit"
+            android:textAlignment="center" />
+    </RadioGroup>
+</androidx.constraintlayout.widget.ConstraintLayout>
