@@ -10,4 +10,28 @@
     <string name="username">Username</string>
     <string name="e_mail">E-mail</string>
     <string name="password">Password</string>
+
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="other">Other</string>
+
+    <string name="strength">Strength</string>
+    <string name="muscle">Muscle</string>
+    <string name="fatLose">Fat lose</string>
+    <string name="technique">Technique</string>
+
+    <string name="beginner">Beginner</string>
+    <string name="intermediate">Intermediate</string>
+    <string name="advanced">Advanced</string>
+
+    <string name="push">Push</string>
+    <string name="pull">Pull</string>
+    <string name="squad">Squad</string>
+    <string name="dip">Dip</string>
+
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="send">Send</string>
+    <string name="your_message">Your message</string>
+    <string name="subject">Subject:</string>
 </resources>

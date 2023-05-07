@@ -1,4 +1,4 @@
-package com.example.exerciseapp;
+package com.example.exerciseapp.Interfaces;
 
 public interface FragmentSupportListener {
 

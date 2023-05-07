@@ -9,6 +9,8 @@ import android.widget.EditText;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.exerciseapp.Interfaces.FragmentRespond;
+
 public class SelectPerformanceFragment extends Fragment implements FragmentRespond {
 
     SharedViewModel sharedViewModel;

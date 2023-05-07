@@ -1,6 +1,6 @@
-package com.example.exerciseapp;
+package com.example.exerciseapp.Interfaces;
 
 public interface FragmentRespond {
-
     void fragmentMessage();
 }
+

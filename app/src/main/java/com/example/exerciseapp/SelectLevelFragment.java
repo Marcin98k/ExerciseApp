@@ -14,7 +14,10 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-public class SelectLevelFragment extends Fragment implements FragmentRespond{
+import com.example.exerciseapp.Interfaces.FragmentRespond;
+import com.example.exerciseapp.Interfaces.FragmentSupportListener;
+
+public class SelectLevelFragment extends Fragment implements FragmentRespond {
 
     FragmentSupportListener mListener;
     SharedViewModel sharedViewModel;
@@ -45,16 +48,13 @@ public class SelectLevelFragment extends Fragment implements FragmentRespond{
             radioButton = radioGroup.findViewById(i);
             switch (i) {
                 case (R.id.fSelectLevel_firstOption):
-                    selectedLevel = 0;
-                    break;
-                case (R.id.fSelectLevel_secondOption):
                     selectedLevel = 1;
                     break;
-                case (R.id.fSelectLevel_thirdOption):
+                case (R.id.fSelectLevel_secondOption):
                     selectedLevel = 2;
                     break;
-                case (R.id.fSelectLevel_forthOption):
-                    selectedLevel = 4;
+                case (R.id.fSelectLevel_thirdOption):
+                    selectedLevel = 3;
                     break;
             }
             mListener.checkCondition(true);

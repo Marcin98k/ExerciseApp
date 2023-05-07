@@ -4,19 +4,20 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.core.widget.CompoundButtonCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 
+import com.example.exerciseapp.Interfaces.FragmentRespond;
+import com.example.exerciseapp.Interfaces.FragmentSupportListener;
 
-public class SelectGenderFragment extends Fragment implements FragmentRespond{
+
+public class SelectGenderFragment extends Fragment implements FragmentRespond {
 
     private CompoundButton previousCheckedCompoundButton;
     private RadioButton maleBtn, femaleBtn, otherBtn;

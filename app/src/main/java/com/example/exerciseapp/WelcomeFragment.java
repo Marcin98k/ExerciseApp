@@ -13,8 +13,6 @@ import android.widget.Button;
 
 public class WelcomeFragment extends Fragment {
 
-    SendByte sendByte;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -27,17 +25,5 @@ public class WelcomeFragment extends Fragment {
 //        signUp.setOnClickListener(v -> sendByte.mByte((byte) 1));
 
         return mView;
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-        try {
-            sendByte = (SendByte) context;
-        } catch(RuntimeException e) {
-            throw new RuntimeException(context.toString()
-                    + " must implement SendByte");
-        }
     }
 }

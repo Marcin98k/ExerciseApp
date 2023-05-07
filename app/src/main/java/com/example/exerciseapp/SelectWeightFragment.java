@@ -1,9 +1,7 @@
 package com.example.exerciseapp;
 
-import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -15,7 +13,9 @@ import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-public class SelectWeightFragment extends Fragment implements FragmentRespond{
+import com.example.exerciseapp.Interfaces.FragmentRespond;
+
+public class SelectWeightFragment extends Fragment implements FragmentRespond {
 
     private RadioGroup radioGroup;
     private RadioButton radioButton;
@@ -49,6 +49,7 @@ public class SelectWeightFragment extends Fragment implements FragmentRespond{
 
         defaultBtn = mView.findViewById(R.id.fSelectWeight_firstUnit);
         defaultBtn.setChecked(true);
+        selectedUnit = 1;
 
         radioGroup = mView.findViewById(R.id.fSelectWeight_unitGroup);
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> {
@@ -56,10 +57,10 @@ public class SelectWeightFragment extends Fragment implements FragmentRespond{
 
             switch (i) {
                 case (R.id.fSelectWeight_firstUnit):
-                    selectedUnit = 0;
+                    selectedUnit = 1;
                     break;
                 case (R.id.fSelectWeight_secondUnit):
-                    selectedUnit = 1;
+                    selectedUnit = 2;
                     break;
             }
         });

@@ -1,20 +1,19 @@
 package com.example.exerciseapp;
 
-import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.exerciseapp.Interfaces.FragmentRespond;
+import com.example.exerciseapp.Interfaces.UpdateValueDB;
 
 public class SelectHeightFragment extends Fragment implements FragmentRespond {
 
@@ -23,7 +22,9 @@ public class SelectHeightFragment extends Fragment implements FragmentRespond {
     private RadioButton defaultBtn;
     private RadioGroup unitGroup;
     SharedViewModel sharedViewModel;
+    UpdateValueDB updateValueDB;
     private int selectedUnit;
+    private int number;
 
     public SelectHeightFragment() {
 
@@ -48,16 +49,17 @@ public class SelectHeightFragment extends Fragment implements FragmentRespond {
 
         defaultBtn = mView.findViewById(R.id.fSelectHeight_firstUnit);
         defaultBtn.setChecked(true);
+        selectedUnit = 1;
 
         unitGroup = mView.findViewById(R.id.fSelectHeight_unitGroup);
         unitGroup.setOnCheckedChangeListener((radioGroup, i) -> {
             radioButton = radioGroup.findViewById(i);
             switch (i) {
                 case (R.id.fSelectHeight_firstUnit):
-                    selectedUnit = 0;
+                    selectedUnit = 1;
                     break;
                 case (R.id.fSelectHeight_secondUnit):
-                    selectedUnit = 1;
+                    selectedUnit = 2;
                     break;
             }
         });

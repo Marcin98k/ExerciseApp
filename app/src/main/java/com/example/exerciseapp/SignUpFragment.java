@@ -9,10 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.example.exerciseapp.Interfaces.FragmentRespond;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SignUpFragment extends Fragment implements FragmentRespond{
+public class SignUpFragment extends Fragment implements FragmentRespond {
 
 
     private EditText username;
