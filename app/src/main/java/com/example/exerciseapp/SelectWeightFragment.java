@@ -13,7 +13,8 @@ import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.example.exerciseapp.Interfaces.FragmentRespond;
+import com.example.exerciseapp.mClasses.SharedViewModel;
+import com.example.exerciseapp.mInterfaces.FragmentRespond;
 
 public class SelectWeightFragment extends Fragment implements FragmentRespond {
 

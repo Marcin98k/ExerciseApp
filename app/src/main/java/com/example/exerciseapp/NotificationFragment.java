@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.exerciseapp.Models.IntegerModel;
+import com.example.exerciseapp.mModels.IntegerModel;
 
 import java.util.ArrayList;
 import java.util.List;

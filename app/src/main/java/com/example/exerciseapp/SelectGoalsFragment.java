@@ -12,8 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.exerciseapp.Interfaces.FragmentRespond;
-import com.example.exerciseapp.Interfaces.FragmentSupportListener;
+import com.example.exerciseapp.mClasses.SharedViewModel;
+import com.example.exerciseapp.mInterfaces.FragmentRespond;
+import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 
 public class SelectGoalsFragment extends Fragment implements FragmentRespond {
 

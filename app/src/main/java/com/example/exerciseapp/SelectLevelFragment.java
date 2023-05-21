@@ -14,8 +14,9 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.example.exerciseapp.Interfaces.FragmentRespond;
-import com.example.exerciseapp.Interfaces.FragmentSupportListener;
+import com.example.exerciseapp.mClasses.SharedViewModel;
+import com.example.exerciseapp.mInterfaces.FragmentRespond;
+import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 
 public class SelectLevelFragment extends Fragment implements FragmentRespond {
 

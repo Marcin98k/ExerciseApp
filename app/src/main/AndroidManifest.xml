@@ -20,7 +20,7 @@
         android:requestLegacyExternalStorage="true"
         tools:targetApi="33">
         <activity
-            android:name=".WelcomeActivity"
+            android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,7 +32,7 @@
             android:name=".SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".User_Activity"
+            android:name=".UserActivity"
             android:exported="false" />
         <activity
             android:name=".ExerciseActivity"
@@ -41,7 +41,7 @@
             android:name=".LibraryActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".WelcomeActivity"
             android:exported="false"/>
     </application>
 

@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.exerciseapp.Interfaces.FragmentRespond;
+import com.example.exerciseapp.mInterfaces.FragmentRespond;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class SignInFragment extends Fragment implements FragmentRespond {

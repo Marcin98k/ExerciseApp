@@ -12,9 +12,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.exerciseapp.Adapters.RadioButtonListAdapter;
-import com.example.exerciseapp.Interfaces.UpdateValueDB;
-import com.example.exerciseapp.Models.ThreeElementLinearListModel;
+import com.example.exerciseapp.mAdapters.RadioButtonListAdapter;
+import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
+import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +27,8 @@ public class RadioButtonList extends Fragment {
 
     private List<ThreeElementLinearListModel> list = new ArrayList<>();
 
-    UpdateValueDB updateValueDB;
-    UpdateValueDB updateValueDB1;
+    UpdateIntegersDB updateIntegersDB;
+    UpdateIntegersDB updateIntegersDB1;
 
     public RadioButtonList() {
         // Required empty public constructor
@@ -54,13 +54,13 @@ public class RadioButtonList extends Fragment {
 
         recyclerView = mView.findViewById(R.id.fRadioButtonList_recyclerView);
 
-        updateValueDB = (listName, firstValue, secondValue, thirdValue) -> {
+        updateIntegersDB = (listName, firstValue, secondValue, thirdValue) -> {
             adapter.notifyDataSetChanged();
-            updateValueDB1.values(listName, firstValue, secondValue, thirdValue);
+            updateIntegersDB1.values(listName, firstValue, secondValue, thirdValue);
         };
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
-        adapter = new RadioButtonListAdapter(requireActivity(), listName, list, updateValueDB);
+        adapter = new RadioButtonListAdapter(requireActivity(), listName, list, updateIntegersDB);
         recyclerView.setAdapter(adapter);
 
         return mView;
@@ -70,7 +70,7 @@ public class RadioButtonList extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            updateValueDB1 = (UpdateValueDB) context;
+            updateIntegersDB1 = (UpdateIntegersDB) context;
         } catch (RuntimeException e) {
             throw new RuntimeException(context.toString() + " just implement");
         }

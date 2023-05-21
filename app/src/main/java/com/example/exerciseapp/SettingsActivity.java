@@ -12,16 +12,18 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.exerciseapp.Enums.FragmentAction;
-import com.example.exerciseapp.Enums.RowNames;
-import com.example.exerciseapp.Interfaces.UpdateStringsDB;
-import com.example.exerciseapp.Interfaces.UpdateValueDB;
-import com.example.exerciseapp.Models.AppearanceBlockModel;
-import com.example.exerciseapp.Models.FourElementLinearListModel;
-import com.example.exerciseapp.Models.IntegerModel;
-import com.example.exerciseapp.Models.StringModel;
-import com.example.exerciseapp.Models.ThreeElementLinearListModel;
-import com.example.exerciseapp.Models.UserInformationModel;
+import com.example.exerciseapp.mClasses.SharedViewModel;
+import com.example.exerciseapp.mDatabases.DBHelper;
+import com.example.exerciseapp.mEnums.FragmentAction;
+import com.example.exerciseapp.mEnums.RowNames;
+import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
+import com.example.exerciseapp.mInterfaces.UpdateStringsDB;
+import com.example.exerciseapp.mModels.AppearanceBlockModel;
+import com.example.exerciseapp.mModels.FourElementLinearListModel;
+import com.example.exerciseapp.mModels.IntegerModel;
+import com.example.exerciseapp.mModels.StringModel;
+import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
+import com.example.exerciseapp.mModels.UserInformationModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +31,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity implements
-        LinearListFragment.SelectedItem, UpdateValueDB, UpdateStringsDB {
+        LinearListFragment.SelectedItem, UpdateIntegersDB, UpdateStringsDB {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
 
@@ -214,7 +216,8 @@ public class SettingsActivity extends AppCompatActivity implements
                             true, ContactFragment.class.getName());
                     break;
                 case 5:
-                    Log.i(TAG, "item(5): " + showFutureTab().get(0).getName());
+                    FragmentOperation(new TimeBreakFragment(), FragmentAction.REPLACE,
+                            true, "TagTimeBreak");
                     break;
             }
         }

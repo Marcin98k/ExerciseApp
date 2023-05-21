@@ -12,11 +12,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.exerciseapp.Adapters.FourElementLinearListAdapter;
-import com.example.exerciseapp.Adapters.RadioButtonListAdapter;
-import com.example.exerciseapp.Interfaces.UpdateValueDB;
-import com.example.exerciseapp.Models.FourElementLinearListModel;
-import com.example.exerciseapp.Models.ThreeElementLinearListModel;
+import com.example.exerciseapp.mAdapters.FourElementLinearListAdapter;
+import com.example.exerciseapp.mAdapters.RadioButtonListAdapter;
+import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
+import com.example.exerciseapp.mModels.FourElementLinearListModel;
+import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +47,8 @@ public class ProfileFragment extends Fragment {
     private final String LEVEL = "userLevel";
     private final String GENDER = "userGender";
 
-    UpdateValueDB valueDB;
-    UpdateValueDB valueDB1;
+    UpdateIntegersDB valueDB;
+    UpdateIntegersDB valueDB1;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -163,7 +163,7 @@ public class ProfileFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            valueDB1 = (UpdateValueDB) context;
+            valueDB1 = (UpdateIntegersDB) context;
         } catch (RuntimeException e) {
             throw new RuntimeException(context.toString() +
                     " must implement ValueDB");

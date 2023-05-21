@@ -12,8 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.exerciseapp.Interfaces.FragmentRespond;
-import com.example.exerciseapp.Interfaces.UpdateValueDB;
+import com.example.exerciseapp.mClasses.SharedViewModel;
+import com.example.exerciseapp.mInterfaces.FragmentRespond;
+import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 
 public class SelectHeightFragment extends Fragment implements FragmentRespond {
 
@@ -22,7 +23,7 @@ public class SelectHeightFragment extends Fragment implements FragmentRespond {
     private RadioButton defaultBtn;
     private RadioGroup unitGroup;
     SharedViewModel sharedViewModel;
-    UpdateValueDB updateValueDB;
+    UpdateIntegersDB updateIntegersDB;
     private int selectedUnit;
     private int number;
 

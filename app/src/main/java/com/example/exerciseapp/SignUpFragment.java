@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.example.exerciseapp.Interfaces.FragmentRespond;
+import com.example.exerciseapp.mClasses.SharedViewModel;
+import com.example.exerciseapp.mInterfaces.FragmentRespond;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

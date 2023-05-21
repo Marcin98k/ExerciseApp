@@ -17,11 +17,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.exerciseapp.Adapters.FourElementLinearListAdapter;
-import com.example.exerciseapp.Adapters.ThreeElementLinearListAdapter;
-import com.example.exerciseapp.Interfaces.UpdateValueDB;
-import com.example.exerciseapp.Models.FourElementLinearListModel;
-import com.example.exerciseapp.Models.ThreeElementLinearListModel;
+import com.example.exerciseapp.mAdapters.FourElementLinearListAdapter;
+import com.example.exerciseapp.mAdapters.ThreeElementLinearListAdapter;
+import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
+import com.example.exerciseapp.mModels.FourElementLinearListModel;
+import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class LinearListFragment extends Fragment {
 
     private int currentlyPosition;
 
-    UpdateValueDB updateValueDB;
+    UpdateIntegersDB updateIntegersDB;
 
     public LinearListFragment() {
         // Required empty public constructor
@@ -90,7 +90,7 @@ public class LinearListFragment extends Fragment {
         }
         if (listName.equals("tagTELL_account")) {
             adapter1 = new FourElementLinearListAdapter(requireContext(), accountList,
-                    "tagTELL_account", updateValueDB);
+                    "tagTELL_account", updateIntegersDB);
             Log.i(TAG, "onCreateView: - > tagTELL_account");
             recyclerView.setAdapter(adapter1);
         }
@@ -111,7 +111,7 @@ public class LinearListFragment extends Fragment {
             selectedItem = (SelectedItem) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
-                    + " must implements Selecred Item");
+                    + " must implements Selected Item");
         }
     }
 }

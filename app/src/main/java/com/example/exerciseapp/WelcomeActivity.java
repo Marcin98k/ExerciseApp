@@ -15,10 +15,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.exerciseapp.Interfaces.FragmentSupportListener;
-import com.example.exerciseapp.Models.AppearanceBlockModel;
-import com.example.exerciseapp.Models.IntegerModel;
-import com.example.exerciseapp.Models.UserInformationModel;
+import com.example.exerciseapp.mClasses.SharedViewModel;
+import com.example.exerciseapp.mDatabases.DBHelper;
+import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
+import com.example.exerciseapp.mModels.AppearanceBlockModel;
+import com.example.exerciseapp.mModels.IntegerModel;
+import com.example.exerciseapp.mModels.UserInformationModel;
 
 import java.util.LinkedList;
 

@@ -13,10 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.exerciseapp.Adapters.FourElementLinearListAdapter;
-import com.example.exerciseapp.Interfaces.UpdateStringsDB;
-import com.example.exerciseapp.Interfaces.UpdateValueDB;
-import com.example.exerciseapp.Models.FourElementLinearListModel;
+import com.example.exerciseapp.mAdapters.FourElementLinearListAdapter;
+import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
+import com.example.exerciseapp.mInterfaces.UpdateStringsDB;
+import com.example.exerciseapp.mModels.FourElementLinearListModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +31,8 @@ public class FourElementListFragment extends Fragment {
     private String listName;
 
 
-    UpdateValueDB updateValueDB;
-    UpdateValueDB updateValueDB1;
+    UpdateIntegersDB updateIntegersDB;
+    UpdateIntegersDB updateIntegersDB1;
 
     UpdateStringsDB updateStrings;
     UpdateStringsDB updateStrings1;
@@ -64,14 +64,15 @@ public class FourElementListFragment extends Fragment {
         updateStrings = new UpdateStringsDB() {
             @Override
             public void strValues(String listName, int position, int id, String firstVal) {
+                adapter.notifyDataSetChanged();
                 updateStrings1.strValues(listName, position, id, firstVal);
             }
         };
-        updateValueDB = new UpdateValueDB() {
+        updateIntegersDB = new UpdateIntegersDB() {
             @Override
             public void values(String listName, int firstValue, int secondValue, int thirdValue) {
                 adapter.notifyDataSetChanged();
-                updateValueDB1.values(listName, firstValue, secondValue, thirdValue);
+                updateIntegersDB1.values(listName, firstValue, secondValue, thirdValue);
             }
         };
         adapter = new FourElementLinearListAdapter(requireContext(), list, listName, updateStrings);
@@ -89,10 +90,10 @@ public class FourElementListFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            updateValueDB1 = (UpdateValueDB) context;
+            updateIntegersDB1 = (UpdateIntegersDB) context;
         } catch (RuntimeException e) {
             throw new RuntimeException(context.toString() +
-                    " must implement UpdateValueDB");
+                    " must implement UpdateIntegersDB");
         }
 
         try {
