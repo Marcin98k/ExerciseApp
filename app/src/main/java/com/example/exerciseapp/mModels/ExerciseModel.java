@@ -17,13 +17,14 @@ public class ExerciseModel implements Parcelable {
     private int kcal;
     private int duration;
     private String description;
+    private int extension;
 
 
     private String exerciseId;
 
     public ExerciseModel(int id, String name, String image, int level,
                          String bodyParts, String equipment, int type,
-                         int kcal, int duration, String description) {
+                         int kcal, int duration, String description, int extension) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -34,6 +35,7 @@ public class ExerciseModel implements Parcelable {
         this.kcal = kcal;
         this.duration = duration;
         this.description = description;
+        this.extension = extension;
     }
 
     public ExerciseModel(int id, String name, String image, int level,
@@ -64,6 +66,7 @@ public class ExerciseModel implements Parcelable {
         duration = in.readInt();
         description = in.readString();
         exerciseId = in.readString();
+        extension = in.readInt();
     }
 
     public static final Creator<ExerciseModel> CREATOR = new Creator<ExerciseModel>() {
@@ -167,6 +170,14 @@ public class ExerciseModel implements Parcelable {
         this.exerciseId = exerciseId;
     }
 
+    public int getExtension() {
+        return extension;
+    }
+
+    public void setExtension(int extension) {
+        this.extension = extension;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -185,5 +196,6 @@ public class ExerciseModel implements Parcelable {
         parcel.writeInt(duration);
         parcel.writeString(description);
         parcel.writeString(exerciseId);
+        parcel.writeInt(extension);
     }
 }

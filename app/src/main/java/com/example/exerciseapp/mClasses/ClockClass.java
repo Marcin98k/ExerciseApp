@@ -1,39 +1,48 @@
 package com.example.exerciseapp.mClasses;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
+
 public class ClockClass {
 
+    //    Initializing context;
     private Context mContext;
 
+
+    //    Initializing interface;
+    private FragmentSupportListener fragmentSupportListener;
+
+
+    //    Initializing widgets;
     private ProgressBar progressBar;
-
     private TextView showTimeTV;
-
     private Button addTimeBtn;
-    private Button decreaseTimeBtn;
     private Button skipTimeBtn;
-
-    private int second = 0, minute = 0, hour = 0;
-    private int transit = 0;
-    private int currentProgress = 0;
-    private int maxTime;
-
-    private String secondTxt, minuteTxt, hourTxt;
-
-    //    Widgets;
     private Button plusBtn;
     private Button minusBtn;
 
-    //    Initializing variables;
 
-    private boolean statusExercise;
-    private byte countExercise;
+    //    Initializing variables;
+    private int second = 0;
+    private int minute = 0, hour = 0;
+    private int transit = 0;
+    private int currentProgress = 0;
+    private int maxTime;
+    private String secondTxt, minuteTxt, hourTxt;
+
+
+    //    Thread;
+    private Thread thread;
+    private volatile boolean isRunning = true;
 
     //    Start loop = true; || Stop loop = false;
     private boolean clockWork;
@@ -46,42 +55,16 @@ public class ClockClass {
     //    Activate buttons = true; Disable buttons = false;
     private boolean buttonPlusMinus;
 
-    public void runClock() {
-
-        clockWork = true;
-        clockMax = true;
-
-        if (clockState) {
-            setTime();
-        }
-
-        if (buttonState) {
-            addTime();
-            skipTime();
-        }
-        if (buttonPlusMinus) {
-            plusTime();
-            minusTime();
-        }
-
-        updateProgressBar();
-    }
-
-    public ClockClass() {
-//        Empty constructor;
-    }
-
-    public ClockClass(Context context) {
-        this.mContext= context;
-    }
     //    insert Context; set ClockState Increases = false, Decreases = true; set maxTime;
     public ClockClass(Context context, boolean clockState, int maxTime) {
         this.mContext = context;
         this.clockState = clockState;
         this.maxTime = maxTime;
     }
+
     //    insert Context; set ClockState Increases = false, Decreases = true; set maxTime;
-    public ClockClass(Context context, boolean clockState, int maxTime, boolean buttonState, boolean buttonPlusMinus) {
+    public ClockClass(Context context, boolean clockState, int maxTime,
+                      boolean buttonState, boolean buttonPlusMinus) {
         this.mContext = context;
         this.clockState = clockState;
         this.maxTime = maxTime;
@@ -92,11 +75,6 @@ public class ClockClass {
     //    insert ProgressBar;
     public ClockClass setBar(ProgressBar progressBar) {
         this.progressBar = progressBar;
-        return this;
-    }
-
-    public ClockClass setMaxTime(int maxTime) {
-        this.maxTime = maxTime;
         return this;
     }
 
@@ -118,6 +96,12 @@ public class ClockClass {
         return this;
     }
 
+    //    insert max time;
+    public ClockClass setMaxTime(int maxTime) {
+        this.maxTime = maxTime;
+        return this;
+    }
+
     //    insert a button that plus time;
     public ClockClass setPlusBtn(Button plusBtn) {
         this.plusBtn = plusBtn;
@@ -136,21 +120,32 @@ public class ClockClass {
         return this;
     }
 
-    private void setTime() {
-        second = maxTime;
-        currentProgress = second;
+    //    Main part;
+
+    public void runClock() {
+
+        clockWork = true;
+        clockMax = true;
+
+        if (clockState) {
+            setTime();
+        }
+
+        if (buttonState) {
+            addTime();
+            skipTime();
+        }
+        if (buttonPlusMinus) {
+            plusTime();
+            minusTime();
+        }
+
+        updateProgressBar();
     }
+    private void updateProgressBar() {
 
-    public ClockClass setData(boolean statusExercise, byte countExercise) {
-        this.statusExercise = statusExercise;
-        this.countExercise = countExercise;
-        return this;
-    }
-
-    public void updateProgressBar() {
-
-        new Thread(() -> {
-            while (clockWork) {
+        thread = new Thread(() -> {
+            while (isRunning) {
                 if (clockMax) {
                     progressBar.setMax(maxTime);
                     clockMax = false;
@@ -168,7 +163,8 @@ public class ClockClass {
 //                Change time in TextView;
                 new Handler(Looper.getMainLooper()).post(this::clockInstructionsInternal);
 
-//                Delay loop;
+                Log.d(TAG, "updateProgressBar: Thread: " + Thread.currentThread().getId() +
+                        " sec: " + second);
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -177,15 +173,27 @@ public class ClockClass {
 
 //                Stop loop
                 if (second == 0 || second == maxTime) {
-                    clockWork = false;
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                        }
-                    });
+                    isRunning = false;
                 }
             }
-        }).start();
+            thread.interrupt();
+
+//            if (fragmentSupportListener != null) {
+//                fragmentSupportListener.checkCondition(true);
+//            }
+        });
+        thread.start();
+    }
+
+    public ClockClass stopThread() {
+        isRunning = false;
+        return this;
+    }
+
+    //    Manipulate time part;
+    private void setTime() {
+        second = maxTime;
+        currentProgress = second;
     }
 
     private void increaseTime() {
@@ -255,17 +263,16 @@ public class ClockClass {
     private void skipTime() {
 
         skipTimeBtn.setOnClickListener(v -> {
-
-            if (clockWork) {
-                clockWork = false;
-            } else {
-                clockWork = true;
-                updateProgressBar();
+            stopThread();
+            if (fragmentSupportListener != null) {
+                fragmentSupportListener.checkCondition(true);
             }
         });
     }
 
-    public void clockInstructionsExternal() {
+
+    //    Show time part;
+    private void clockInstructionsExternal() {
 
         setTime();
 //        When i put second from other class, second always is switched,
@@ -365,6 +372,11 @@ public class ClockClass {
         } else {
             showTimeTV.setText(firstClockOption);
         }
+    }
+
+    //    Interface part;
+    public void setFragmentSupportListener(FragmentSupportListener listener) {
+        fragmentSupportListener = listener;
     }
 }
 

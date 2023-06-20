@@ -1,9 +1,6 @@
 package com.example.exerciseapp;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +16,6 @@ import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.FourElementsModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> implements Filterable {
@@ -50,7 +44,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                 .inflate(R.layout.four_elements_block, parent, false);
         ViewHolder viewHolder = new ViewHolder(mView);
         mView.setOnClickListener(v -> updateIntegersDB.values(listName,
-                resultList.get(viewHolder.getAdapterPosition()).getId(), 0, 0));
+                resultList.get(viewHolder.getAdapterPosition()).getId(), 0,  resultList.get(0).getId()));
         return viewHolder;
     }
 
@@ -83,7 +77,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
                 String filterPattern = charSequence.toString().trim();
 
-                for(FourElementsModel model : resultListFull) {
+                for (FourElementsModel model : resultListFull) {
 
                     if (model.getName().contains(filterPattern)) {
                         filterList.add(model);
@@ -111,6 +105,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         ImageView icon;
         TextView name;
         TextView type;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.asseta_four_elements_block_image);

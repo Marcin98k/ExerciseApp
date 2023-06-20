@@ -2,8 +2,10 @@ package com.example.exerciseapp;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -11,15 +13,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.exerciseapp.mDatabases.ContentBD;
+import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ExerciseModel;
 
 import java.util.List;
 
-public class DetailsFragment extends Fragment {
+public class DetailsFragment extends Fragment implements View.OnClickListener{
 
     private ImageView image;
     private TextView name;
@@ -36,6 +40,10 @@ public class DetailsFragment extends Fragment {
 
     private ContentBD contentBD;
     private List<ExerciseModel> exerciseDetail;
+
+    UpdateIntegersDB updateIntegersDB;
+
+    private Button nextBtnView;
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -57,10 +65,12 @@ public class DetailsFragment extends Fragment {
         View mView = inflater.inflate(R.layout.fragment_details, container, false);
         contentBD = new ContentBD(requireActivity());
         initView(mView);
+
         return mView;
     }
 
     private void initView(View v) {
+
         image = v.findViewById(R.id.frag_details_image);
         name = v.findViewById(R.id.frag_details_name);
         level = v.findViewById(R.id.frag_details_level);
@@ -70,6 +80,7 @@ public class DetailsFragment extends Fragment {
         kcal = v.findViewById(R.id.frag_details_kcal);
         duration = v.findViewById(R.id.frag_details_duration);
         description = v.findViewById(R.id.frag_details_description);
+        nextBtnView = v.findViewById(R.id.frag_details_button);
 
         exerciseDetail = contentBD.showExerciseById(id);
 
@@ -83,5 +94,26 @@ public class DetailsFragment extends Fragment {
         kcal.setText(String.valueOf(exerciseDetail.get(POSITION).getKcal()));
         duration.setText(String.valueOf(exerciseDetail.get(POSITION).getDuration()));
         description.setText(String.valueOf(exerciseDetail.get(POSITION).getDescription()));
+
+        nextBtnView.setOnClickListener(this);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        try {
+            updateIntegersDB = (UpdateIntegersDB) context;
+        } catch (NullPointerException e) {
+            throw new NullPointerException(context.toString() +
+                    " must implement UpdateIntegerDB");
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        updateIntegersDB.values("detailsFragment", (int) id,
+                exerciseDetail.get(POSITION).getType(),
+                0);
     }
 }

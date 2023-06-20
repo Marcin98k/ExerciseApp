@@ -63,14 +63,15 @@ public class ContentBD extends SQLiteOpenHelper {
     private static final String EXERCISE_KCAL = "KCAL";
     private static final String EXERCISE_DURATION = "DURATION";
     private static final String EXERCISE_DESCRIPTION = "DESCRIPTION";
+    private static final String EXERCISE_EXTENSIONS_ID = "EXERCISE_EXTENSIONS_ID";
 
 
     private static final String EXERCISE_EXTENSIONS_TAB = "EXERCISE_EXTENSIONS_TAB";
-    private static final String EXERCISE_EXTENSIONS_EXERCISE_ID = "EXERCISE_EXTENSIONS_EXERCISE_ID";
     private static final String EXERCISE_EXTENSIONS_SETS = "SETS";
     private static final String EXERCISE_EXTENSIONS_REPETITIONS = "REPETITIONS";
     private static final String EXERCISE_EXTENSIONS_TIME = "TIME";
     private static final String EXERCISE_EXTENSIONS_REST = "REST";
+    private static final String EXERCISE_EXTENSIONS_EXERCISE_ID = "EXERCISE_EXTENSIONS_EXERCISE_ID";
 
 
     private static final String USER_EXERCISE_TAB = "USER_EXERCISE_TAB";
@@ -121,7 +122,8 @@ public class ContentBD extends SQLiteOpenHelper {
                 + EXERCISE_TYPE + " INTEGER,"
                 + EXERCISE_KCAL +" INTEGER, "
                 + EXERCISE_DURATION +" INTEGER, "
-                + EXERCISE_DESCRIPTION + " TEXT)";
+                + EXERCISE_DESCRIPTION + " TEXT, "
+                + EXERCISE_EXTENSIONS_ID + " INTEGER)";
         sqLiteDatabase.execSQL(createExerciseTab);
 
         String createExerciseExtensionTab = "CREATE TABLE " + EXERCISE_EXTENSIONS_TAB + " ("
@@ -179,6 +181,7 @@ public class ContentBD extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
+
 
         values.put(EXERCISE_EXTENSIONS_EXERCISE_ID, integerModel.getFirstValue());
         values.put(EXERCISE_EXTENSIONS_SETS, integerModel.getSecondValue());
@@ -247,6 +250,7 @@ public class ContentBD extends SQLiteOpenHelper {
         values.put(EXERCISE_KCAL, exerciseModel.getKcal());
         values.put(EXERCISE_DURATION, exerciseModel.getDuration());
         values.put(EXERCISE_DESCRIPTION, exerciseModel.getDescription());
+        values.put(EXERCISE_EXTENSIONS_ID, exerciseModel.getExtension());
 
         long insert = db.insert(EXERCISE_TAB, null, values);
 
@@ -315,9 +319,10 @@ public class ContentBD extends SQLiteOpenHelper {
                 int kcal = cursor.getInt(7);
                 int duration = cursor.getInt(8);
                 String description = cursor.getString(9);
+                int extension = cursor.getInt(10);
 
                 ExerciseModel model = new ExerciseModel(id, name, image, level,
-                        bodyPart, equipment, type, kcal, duration, description);
+                        bodyPart, equipment, type, kcal, duration, description, extension);
                 show.add(model);
                 } while (cursor.moveToNext());
             }
@@ -346,10 +351,36 @@ public class ContentBD extends SQLiteOpenHelper {
                 int kcal = cursor.getInt(7);
                 int duration = cursor.getInt(8);
                 String description = cursor.getString(9);
+                int extension = cursor.getInt(10);
 
                 ExerciseModel model = new ExerciseModel(id, name, image, level,
-                        bodyPart, equipment, type, kcal, duration, description);
+                        bodyPart, equipment, type, kcal, duration, description, extension);
                 show.add(model);
+        }
+
+        cursor.close();
+        db.close();
+
+        return show;
+    }
+
+    public List<IntegerModel> showExerciseExtensionId(long value) {
+
+        List<IntegerModel> show = new ArrayList<>();
+        String search = "SELECT * FROM " + EXERCISE_EXTENSIONS_TAB + " WHERE " + ID + " == " + value;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(search, null);
+
+        if (cursor.moveToFirst()) {
+            int id = cursor.getInt(0);
+            int exercise_id = cursor.getInt(1);
+            int sets = cursor.getInt(2);
+            int repetition = cursor.getInt(3);
+            int time = cursor.getInt(4);
+            int rest = cursor.getInt(5);
+
+            IntegerModel model = new IntegerModel(id, exercise_id, sets, repetition, time, rest);
+            show.add(model);
         }
 
         cursor.close();
