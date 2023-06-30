@@ -1,15 +1,7 @@
 package com.example.exerciseapp;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +9,19 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ExerciseModel;
 
 import java.util.List;
 
-public class DetailsFragment extends Fragment implements View.OnClickListener{
+public class DetailsFragment extends Fragment implements View.OnClickListener {
 
+    //    Initializing widgets;
     private ImageView image;
     private TextView name;
     private TextView level;
@@ -34,16 +31,21 @@ public class DetailsFragment extends Fragment implements View.OnClickListener{
     private TextView kcal;
     private TextView duration;
     private TextView description;
+    private Button nextBtnView;
 
+    //    Initializing variables;
     private long id;
-    private final byte POSITION = 0;
-
-    private ContentBD contentBD;
+    private String btnText;
     private List<ExerciseModel> exerciseDetail;
 
-    UpdateIntegersDB updateIntegersDB;
+    //    Initializing constant;
+    private final byte POSITION = 0;
 
-    private Button nextBtnView;
+    //    Initializing instances;
+    private ContentBD contentBD;
+
+    //    Initializing interface;
+    private UpdateIntegersDB updateIntegersDB;
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -54,18 +56,16 @@ public class DetailsFragment extends Fragment implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             id = getArguments().getLong("id");
-            Log.e(TAG, "onCreate: " + id );
+            btnText = getArguments().getString("btnText", String.valueOf(R.string.next));
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View mView = inflater.inflate(R.layout.fragment_details, container, false);
         contentBD = new ContentBD(requireActivity());
         initView(mView);
-
         return mView;
     }
 
@@ -96,12 +96,12 @@ public class DetailsFragment extends Fragment implements View.OnClickListener{
         description.setText(String.valueOf(exerciseDetail.get(POSITION).getDescription()));
 
         nextBtnView.setOnClickListener(this);
+        nextBtnView.setText(btnText);
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-
         try {
             updateIntegersDB = (UpdateIntegersDB) context;
         } catch (NullPointerException e) {

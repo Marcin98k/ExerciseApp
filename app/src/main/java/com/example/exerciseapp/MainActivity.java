@@ -10,6 +10,7 @@ import com.example.exerciseapp.mClasses.StorageClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mDatabases.DBHelper;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
+import com.example.exerciseapp.mModels.TaskDateModel;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 
 import java.util.ArrayList;
@@ -67,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
             insertContentAppearance();
         }
 
+        if (contentBD.getCount("DATE_TAB") <= 0) {
+            insertTaskDate();
+        }
+
         initInternalFolders();
     }
 
@@ -76,6 +81,16 @@ public class MainActivity extends AppCompatActivity {
         libraryBtn = findViewById(R.id.aMain_library);
         userBtn = findViewById(R.id.aMain_user);
         exerciseBtn = findViewById(R.id.aMain_exercise);
+    }
+
+    private void insertTaskDate() {
+        TaskDateModel one = new TaskDateModel(-1, 1, "2023625", 1, 0);
+        TaskDateModel two = new TaskDateModel(-1, 1, "2023628", 3, 0);
+        TaskDateModel three = new TaskDateModel(-1, 1, "2023623", 2, 1);
+
+        contentBD.insertTaskWithDate(one);
+        contentBD.insertTaskWithDate(two);
+        contentBD.insertTaskWithDate(three);
     }
     private void insertContentAppearance() {
         AppearanceBlockModel chest = new AppearanceBlockModel(-1,

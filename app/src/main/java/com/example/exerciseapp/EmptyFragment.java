@@ -1,17 +1,24 @@
 package com.example.exerciseapp;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import android.content.Context;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
-public class EmptyFragment extends Fragment {
+import com.example.exerciseapp.mInterfaces.FragmentRespond;
+import com.example.exerciseapp.mInterfaces.ISummary;
+
+public class EmptyFragment extends Fragment implements FragmentRespond {
+
+
+    private ISummary summary;
 
     public EmptyFragment() {
         // Required empty public constructor
@@ -20,8 +27,23 @@ public class EmptyFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
         return inflater.inflate(R.layout.fragment_empty, container, false);
+    }
+
+    @Override
+    public void fragmentMessage() {
+        Log.i(TAG, "fragmentMessage: EmptyFrag");
+        summary.summaryMessage("EmptyFragment", "", 0, true);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            summary = (ISummary) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() +
+                    " must implement ISummary");
+        }
     }
 }

@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
+import com.example.exerciseapp.mModels.TaskDateModel;
 import com.example.exerciseapp.mModels.ExerciseModel;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
@@ -80,6 +81,13 @@ public class ContentBD extends SQLiteOpenHelper {
 
     private static final String MIDDLE_TAB = "MIDDLE_TAB";
     private static final String APPEARANCE_ID = "APPEARANCE";
+
+
+    private static final String DATE_TAB = "DATE_TAB";
+    private static final String DATE_USER_ID = "USER_ID";
+    private static final String DATE_NUMBER = "DATE";
+    private static final String DATE_TASK_ID = "TASK_ID";
+    private static final String DATE_STATUS = "STATUS";
 
     public ContentBD(@Nullable Context context) {
         super(context, "ContentDatabase.db", null, 1);
@@ -152,11 +160,60 @@ public class ContentBD extends SQLiteOpenHelper {
                 + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + INT_VAL + " INTEGER, " + APPEARANCE_ID + " INTEGER)";
         sqLiteDatabase.execSQL(createMiddleTab);
+
+        String createDateTab = "CREATE TABLE " + DATE_TAB + " ("
+                + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + DATE_USER_ID + " INTEGER, " + DATE_NUMBER + " TEXT, "
+                + DATE_TASK_ID + " INTEGER, " + DATE_STATUS + " INTEGER)";
+        sqLiteDatabase.execSQL(createDateTab);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
+    }
+
+    public boolean insertTaskWithDate(TaskDateModel taskDateModel) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(DATE_USER_ID, taskDateModel.getUserId());
+        values.put(DATE_NUMBER, taskDateModel.getDate());
+        values.put(DATE_TASK_ID, taskDateModel.getTaskId());
+        values.put(DATE_STATUS, taskDateModel.getStatus());
+
+        long insert = db.insert(DATE_TAB, null, values);
+
+        return insert != -1;
+    }
+
+    public List<TaskDateModel> showTaskWithDate(String date) {
+
+        List<TaskDateModel> model = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        String search = "SELECT * FROM " + DATE_TAB;
+        Cursor cursor = db.rawQuery(search, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                int userId = cursor.getInt(1);
+                String day = cursor.getString(2);
+                int task = cursor.getInt(3);
+                int status = cursor.getInt(4);
+
+                if (date.equals(day)) {
+                    TaskDateModel result = new TaskDateModel(id, userId, day, task, status);
+                    model.add(result);
+                    break;
+                }
+            }while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return model;
     }
 
     public boolean insertBodyParts(IntegerModel integerModel) {
@@ -181,7 +238,6 @@ public class ContentBD extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-
 
         values.put(EXERCISE_EXTENSIONS_EXERCISE_ID, integerModel.getFirstValue());
         values.put(EXERCISE_EXTENSIONS_SETS, integerModel.getSecondValue());
@@ -261,7 +317,6 @@ public class ContentBD extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-
 
         values.put(NAME, exerciseModel.getName());
         values.put(IMAGE, exerciseModel.getImage());
