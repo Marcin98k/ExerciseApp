@@ -9,7 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import com.example.exerciseapp.mClasses.InsertResult;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
+import com.example.exerciseapp.mModels.CustomUserExerciseModel;
 import com.example.exerciseapp.mModels.TaskDateModel;
 import com.example.exerciseapp.mModels.ExerciseModel;
 import com.example.exerciseapp.mModels.IntegerModel;
@@ -74,6 +76,11 @@ public class ContentBD extends SQLiteOpenHelper {
     private static final String EXERCISE_EXTENSIONS_REST = "REST";
     private static final String EXERCISE_EXTENSIONS_EXERCISE_ID = "EXERCISE_EXTENSIONS_EXERCISE_ID";
 
+
+    private static final String CUSTOM_USER_EXERCISE_TAB = "CUSTOM_USER_EXERCISE_TAB";
+    private static final String CUSTOM_USER_EXERCISE_NAME = "CUSTOM_USER_EXERCISE_NAME";
+    private static final String CUSTOM_USER_EXERCISE_EXERCISE_ID = "CUSTOM_USER_EXERCISE_EXERCISE_ID";
+    private static final String CUSTOM_USER_EXERCISE_EXERCISE_EXTENSION_ID = "CUSTOM_USER_EXERCISE_EXERCISE_EXTENSION_ID";
 
     private static final String USER_EXERCISE_TAB = "USER_EXERCISE_TAB";
     private static final String USER_EXERCISE_EXTENSIONS_ID = "EXERCISE_EXTENSION";
@@ -166,11 +173,37 @@ public class ContentBD extends SQLiteOpenHelper {
                 + DATE_USER_ID + " INTEGER, " + DATE_NUMBER + " TEXT, "
                 + DATE_TASK_ID + " INTEGER, " + DATE_STATUS + " INTEGER)";
         sqLiteDatabase.execSQL(createDateTab);
+
+        String createCustomUserExerciseTab = "CREATE TABLE " + CUSTOM_USER_EXERCISE_TAB + " ("
+                + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + CUSTOM_USER_EXERCISE_NAME + " TEXT, "
+                + CUSTOM_USER_EXERCISE_EXERCISE_ID  + " INTEGER, "
+                + CUSTOM_USER_EXERCISE_EXERCISE_EXTENSION_ID + " INTEGER)";
+        sqLiteDatabase.execSQL(createCustomUserExerciseTab);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
+    }
+
+    public InsertResult insertCustomUserExercise(CustomUserExerciseModel customUserExerciseModel) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(CUSTOM_USER_EXERCISE_NAME, customUserExerciseModel.getName());
+        values.put(CUSTOM_USER_EXERCISE_EXERCISE_ID, customUserExerciseModel.getExerciseID());
+        values.put(CUSTOM_USER_EXERCISE_EXERCISE_EXTENSION_ID, customUserExerciseModel.getExerciseExtensionID());
+
+        long insert = db.insert(CUSTOM_USER_EXERCISE_TAB, null, values);
+        boolean success = insert != -1;
+        InsertResult result = new InsertResult(insert, success);
+        if (result.isSuccess()) {
+            return result;
+        } else {
+            return null;
+        }
     }
 
     public boolean insertTaskWithDate(TaskDateModel taskDateModel) {
@@ -234,7 +267,7 @@ public class ContentBD extends SQLiteOpenHelper {
         return insert != -1;
     }
 
-    public boolean insertExerciseExtension(IntegerModel integerModel) {
+    public boolean insertExerciseExtend(IntegerModel integerModel) {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -248,6 +281,27 @@ public class ContentBD extends SQLiteOpenHelper {
         long insert = db.insert(EXERCISE_EXTENSIONS_TAB, null, values);
 
         return insert != -1;
+    }
+
+    public InsertResult insertExerciseExtension(IntegerModel integerModel) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(EXERCISE_EXTENSIONS_EXERCISE_ID, integerModel.getFirstValue());
+        values.put(EXERCISE_EXTENSIONS_SETS, integerModel.getSecondValue());
+        values.put(EXERCISE_EXTENSIONS_REPETITIONS, integerModel.getThirdValue());
+        values.put(EXERCISE_EXTENSIONS_TIME, integerModel.getForthValue());
+        values.put(EXERCISE_EXTENSIONS_REST, integerModel.getFifthValue());
+
+        long insert = db.insert(EXERCISE_EXTENSIONS_TAB, null, values);
+        boolean success = insert != -1;
+        InsertResult result = new InsertResult(insert, success);
+        if (result.isSuccess()) {
+            return result;
+        } else {
+            return null;
+        }
     }
 
     public boolean insertAppearance(AppearanceBlockModel appearanceBlockModel) {

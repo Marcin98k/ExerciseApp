@@ -1,16 +1,12 @@
 package com.example.exerciseapp;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,35 +15,40 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.FourElementsModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchList extends Fragment {
 
+    //    Initializing widgets;
     private RecyclerView recyclerView;
-    private SearchView searchView;
-    private SearchAdapter searchAdapter;
 
+    //    Initializing variables
     private List<FourElementsModel> list;
     private String listName;
 
+    //    Initializing interface;
     private UpdateIntegersDB updateIntegersDB;
     private UpdateIntegersDB updateIntegersDB1;
 
+//    Initializing instances;
+
+    private SearchView searchView;
+    private SearchAdapter searchAdapter;
 
     public SearchList() {
         // Required empty public constructor
     }
 
-    public SearchList(List<FourElementsModel> list, String listName) {
-        this.list = list;
+    public SearchList(String listName, List<FourElementsModel> list) {
         this.listName = listName;
+        this.list = list;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_search_list, container, false);
+
         updateIntegersDB = (listName, firstValue, secondValue, thirdValue) ->
                 updateIntegersDB1.values(listName, firstValue, secondValue, thirdValue);
         initView(mView);

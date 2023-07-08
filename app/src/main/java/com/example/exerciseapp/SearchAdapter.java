@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.exerciseapp.mInterfaces.INewExercise;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.FourElementsModel;
 
@@ -26,6 +27,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     private String listName;
 
     private UpdateIntegersDB updateIntegersDB;
+
+    private INewExercise iNewExercise;
 
 
     public SearchAdapter(Context mContext, List<FourElementsModel> resultList, String listName,
@@ -43,8 +46,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         View mView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.four_elements_block, parent, false);
         ViewHolder viewHolder = new ViewHolder(mView);
-        mView.setOnClickListener(v -> updateIntegersDB.values(listName,
-                resultList.get(viewHolder.getAdapterPosition()).getId(), 0,  resultList.get(0).getId()));
+        mView.setOnClickListener(v -> {
+            updateIntegersDB.values(listName,
+                    resultList.get(viewHolder.getAdapterPosition()).getId(), 0,  resultList.get(0).getId());
+//        iNewExercise.createExercise(listName, resultList.get(0).getId());
+        });
         return viewHolder;
     }
 

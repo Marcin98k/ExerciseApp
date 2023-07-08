@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.HashMap;
+
 public class SharedViewModel extends ViewModel {
 
     //    Integer;
@@ -36,6 +38,18 @@ public class SharedViewModel extends ViewModel {
 
     public LiveData<Integer[]> getSharedTabInt() {
         return shareTabInt;
+    }
+
+
+    private HashMap<String, Integer> tempHashMap = new HashMap<>();
+    public final MutableLiveData<HashMap<String, Integer>> shareHashMap= new MutableLiveData<>();
+    public void setValueToShareHashMap(String name, Integer value) {
+        this.tempHashMap.put(name, value);
+        this.shareHashMap.setValue(tempHashMap);
+    }
+
+    public LiveData<HashMap<String, Integer>> getSharedHashMap () {
+        return shareHashMap;
     }
 
 }

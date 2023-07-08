@@ -34,4 +34,9 @@
     <string name="send">Send</string>
     <string name="your_message">Your message</string>
     <string name="subject">Subject:</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="time">Time</string>
+    <string name="repetition">Repetition</string>
+    <string name="unknown">Unknown</string>
 </resources>

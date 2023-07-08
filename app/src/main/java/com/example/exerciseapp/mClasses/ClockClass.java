@@ -55,6 +55,10 @@ public class ClockClass {
     //    Activate buttons = true; Disable buttons = false;
     private boolean buttonPlusMinus;
 
+    public ClockClass(Context context) {
+        this.mContext = context;
+    }
+
     //    insert Context; set ClockState Increases = false, Decreases = true; set maxTime;
     public ClockClass(Context context, boolean clockState, int maxTime) {
         this.mContext = context;
@@ -119,7 +123,19 @@ public class ClockClass {
         this.second = second;
         return this;
     }
+    public int getSecond() {
+        return second;
+    }
 
+    public ClockClass addSecond(int second) {
+        this.second += second;
+        return this;
+    }
+
+    public ClockClass minusSecond(int second) {
+        this.second -= second;
+        return this;
+    }
     //    Main part;
 
     public void runClock() {
@@ -272,9 +288,9 @@ public class ClockClass {
 
 
     //    Show time part;
-    private void clockInstructionsExternal() {
+    public void dynamicIncreaseTime(TextView text) {
 
-        setTime();
+//        setTime();
 //        When i put second from other class, second always is switched,
 //        so when second equal 60 then add one minute,
 //        but when value is bigger like 125 (60 && 65)
@@ -300,7 +316,7 @@ public class ClockClass {
             }
         } while (minute > 60);
 
-        clockInstructions();
+        clockInstructionsExt(text);
     }
 
     private void clockInstructionsInternal() {
@@ -371,6 +387,58 @@ public class ClockClass {
             }
         } else {
             showTimeTV.setText(firstClockOption);
+        }
+    }
+
+
+    private void clockInstructionsExt(TextView textView) {
+
+        String secondsClock = String.valueOf(second);
+        String minutesClock = String.valueOf(minute);
+        String hoursClock = String.valueOf(hour);
+        String bridgeMinutes = String.valueOf(minute + 1);
+        String bridgeHours = String.valueOf(hour + 1);
+
+        if (hour <= 9) {
+            hourTxt = "0" + hoursClock;
+        } else {
+            hourTxt = hoursClock;
+        }
+
+        if (minute <= 9) {
+            minuteTxt = "0" + minutesClock;
+        } else {
+            minuteTxt = minutesClock;
+        }
+
+        if (second <= 9) {
+            secondTxt = "0" + secondsClock;
+        } else {
+            secondTxt = secondsClock;
+        }
+
+        String firstClockOption = minuteTxt + ":" + secondTxt;
+
+        if (minute == 60) {
+
+            if (hour <= 9) {
+                hourTxt = bridgeHours;
+                String secondClockOption = "0" + hourTxt + ":00:" + secondTxt;
+                textView.setText(secondClockOption);
+            } else {
+                textView.setText(firstClockOption);
+            }
+        } else if (second == 60) {
+
+            if (minute <= 9) {
+                minuteTxt = bridgeMinutes;
+                String thirdClockOption = "0" + minuteTxt + ":00";
+                textView.setText(thirdClockOption);
+            } else {
+                textView.setText(firstClockOption);
+            }
+        } else {
+            textView.setText(firstClockOption);
         }
     }
 

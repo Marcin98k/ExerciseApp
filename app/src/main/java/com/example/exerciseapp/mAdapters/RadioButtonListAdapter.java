@@ -13,6 +13,7 @@ import android.widget.RadioButton;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.exerciseapp.mInterfaces.ISummary;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 import com.example.exerciseapp.R;
@@ -21,9 +22,9 @@ import java.util.List;
 
 public class RadioButtonListAdapter extends RecyclerView.Adapter<RadioButtonListAdapter.ViewHolder> {
 
-    Context mContext;
-    UpdateIntegersDB updateIntegersDB;
-    List<ThreeElementLinearListModel> list;
+    private Context mContext;
+    private UpdateIntegersDB updateIntegersDB;
+    private List<ThreeElementLinearListModel> list;
 
     private String listName;
     int selectedPosition = -1;

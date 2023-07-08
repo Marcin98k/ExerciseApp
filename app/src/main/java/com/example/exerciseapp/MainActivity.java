@@ -10,11 +10,10 @@ import com.example.exerciseapp.mClasses.StorageClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mDatabases.DBHelper;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
+import com.example.exerciseapp.mModels.ExerciseModel;
+import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.TaskDateModel;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -72,6 +71,18 @@ public class MainActivity extends AppCompatActivity {
             insertTaskDate();
         }
 
+        if (contentBD.getCount("EXERCISE_TAB") <= 0) {
+            insertExercise();
+        }
+
+        if (contentBD.getCount("WORKOUT_TAB") <= 0) {
+            insertWorkout();
+        }
+
+        if (contentBD.getCount("EXERCISE_EXTENSIONS_TAB") <= 0) {
+            insertExtensionExercise();
+        }
+
         initInternalFolders();
     }
 
@@ -81,6 +92,48 @@ public class MainActivity extends AppCompatActivity {
         libraryBtn = findViewById(R.id.aMain_library);
         userBtn = findViewById(R.id.aMain_user);
         exerciseBtn = findViewById(R.id.aMain_exercise);
+    }
+
+    private void insertExtensionExercise() {
+
+        IntegerModel extend1 = new IntegerModel(-1, 1, 8, 12, 0, 30);
+        IntegerModel extend2 = new IntegerModel(-1, 2, 3, 0, 65, 45);
+        IntegerModel extend3 = new IntegerModel(-1, 3, 4, 6, 0, 45);
+
+        contentBD.insertExerciseExtend(extend1);
+        contentBD.insertExerciseExtend(extend2);
+        contentBD.insertExerciseExtend(extend3);
+    }
+
+    private void insertWorkout() {
+
+        ExerciseModel workout1 = new ExerciseModel(-1, "Workout1 YTR", "", 2,
+                "5", "21", 10, 55, "descriptionWorkout1",
+                "2,3,1");
+        ExerciseModel workout2 = new ExerciseModel(-1, "Workout2 URC", "", 1,
+                "2", "54", 21, 35, "descriptionWorkout2",
+                "1,2,3");
+        ExerciseModel workout3 = new ExerciseModel(-1, "Workout3 YTN", "", 3,
+                "4", "71", 17, 15, "descriptionWorkout3",
+                "3,2,1");
+
+        contentBD.insertWorkout(workout1);
+        contentBD.insertWorkout(workout2);
+        contentBD.insertWorkout(workout3);
+    }
+
+    private void insertExercise() {
+
+        ExerciseModel exercise1 = new ExerciseModel(-1, "Exercise1 ABC", "", 2,
+                "5", "21", 1, 5, 20, "description1", 1);
+        ExerciseModel exercise2 = new ExerciseModel(-1, "Exercise2 BGH", "", 1,
+                "2", "54", 2, 10, 25, "description2", 2);
+        ExerciseModel exercise3 = new ExerciseModel(-1, "Exercise3 BCI", "", 3,
+                "4", "71", 1, 15, 35, "description3", 3);
+
+        contentBD.insertExercise(exercise1);
+        contentBD.insertExercise(exercise2);
+        contentBD.insertExercise(exercise3);
     }
 
     private void insertTaskDate() {

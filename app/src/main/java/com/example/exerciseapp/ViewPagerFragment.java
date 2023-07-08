@@ -17,14 +17,15 @@ import java.util.List;
 
 public class ViewPagerFragment extends Fragment {
 
-
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
     private ViewPagerAdapter viewPagerAdapter;
-    private String[] fragmentTitles;
 
+
+    private String[] fragmentTitles;
     private List<FourElementsModel> firstList;
     private List<FourElementsModel> secondList;
+
 
     public ViewPagerFragment() {
         // Required empty public constructor
@@ -51,12 +52,15 @@ public class ViewPagerFragment extends Fragment {
     private void initView(View v) {
         tabLayout = v.findViewById(R.id.act_library_tab_layout);
         viewPager2 = v.findViewById(R.id.act_library_view_pager);
-        viewPagerAdapter = new ViewPagerAdapter(requireActivity(), fragmentTitles.length,
-                firstList, secondList);
+        if (firstList != null || secondList != null) {
+            viewPagerAdapter = new ViewPagerAdapter(requireActivity(), fragmentTitles.length,
+                    firstList, secondList);
+        } else {
+            viewPagerAdapter = new ViewPagerAdapter(requireActivity(), fragmentTitles.length);
+        }
         viewPager2.setOffscreenPageLimit(1);
         viewPager2.setAdapter(viewPagerAdapter);
         new TabLayoutMediator(tabLayout, viewPager2,
                 (tab, position) -> tab.setText(fragmentTitles[position])).attach();
     }
-
 }

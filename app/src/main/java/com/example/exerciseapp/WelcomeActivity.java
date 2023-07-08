@@ -65,6 +65,15 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
         dbHelper = new DBHelper(WelcomeActivity.this);
         fragmentManager = getSupportFragmentManager();
 
+        if (findViewById(R.id.act_main_exercise) != null) {
+
+            if (savedInstanceState != null) {
+                return;
+            }
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.act_main_exercise, new CustomExerciseCounterFragment(ExerciseType.TIME));
+            ft.commit();
+        }
         if (findViewById(R.id.aWelcome_FL_mainContainer) != null) {
 
             if (savedInstanceState != null) {
