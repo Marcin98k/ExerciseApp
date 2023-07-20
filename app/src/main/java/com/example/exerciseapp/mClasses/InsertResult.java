@@ -9,6 +9,9 @@ public class InsertResult {
         this.index = index;
         this.success = success;
     }
+    public InsertResult(boolean success) {
+        this.success = success;
+    }
 
     public boolean isSuccess() {
         return success;

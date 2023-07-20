@@ -6,15 +6,16 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.example.exerciseapp.mClasses.InsertResult;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
 import com.example.exerciseapp.mModels.CustomUserExerciseModel;
-import com.example.exerciseapp.mModels.TaskDateModel;
 import com.example.exerciseapp.mModels.ExerciseModel;
 import com.example.exerciseapp.mModels.IntegerModel;
+import com.example.exerciseapp.mModels.TaskDateModel;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 
 import java.util.ArrayList;
@@ -96,12 +97,25 @@ public class ContentBD extends SQLiteOpenHelper {
     private static final String DATE_TASK_ID = "TASK_ID";
     private static final String DATE_STATUS = "STATUS";
 
+
+    private static final String USER_BIO_TAB = "USER_BIO_TAB";
+    private static final String USER_BIO_DATE = "USER_BIO_DATE";
+    private static final String USER_BIO_HEIGHT = "USER_BIO_HEIGHT";
+    private static final String USER_BIO_WEIGHT = "USER_BIO_WEIGHT";
+    private static final String USER_BIO_ID = "USER_BIO_ID";
+
     public ContentBD(@Nullable Context context) {
         super(context, "ContentDatabase.db", null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+
+        String createUserBioTab = "CREATE TABLE " + USER_BIO_TAB + " ("
+                + USER_BIO_DATE + " INTEGER PRIMARY KEY , "
+                + USER_BIO_HEIGHT + " INTEGER, " + USER_BIO_WEIGHT + " INTEGER, "
+                + USER_BIO_ID + " INTEGER)";
+        sqLiteDatabase.execSQL(createUserBioTab);
 
         String createBodyPartTab = "CREATE TABLE " + BODY_PARTS_TAB + " ("
                 + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -117,8 +131,8 @@ public class ContentBD extends SQLiteOpenHelper {
                 + WORKOUT_LEVEL_ID + " INTEGER, "
                 + WORKOUT_BODY_PARTS_ID + " TEXT, "
                 + WORKOUT_EQUIPMENT + " TEXT, "
-                + WORKOUT_KCAL +" INTEGER, "
-                + WORKOUT_DURATION +" INTEGER, "
+                + WORKOUT_KCAL + " INTEGER, "
+                + WORKOUT_DURATION + " INTEGER, "
                 + WORKOUT_DESCRIPTION + " TEXT,"
                 + WORKOUT_EXERCISES_ID + " INTEGER)";
         sqLiteDatabase.execSQL(createWorkoutTab);
@@ -135,8 +149,8 @@ public class ContentBD extends SQLiteOpenHelper {
                 + EXERCISE_BODY_PARTS_ID + " TEXT, "
                 + EXERCISE_EQUIPMENT + " TEXT, "
                 + EXERCISE_TYPE + " INTEGER,"
-                + EXERCISE_KCAL +" INTEGER, "
-                + EXERCISE_DURATION +" INTEGER, "
+                + EXERCISE_KCAL + " INTEGER, "
+                + EXERCISE_DURATION + " INTEGER, "
                 + EXERCISE_DESCRIPTION + " TEXT, "
                 + EXERCISE_EXTENSIONS_ID + " INTEGER)";
         sqLiteDatabase.execSQL(createExerciseTab);
@@ -177,7 +191,7 @@ public class ContentBD extends SQLiteOpenHelper {
         String createCustomUserExerciseTab = "CREATE TABLE " + CUSTOM_USER_EXERCISE_TAB + " ("
                 + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + CUSTOM_USER_EXERCISE_NAME + " TEXT, "
-                + CUSTOM_USER_EXERCISE_EXERCISE_ID  + " INTEGER, "
+                + CUSTOM_USER_EXERCISE_EXERCISE_ID + " INTEGER, "
                 + CUSTOM_USER_EXERCISE_EXERCISE_EXTENSION_ID + " INTEGER)";
         sqLiteDatabase.execSQL(createCustomUserExerciseTab);
     }
@@ -185,6 +199,165 @@ public class ContentBD extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
+    }
+
+    public InsertResult insertUserBio(IntegerModel integerModel) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(USER_BIO_DATE, integerModel.getId());
+        values.put(USER_BIO_HEIGHT, integerModel.getFirstValue());
+        values.put(USER_BIO_WEIGHT, integerModel.getSecondValue());
+        values.put(USER_BIO_ID, integerModel.getThirdValue());
+
+        long insert = db.insert(USER_BIO_TAB, null, values);
+        boolean success = insert != -1;
+        InsertResult result = new InsertResult(insert, success);
+
+        if (result.isSuccess()) {
+            return result;
+        } else {
+            return null;
+        }
+    }
+
+    public InsertResult updateUserBioWeight(int date, int weight) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(USER_BIO_WEIGHT, weight);
+        String valueID = USER_BIO_DATE + " = ?";
+        String[] args = {String.valueOf(date)};
+        int update = db.update(USER_BIO_TAB, values, valueID, args);
+
+        boolean success = update != -1;
+        Log.i(TAG, "updateUserBioWeight: " + success);
+        InsertResult result = new InsertResult(update, success);
+
+        if (result.isSuccess()) {
+            Log.i(TAG, "searchUserBio: sendToDB ");
+            return result;
+        } else {
+            return null;
+        }
+    }
+
+    public InsertResult searchUserBio(int date) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        String valueID = USER_BIO_DATE + " = ?";
+        String[] args = {String.valueOf(date)};
+        Cursor cursor = db.query(USER_BIO_TAB, null, valueID, args,
+                null, null, null);
+
+        InsertResult result = new InsertResult(cursor.moveToFirst());
+
+        cursor.close();
+        db.close();
+
+        if (result.isSuccess()) {
+            return result;
+        } else {
+            return null;
+        }
+    }
+
+    public int searchUserBioHighestWeight(int date) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        String search = "SELECT " + USER_BIO_WEIGHT + " FROM " + USER_BIO_TAB +
+                " WHERE " + USER_BIO_DATE + " < ?";
+
+//        Clean SQL
+        /* SELECT USER_BIO_WEIGHT FROM USER_BIO_TAB WHERE USER_BIO_DATE < ?(VALUE)
+         AND USER_BIO_WEIGHT > 0 ORDER BY USER_BIO_DATE DESC LIMIT 1
+         */
+
+        String[] args = {String.valueOf(date)};
+        Cursor cursor = db.rawQuery(search, args);
+
+        int lastValue = -1;
+        if (cursor.moveToLast()) {
+            do {
+                if (cursor.getInt(0) > 0){
+                    lastValue = cursor.getInt(0);
+                    break;
+                }
+            } while (cursor.moveToPrevious());
+        }
+
+        cursor.close();
+        db.close();
+        return lastValue;
+    }
+
+    public InsertResult updateUserBioHeight(int date, int height) {
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(USER_BIO_HEIGHT, height);
+        String valueID = "id = ?";
+        String[] args = {String.valueOf(date)};
+        int update = db.update(USER_BIO_TAB, values, valueID, args);
+
+        boolean success = update != -1;
+        InsertResult result = new InsertResult(update, success);
+
+        if (result.isSuccess()) {
+            return result;
+        } else {
+            return null;
+        }
+    }
+
+    public List<IntegerModel> getUserBio() {
+        SQLiteDatabase db = getReadableDatabase();
+        String search = "SELECT * FROM " + USER_BIO_TAB;
+        Cursor cursor = db.rawQuery(search, null);
+        List<IntegerModel> list = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                int date = cursor.getInt(0);
+                int height = cursor.getInt(1);
+                int weight = cursor.getInt(2);
+                int user_id = cursor.getInt(3);
+
+                IntegerModel model = new IntegerModel(0, date, height, weight, user_id);
+                list.add(model);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return list;
+    }
+
+    public List<IntegerModel> getUserBioWeight(int userID) {
+
+        SQLiteDatabase db = getReadableDatabase();
+        String search = "SELECT " + USER_BIO_DATE + "," + USER_BIO_WEIGHT +
+                " FROM " + USER_BIO_TAB + " WHERE " + USER_BIO_ID + " = ? AND "+ USER_BIO_WEIGHT +
+                " > 0 ORDER BY " + USER_BIO_DATE + " ASC LIMIT 7" ;
+
+        String[] selectedArgs = {String.valueOf(userID)};
+        Cursor cursor = db.rawQuery(search, selectedArgs);
+        List<IntegerModel> list = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                int date = cursor.getInt(0);
+                int weight = cursor.getInt(1);
+
+                IntegerModel model = new IntegerModel(0, date, weight);
+                list.add(model);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return list;
     }
 
     public InsertResult insertCustomUserExercise(CustomUserExerciseModel customUserExerciseModel) {
@@ -241,7 +414,7 @@ public class ContentBD extends SQLiteOpenHelper {
                     model.add(result);
                     break;
                 }
-            }while (cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
 
         cursor.close();
@@ -415,9 +588,9 @@ public class ContentBD extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(search, null);
 
-            if (cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
 
-                do {
+            do {
                 int id = cursor.getInt(0);
                 String name = cursor.getString(1);
                 String image = cursor.getString(2);
@@ -433,8 +606,8 @@ public class ContentBD extends SQLiteOpenHelper {
                 ExerciseModel model = new ExerciseModel(id, name, image, level,
                         bodyPart, equipment, type, kcal, duration, description, extension);
                 show.add(model);
-                } while (cursor.moveToNext());
-            }
+            } while (cursor.moveToNext());
+        }
 
         cursor.close();
         db.close();
@@ -450,21 +623,21 @@ public class ContentBD extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(search, null);
 
         if (cursor.moveToFirst()) {
-                int id = cursor.getInt(0);
-                String name = cursor.getString(1);
-                String image = cursor.getString(2);
-                int level = cursor.getInt(3);
-                String bodyPart = cursor.getString(4);
-                String equipment = cursor.getString(5);
-                int type = cursor.getInt(6);
-                int kcal = cursor.getInt(7);
-                int duration = cursor.getInt(8);
-                String description = cursor.getString(9);
-                int extension = cursor.getInt(10);
+            int id = cursor.getInt(0);
+            String name = cursor.getString(1);
+            String image = cursor.getString(2);
+            int level = cursor.getInt(3);
+            String bodyPart = cursor.getString(4);
+            String equipment = cursor.getString(5);
+            int type = cursor.getInt(6);
+            int kcal = cursor.getInt(7);
+            int duration = cursor.getInt(8);
+            String description = cursor.getString(9);
+            int extension = cursor.getInt(10);
 
-                ExerciseModel model = new ExerciseModel(id, name, image, level,
-                        bodyPart, equipment, type, kcal, duration, description, extension);
-                show.add(model);
+            ExerciseModel model = new ExerciseModel(id, name, image, level,
+                    bodyPart, equipment, type, kcal, duration, description, extension);
+            show.add(model);
         }
 
         cursor.close();
@@ -540,20 +713,20 @@ public class ContentBD extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
 
-                int id = cursor.getInt(0);
-                String name = cursor.getString(1);
-                String image = cursor.getString(2);
-                int level = cursor.getInt(3);
-                String bodyPart = cursor.getString(4);
-                String equipment = cursor.getString(5);
-                int kcal = cursor.getInt(6);
-                int duration = cursor.getInt(7);
-                String description = cursor.getString(8);
-                String exerciseId = cursor.getString(9);
+            int id = cursor.getInt(0);
+            String name = cursor.getString(1);
+            String image = cursor.getString(2);
+            int level = cursor.getInt(3);
+            String bodyPart = cursor.getString(4);
+            String equipment = cursor.getString(5);
+            int kcal = cursor.getInt(6);
+            int duration = cursor.getInt(7);
+            String description = cursor.getString(8);
+            String exerciseId = cursor.getString(9);
 
-                ExerciseModel model = new ExerciseModel(id, name, image, level,
-                        bodyPart, equipment, kcal, duration, description, exerciseId);
-                show.add(model);
+            ExerciseModel model = new ExerciseModel(id, name, image, level,
+                    bodyPart, equipment, kcal, duration, description, exerciseId);
+            show.add(model);
         }
 
         cursor.close();
