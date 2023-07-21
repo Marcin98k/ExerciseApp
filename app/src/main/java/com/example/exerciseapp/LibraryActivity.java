@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.exerciseapp.mClasses.ClockClass;
 import com.example.exerciseapp.mClasses.CreateExerciseClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mInterfaces.INewExercise;
@@ -20,6 +19,7 @@ import com.example.exerciseapp.mInterfaces.ISingleIntegerValue;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ExerciseModel;
 import com.example.exerciseapp.mModels.FourElementsModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +81,30 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
                     String.valueOf(workoutTemp.get(i).getKcal()), R.drawable.ic_hexagon);
             workoutList.add(model);
         }
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.act_library_bottom_nav_bar);
+        bottomNavigationView.setSelectedItemId(R.id.bottom_nav_bar_workout);
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+
+            switch (item.getItemId()) {
+                case (R.id.bottom_nav_bar_main):
+                    startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+                    finish();
+                    return true;
+                case (R.id.bottom_nav_bar_workout):
+                    return true;
+                case (R.id.bottom_nav_bar_profile):
+                    startActivity(new Intent(getApplicationContext(), UserActivity.class));
+                    finish();
+                    return true;
+                case (R.id.bottom_nav_bar_settings):
+                    startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                    finish();
+                    return true;
+            }
+            return false;
+        });
     }
 
     private void replaceFragment(int container, Fragment fragment, boolean addToBackStack, String tag) {

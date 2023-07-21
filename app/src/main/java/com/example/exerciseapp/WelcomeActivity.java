@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -18,93 +17,76 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.exerciseapp.mClasses.SharedViewModel;
 import com.example.exerciseapp.mDatabases.DBHelper;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
-import com.example.exerciseapp.mModels.AppearanceBlockModel;
+import com.example.exerciseapp.mInterfaces.INewExercise;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.UserInformationModel;
 
 import java.util.LinkedList;
 
 public class WelcomeActivity extends AppCompatActivity implements FragmentSupportListener {
-    private FragmentManager fragmentManager;
-    private Toolbar toolbar;
-    private LinkedList<Integer> regListInt = new LinkedList<>();
-    private LinkedList<String> regListStr = new LinkedList<>();
+
     private Button actionBtn;
 
-    private SharedViewModel sharedViewModel;
 
-    private DBHelper dbHelper;
-
+    private LinkedList<Integer> regListInt = new LinkedList<>();
+    private LinkedList<String> regListStr = new LinkedList<>();
     private boolean isCorrect = false;
 
-    //    Fragments instances;
-    SignInFragment signInFragment;
-    SignUpFragment signUpFragment;
-    SelectGenderFragment selectGenderFragment;
-    SelectHeightFragment selectHeightFragment;
-    SelectWeightFragment selectWeightFragment;
-    SelectLevelFragment selectLevelFragment;
-    SelectGoalsFragment selectGoalsFragment;
-    SelectPerformanceFragment selectPerformanceFragment;
 
-    private final String tagSignIn = "tagSignInFragment";
-    private final String tagSignUp = "tagSignUpFragment";
-    private final String tagGender = "tagSelectGenderFragment";
-    private final String tagHeight = "tagSelectHeightFragment";
-    private final String tagWeight = "tagSelectWeightFragment";
-    private final String tagLevel = "tagSelectLevelFragment";
-    private final String tagGoals = "tagSelectGoalsFragment";
-    private final String tagPerformance = "tagSelectPerformanceFragment";
+    private SharedViewModel sharedViewModel;
+    private FragmentManager fragmentManager;
+
+
+    private DBHelper dbHelper;
+    private SignInFragment signInFragment;
+    private SignUpFragment signUpFragment;
+    private SelectGenderFragment selectGenderFragment;
+    private SelectHeightFragment selectHeightFragment;
+    private SelectWeightFragment selectWeightFragment;
+    private SelectLevelFragment selectLevelFragment;
+    private SelectGoalsFragment selectGoalsFragment;
+    private SelectPerformanceFragment selectPerformanceFragment;
+
+
+    private final String SIGN_IN_TAG = "tagSignInFragment";
+    private final String SIGN_UP_TAG = "tagSignUpFragment";
+    private final String GENDER_TAG = "tagSelectGenderFragment";
+    private final String HEIGHT_TAG = "tagSelectHeightFragment";
+    private final String WEIGHT_TAG = "tagSelectWeightFragment";
+    private final String LEVEL_TAG = "tagSelectLevelFragment";
+    private final String GOALS_TAG = "tagSelectGoalsFragment";
+    private final String PERFORMANCE_TAG = "tagSelectPerformanceFragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-
-        toolbar = findViewById(R.id.aWelcome_toolbar);
+        initView();
         dbHelper = new DBHelper(WelcomeActivity.this);
         fragmentManager = getSupportFragmentManager();
 
-        if (findViewById(R.id.act_main_exercise) != null) {
-
-            if (savedInstanceState != null) {
-                return;
-            }
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.act_main_exercise, new CustomExerciseCounterFragment(ExerciseType.TIME));
-            ft.commit();
-        }
         if (findViewById(R.id.aWelcome_FL_mainContainer) != null) {
 
             if (savedInstanceState != null) {
                 return;
             }
-            addFragment(R.id.aWelcome_FL_mainContainer, new SignInFragment(), tagSignIn);
+
+            FragmentTransaction ft = fragmentManager.beginTransaction();
+            ft.addToBackStack(SIGN_IN_TAG);
+            ft.add(R.id.aWelcome_FL_mainContainer, new SignInFragment(), SIGN_IN_TAG);
+            ft.commit();
         }
 
         fragmentObserver();
-        if (dbHelper.getCount("APPEARANCE") <= 0) {
-            insertUnits();
-        } else {
-            Log.e(TAG, "onCreate: Appearance is filled");
-        }
-        if (dbHelper.getCount("FUTURE") <= 0) {
-            dbHelper.insertFutureTab("Test@test");
-        }
 
-        actionBtn = findViewById(R.id.aWelcome_actionBtn);
         nextFragment(actionBtn);
     }
 
-    private void addFragment(int container, Fragment fragment, String tag) {
-
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.add(container, fragment, tag);
-        ft.commit();
+    private void initView() {
+        actionBtn = findViewById(R.id.aWelcome_actionBtn);
     }
 
     private void replaceFragment(Fragment fragment, String tag) {
-
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft1 = fm.beginTransaction();
         ft1.addToBackStack(tag);
@@ -113,15 +95,14 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
     }
 
     private void initFragments() {
-
-        this.signInFragment = (SignInFragment) this.fragmentManager.findFragmentByTag(tagSignIn);
-        this.signUpFragment = (SignUpFragment) this.fragmentManager.findFragmentByTag(tagSignUp);
-        this.selectGenderFragment = (SelectGenderFragment) this.fragmentManager.findFragmentByTag(tagGender);
-        this.selectHeightFragment = (SelectHeightFragment) this.fragmentManager.findFragmentByTag(tagHeight);
-        this.selectWeightFragment = (SelectWeightFragment) this.fragmentManager.findFragmentByTag(tagWeight);
-        this.selectLevelFragment = (SelectLevelFragment) this.fragmentManager.findFragmentByTag(tagLevel);
-        this.selectGoalsFragment = (SelectGoalsFragment) this.fragmentManager.findFragmentByTag(tagGoals);
-        this.selectPerformanceFragment = (SelectPerformanceFragment) this.fragmentManager.findFragmentByTag(tagPerformance);
+        this.signInFragment = (SignInFragment) this.fragmentManager.findFragmentByTag(SIGN_IN_TAG);
+        this.signUpFragment = (SignUpFragment) this.fragmentManager.findFragmentByTag(SIGN_UP_TAG);
+        this.selectGenderFragment = (SelectGenderFragment) this.fragmentManager.findFragmentByTag(GENDER_TAG);
+        this.selectHeightFragment = (SelectHeightFragment) this.fragmentManager.findFragmentByTag(HEIGHT_TAG);
+        this.selectWeightFragment = (SelectWeightFragment) this.fragmentManager.findFragmentByTag(WEIGHT_TAG);
+        this.selectLevelFragment = (SelectLevelFragment) this.fragmentManager.findFragmentByTag(LEVEL_TAG);
+        this.selectGoalsFragment = (SelectGoalsFragment) this.fragmentManager.findFragmentByTag(GOALS_TAG);
+        this.selectPerformanceFragment = (SelectPerformanceFragment) this.fragmentManager.findFragmentByTag(PERFORMANCE_TAG);
     }
 
     private void nextFragment(Button btn) {
@@ -131,32 +112,28 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
             initFragments();
 
             if (signInFragment != null && signInFragment.isVisible()) {
+                Log.i(TAG, "nextFragment: signIn");
                 btn.setText(R.string.next);
-                replaceFragment(new SelectGenderFragment(), tagGender);
+                replaceFragment(new SelectGenderFragment(), GENDER_TAG);
             } else if (selectGenderFragment != null && selectGenderFragment.isVisible()) {
-
+                Log.i(TAG, "nextFragment: selectGen");
                 if (isCorrect) {
-
                     selectGenderFragment.fragmentMessage();
-                    replaceFragment(new SelectHeightFragment(), tagHeight);
+                    replaceFragment(new SelectHeightFragment(), HEIGHT_TAG);
                 } else {
                     Toast.makeText(WelcomeActivity.this, "Select", Toast.LENGTH_SHORT).show();
                 }
             } else if (selectHeightFragment != null && selectHeightFragment.isVisible()) {
-
                 selectHeightFragment.fragmentMessage();
-                replaceFragment(new SelectWeightFragment(), tagWeight);
-
+                replaceFragment(new SelectWeightFragment(), WEIGHT_TAG);
             } else if (selectWeightFragment != null && selectWeightFragment.isVisible()) {
-
                 selectWeightFragment.fragmentMessage();
-                replaceFragment(new SelectLevelFragment(), tagLevel);
-
+                replaceFragment(new SelectLevelFragment(), LEVEL_TAG);
             } else if (selectLevelFragment != null && selectLevelFragment.isVisible()) {
 
                 if (isCorrect) {
                     selectLevelFragment.fragmentMessage();
-                    replaceFragment(new SelectGoalsFragment(), tagGoals);
+                    replaceFragment(new SelectGoalsFragment(), GOALS_TAG);
                 } else {
                     Toast.makeText(WelcomeActivity.this, "Select", Toast.LENGTH_SHORT).show();
                 }
@@ -164,16 +141,14 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
 
                 if (isCorrect) {
                     selectGoalsFragment.fragmentMessage();
-                    replaceFragment(new SelectPerformanceFragment(), tagPerformance);
+                    replaceFragment(new SelectPerformanceFragment(), PERFORMANCE_TAG);
                 } else {
                     Toast.makeText(WelcomeActivity.this, "Select min. 1", Toast.LENGTH_SHORT).show();
                 }
             } else if (selectPerformanceFragment != null && selectPerformanceFragment.isVisible()) {
-
                 selectPerformanceFragment.fragmentMessage();
-                replaceFragment(new SignUpFragment(), tagSignUp);
+                replaceFragment(new SignUpFragment(), SIGN_UP_TAG);
                 btn.setText(R.string.sign_up);
-                System.out.println(regListInt);
             } else if (signUpFragment != null && signUpFragment.isVisible()) {
 
                 Log.e("WelcomeActivity!", regListInt.toString());
@@ -423,125 +398,6 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
     FirebaseConnect.class
      */
 
-    private void insertUnits() {
-
-
-//        Gender;
-        AppearanceBlockModel gender1 = new AppearanceBlockModel(
-                -1, R.drawable.ic_male, "", getResources().getString(R.string.male),
-                0, "", "Gender");
-        AppearanceBlockModel gender2 = new AppearanceBlockModel(
-                -1, R.drawable.ic_female, "", getResources().getString(R.string.female),
-                0, "", "Gender");
-        AppearanceBlockModel gender3 = new AppearanceBlockModel(
-                -1, R.drawable.ic_block, "", getResources().getString(R.string.other),
-                0, "", "Gender");
-
-        dbHelper.insertAppearanceBlock(gender1);
-        dbHelper.insertAppearanceBlock(gender2);
-        dbHelper.insertAppearanceBlock(gender3);
-
-//        Units;
-        AppearanceBlockModel unit1 = new AppearanceBlockModel(
-                -1, R.drawable.ic_hexagon, "", "Height",
-                0, "", "Units");
-        AppearanceBlockModel unit2 = new AppearanceBlockModel(
-                -1, R.drawable.ic_hexagon, "", "Weight",
-                0, "", "Units");
-
-        dbHelper.insertAppearanceBlock(unit1);
-        dbHelper.insertAppearanceBlock(unit2);
-
-
-//        Units other table;
-        AppearanceBlockModel model = new AppearanceBlockModel(-1, "cm");
-        AppearanceBlockModel model1 = new AppearanceBlockModel(-1, "in");
-
-        dbHelper.insertHeightTab(model);
-        dbHelper.insertHeightTab(model1);
-
-
-        AppearanceBlockModel model2 = new AppearanceBlockModel(-1, "kg");
-        AppearanceBlockModel model3 = new AppearanceBlockModel(-1, "lbs");
-
-        dbHelper.insertWeightTab(model2);
-        dbHelper.insertWeightTab(model3);
-
-
-//        Goals;
-        AppearanceBlockModel goal1 = new AppearanceBlockModel(
-                -1, 0, "", getResources().getString(R.string.strength),
-                0, "", "Goal");
-        AppearanceBlockModel goal2 = new AppearanceBlockModel(
-                -1, 0, "", getResources().getString(R.string.muscle),
-                0, "", "Goal");
-        AppearanceBlockModel goal3 = new AppearanceBlockModel(
-                -1, 0, "", getResources().getString(R.string.fatLose),
-                0, "", "Goal");
-        AppearanceBlockModel goal4 = new AppearanceBlockModel(
-                -1, 0, "", getResources().getString(R.string.technique),
-                0, "", "Goal");
-
-        dbHelper.insertAppearanceBlock(goal1);
-        dbHelper.insertAppearanceBlock(goal2);
-        dbHelper.insertAppearanceBlock(goal3);
-        dbHelper.insertAppearanceBlock(goal4);
-
-
-//        Level;
-        AppearanceBlockModel level1 = new AppearanceBlockModel(
-                -1, R.drawable.ic_star_one, "", getResources().getString(R.string.beginner),
-                0, "", "Level");
-        AppearanceBlockModel level2 = new AppearanceBlockModel(
-                -1, R.drawable.ic_star_two, "", getResources().getString(R.string.intermediate),
-                0, "", "Level");
-        AppearanceBlockModel level3 = new AppearanceBlockModel(
-                -1, R.drawable.ic_star_three, "", getResources().getString(R.string.advanced),
-                0, "", "Level");
-
-        dbHelper.insertAppearanceBlock(level1);
-        dbHelper.insertAppearanceBlock(level2);
-        dbHelper.insertAppearanceBlock(level3);
-
-
-//        Performance;
-        AppearanceBlockModel performance1 = new AppearanceBlockModel(
-                -1, 0, "", getResources().getString(R.string.push),
-                0, "", "Performance");
-        AppearanceBlockModel performance2 = new AppearanceBlockModel(
-                -1, 0, "", getResources().getString(R.string.pull),
-                0, "", "Performance");
-        AppearanceBlockModel performance3 = new AppearanceBlockModel(
-                -1, 0, "", getResources().getString(R.string.squad),
-                0, "", "Performance");
-        AppearanceBlockModel performance4 = new AppearanceBlockModel(
-                -1, 0, "", getResources().getString(R.string.dip),
-                0, "", "Performance");
-
-        dbHelper.insertAppearanceBlock(performance1);
-        dbHelper.insertAppearanceBlock(performance2);
-        dbHelper.insertAppearanceBlock(performance3);
-        dbHelper.insertAppearanceBlock(performance4);
-
-
-//        User section ID{17 - 20};
-
-        AppearanceBlockModel username = new AppearanceBlockModel(
-                -1, R.drawable.ic_person, "", "Username",
-                0, "", "User");
-        AppearanceBlockModel email = new AppearanceBlockModel(
-                -1, R.drawable.ic_email, "", "E-mail",
-                0, "", "User");
-        AppearanceBlockModel password = new AppearanceBlockModel(
-                -1, R.drawable.ic_lock, "", "Password",
-                0, "", "User");
-
-        dbHelper.insertAppearanceBlock(username);
-        dbHelper.insertAppearanceBlock(email);
-        dbHelper.insertAppearanceBlock(password);
-
-    }
-
     private void fragmentObserver() {
         sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
         sharedViewModel.getSharedInt().observe(this, item -> regListInt.add(item));
@@ -591,4 +447,5 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
     public void checkCondition(boolean param) {
         isCorrect = param;
     }
+
 }

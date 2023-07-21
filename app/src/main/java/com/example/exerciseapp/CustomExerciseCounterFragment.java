@@ -16,7 +16,6 @@ import com.example.exerciseapp.mInterfaces.INewExercise;
 
 public class CustomExerciseCounterFragment extends Fragment implements View.OnClickListener {
 
-    //    Initializing widgets;
     private Button plusSetsBtn, minusSetsBtn;
     private TextView showSetsVolume;
 
@@ -26,7 +25,6 @@ public class CustomExerciseCounterFragment extends Fragment implements View.OnCl
     private Button plusRestVolumeBtn, minusRestVolumeBtn;
     private TextView showRestVolume;
 
-    //    Initializing variables;
 
     private int numberOfSets = 1;
     private int trainingVolume;

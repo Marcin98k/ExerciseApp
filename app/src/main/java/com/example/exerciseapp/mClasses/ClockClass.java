@@ -14,15 +14,10 @@ import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 
 public class ClockClass {
 
-    //    Initializing context;
     private Context mContext;
 
-
-    //    Initializing interface;
     private FragmentSupportListener fragmentSupportListener;
 
-
-    //    Initializing widgets;
     private ProgressBar progressBar;
     private TextView showTimeTV;
     private Button addTimeBtn;
@@ -31,7 +26,6 @@ public class ClockClass {
     private Button minusBtn;
 
 
-    //    Initializing variables;
     private int second = 0;
     private int minute = 0, hour = 0;
     private int transit = 0;

@@ -6,32 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".WelcomeActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/aWelcome_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/example_text" />
-
     <FrameLayout
         android:id="@+id/aWelcome_FL_mainContainer"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/aWelcome_toolbar" />
-
-
-    <FrameLayout
-        android:id="@+id/act_main_exercise"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/aWelcome_button"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/aWelcome_FL_mainContainer" />
-    <LinearLayout
+        app:layout_constraintTop_toTopOf="parent" />
+
+   <LinearLayout
         android:id="@+id/aWelcome_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

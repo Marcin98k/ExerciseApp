@@ -1,5 +1,6 @@
 package com.example.exerciseapp;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -24,6 +25,7 @@ import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.StringModel;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 import com.example.exerciseapp.mModels.UserInformationModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,6 +97,30 @@ public class SettingsActivity extends AppCompatActivity implements
             ft.add(R.id.aSettings_mainContainer, linearListFragment, tagMainList);
             ft.commit();
         }
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.act_settings_bottom_nav_bar);
+        bottomNavigationView.setSelectedItemId(R.id.bottom_nav_bar_settings);
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+
+            switch (item.getItemId()) {
+                case (R.id.bottom_nav_bar_main):
+                    startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+                    finish();
+                    return true;
+                case (R.id.bottom_nav_bar_workout):
+                    startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
+                    finish();
+                    return true;
+                case (R.id.bottom_nav_bar_profile):
+                    startActivity(new Intent(getApplicationContext(), UserActivity.class));
+                    finish();
+                    return true;
+                case (R.id.bottom_nav_bar_settings):
+                    return true;
+            }
+            return false;
+        });
     }
 
 //    !@!@! TO-DO-JAVA overloading method FragmentActionSample;

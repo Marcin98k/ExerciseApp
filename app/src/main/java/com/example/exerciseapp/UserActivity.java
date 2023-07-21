@@ -7,10 +7,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -26,6 +28,8 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -78,6 +82,30 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
         currentDate = Integer.parseInt(current);
         selectedDateToDB = currentDate;
         selectDate.setText(String.valueOf(showDate));
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.act_user_bottom_nav_bar);
+        bottomNavigationView.setSelectedItemId(R.id.bottom_nav_bar_profile);
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+
+            switch (item.getItemId()) {
+                case (R.id.bottom_nav_bar_main):
+                    startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+                    finish();
+                    return true;
+                case (R.id.bottom_nav_bar_workout):
+                    startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
+                    finish();
+                    return true;
+                case (R.id.bottom_nav_bar_profile):
+                    return true;
+                case (R.id.bottom_nav_bar_settings):
+                    startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                    finish();
+                    return true;
+            }
+            return false;
+        });
 
         initDatePickerDialog(selectDate);
         fillDB();
