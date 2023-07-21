@@ -27,6 +27,8 @@ import java.util.List;
 public class LibraryActivity extends AppCompatActivity implements UpdateIntegersDB,
         ISingleIntegerValue, INewExercise {
 
+    private BottomNavigationView bottomNavigationView;
+
 
     private long id;
     private long workoutId;
@@ -44,7 +46,6 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
     public static final String CUSTOM_EXERCISE_CREATOR_TAG = "CustomExerciseCreatorTag";
 
 
-
     private ContentBD contentBD;
     private CustomExerciseCreatorFragment creatorExerciseFragment;
     private CreateExerciseClass createExerciseClass;
@@ -55,6 +56,7 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
         setContentView(R.layout.activity_library);
         contentBD = new ContentBD(this);
         initView(savedInstanceState);
+        initMenu();
 
         createExerciseClass = new ViewModelProvider(this).get(CreateExerciseClass.class);
 
@@ -81,12 +83,11 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
                     String.valueOf(workoutTemp.get(i).getKcal()), R.drawable.ic_hexagon);
             workoutList.add(model);
         }
+    }
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.act_library_bottom_nav_bar);
+    private void initMenu() {
         bottomNavigationView.setSelectedItemId(R.id.bottom_nav_bar_workout);
-
         bottomNavigationView.setOnItemSelectedListener(item -> {
-
             switch (item.getItemId()) {
                 case (R.id.bottom_nav_bar_main):
                     startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
@@ -123,12 +124,12 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
 
     private void initView(Bundle savedInstanceState) {
 
-        if (findViewById(R.id.act_library_container) != null) {
+        bottomNavigationView = findViewById(R.id.act_library_bottom_nav_bar);
 
+        if (findViewById(R.id.act_library_container) != null) {
             if (savedInstanceState != null) {
                 return;
             }
-
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.setReorderingAllowed(true);
             ft.addToBackStack(LIBRARY_BUTTON_TAG);
@@ -155,8 +156,8 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
                     intent.putExtra("id", (long) workoutId);
                     intent.putExtra("type", (byte) -1);
                 } else {
-                    intent.putExtra("exerciseId", (long) firstValue);
-                    intent.putExtra("exerciseType", (byte) secondValue);
+                    intent.putExtra("id", (long) firstValue);
+                    intent.putExtra("type", (byte) secondValue);
                 }
                 startActivity(intent);
                 break;

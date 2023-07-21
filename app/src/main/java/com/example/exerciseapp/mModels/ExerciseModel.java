@@ -81,6 +81,11 @@ public class ExerciseModel implements Parcelable {
         }
     };
 
+    public ExerciseModel(int id, int type) {
+        this.id = id;
+        this.type = type;
+    }
+
     public int getId() {
         return id;
     }
