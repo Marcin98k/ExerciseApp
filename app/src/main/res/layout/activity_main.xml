@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -15,34 +15,39 @@
         <FrameLayout
             android:id="@+id/act_main_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/aMain_welcome"
+            style="@style/MyStandardButtonGuidelines"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="WelcomeActivity" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/aMain_settings"
+            style="@style/MyStandardButtonGuidelines"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="SettingsActivity" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/aMain_library"
+            style="@style/MyStandardButtonGuidelines"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="LibraryActivity" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/aMain_user"
+            style="@style/MyStandardButtonGuidelines"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="UserActivity" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/aMain_exercise"
+            style="@style/MyStandardButtonGuidelines"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="ExerciseActivity" />
@@ -50,10 +55,5 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/act_main_bottom_nav_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        app:itemIconSize="30dp"
-        app:menu="@menu/bottom_navigation_bar" />
+        style="@style/MyMenuGuidelines" />
 </RelativeLayout>

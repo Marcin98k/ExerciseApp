@@ -51,22 +51,23 @@ public class SettingsActivity extends AppCompatActivity implements
     private final String levelName = "userLevel";
     private final String genderName = "userGender";
 
-    LinearListFragment linearListFragment;
-    SharedViewModel sharedViewModel;
-    List<Integer> tab;
-    SelectHeightFragment selectHeightFragment;
-    SelectWeightFragment selectWeightFragment;
-    ProfileFragment profileFragment;
+    private LinearListFragment linearListFragment;
+    private SharedViewModel sharedViewModel;
+    private List<Integer> tab;
+    private SelectHeightFragment selectHeightFragment;
+    private SelectWeightFragment selectWeightFragment;
+    private ProfileFragment profileFragment;
     private final int USER_ID = 1;
     private Bundle bundle;
     private DBHelper dbHelper;
-    private final HashMap<String, String> stringHashMap = new HashMap<>();
-    private final HashMap<String, Integer> integerHashMap = new HashMap<>();
+    private HashMap<String, String> stringHashMap = new HashMap<>();
+    private HashMap<String, Integer> integerHashMap = new HashMap<>();
     private FragmentManager fragmentManager;
     private int unitsID;
     private int numbersID;
-    private final String tagHeight = "tagHeight";
-    private final String tagWeight = "tagWeight";
+
+    private static final String HEIGHT_TAG = "tagHeight";
+    private static final String WEIGHT_TAG = "tagWeight";
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
@@ -103,21 +104,27 @@ public class SettingsActivity extends AppCompatActivity implements
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
 
+            boolean executeFinally = true;
+            try {
             switch (item.getItemId()) {
                 case (R.id.bottom_nav_bar_main):
                     startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
-                    finish();
                     return true;
                 case (R.id.bottom_nav_bar_workout):
                     startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
-                    finish();
                     return true;
                 case (R.id.bottom_nav_bar_profile):
                     startActivity(new Intent(getApplicationContext(), UserActivity.class));
-                    finish();
                     return true;
                 case (R.id.bottom_nav_bar_settings):
+                    executeFinally = false;
                     return true;
+            }
+            } finally {
+                if (executeFinally) {
+                    overridePendingTransition(R.anim.slide_to_right, R.anim.slide_from_right);
+                    finish();
+                }
             }
             return false;
         });
@@ -638,16 +645,16 @@ public class SettingsActivity extends AppCompatActivity implements
                     FragmentTransaction ft = fm.beginTransaction();
                     selectHeightFragment = new SelectHeightFragment();
                     ft.setReorderingAllowed(true);
-                    ft.addToBackStack(tagHeight);
-                    ft.replace(R.id.aSettings_mainContainer, selectHeightFragment, tagHeight);
+                    ft.addToBackStack(HEIGHT_TAG);
+                    ft.replace(R.id.aSettings_mainContainer, selectHeightFragment, HEIGHT_TAG);
                     ft.commit();
                 } else if (firstValue == 1) {
                     FragmentManager fm = getSupportFragmentManager();
                     FragmentTransaction ft = fm.beginTransaction();
                     selectWeightFragment = new SelectWeightFragment();
                     ft.setReorderingAllowed(true);
-                    ft.addToBackStack(tagWeight);
-                    ft.replace(R.id.aSettings_mainContainer, selectWeightFragment, tagWeight);
+                    ft.addToBackStack(WEIGHT_TAG);
+                    ft.replace(R.id.aSettings_mainContainer, selectWeightFragment, WEIGHT_TAG);
                     ft.commit();
                 }
                 refreshFragment(tagProfileLists, FragmentAction.DETATT);

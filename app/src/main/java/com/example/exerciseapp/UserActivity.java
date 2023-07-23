@@ -91,16 +91,19 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
             switch (item.getItemId()) {
                 case (R.id.bottom_nav_bar_main):
                     startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+                    overridePendingTransition(R.anim.slide_to_right, R.anim.slide_from_right);
                     finish();
                     return true;
                 case (R.id.bottom_nav_bar_workout):
                     startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
+                    overridePendingTransition(R.anim.slide_to_right, R.anim.slide_from_right);
                     finish();
                     return true;
                 case (R.id.bottom_nav_bar_profile):
                     return true;
                 case (R.id.bottom_nav_bar_settings):
                     startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                    overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_left);
                     finish();
                     return true;
             }

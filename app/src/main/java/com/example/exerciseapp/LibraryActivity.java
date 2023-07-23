@@ -91,16 +91,19 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
             switch (item.getItemId()) {
                 case (R.id.bottom_nav_bar_main):
                     startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+                    overridePendingTransition(R.anim.slide_to_right, R.anim.slide_from_right);
                     finish();
                     return true;
                 case (R.id.bottom_nav_bar_workout):
                     return true;
                 case (R.id.bottom_nav_bar_profile):
                     startActivity(new Intent(getApplicationContext(), UserActivity.class));
+                    overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_left);
                     finish();
                     return true;
                 case (R.id.bottom_nav_bar_settings):
                     startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                    overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_left);
                     finish();
                     return true;
             }

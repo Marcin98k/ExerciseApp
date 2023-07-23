@@ -122,21 +122,28 @@ public class MainActivity extends AppCompatActivity {
     private void initMenu() {
         bottomNavigationView.setSelectedItemId(R.id.bottom_nav_bar_main);
         bottomNavigationView.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case (R.id.bottom_nav_bar_main):
-                    return true;
-                case (R.id.bottom_nav_bar_workout):
-                    startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
+
+            boolean executeFinally = true;
+            try {
+                switch (item.getItemId()) {
+                    case (R.id.bottom_nav_bar_main):
+                        return true;
+                    case (R.id.bottom_nav_bar_workout):
+                        startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
+                        return true;
+                    case (R.id.bottom_nav_bar_profile):
+                        startActivity(new Intent(getApplicationContext(), UserActivity.class));
+                        return true;
+                    case (R.id.bottom_nav_bar_settings):
+                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                        executeFinally = false;
+                        return true;
+                }
+            } finally {
+                if (executeFinally) {
+                    overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_left);
                     finish();
-                    return true;
-                case (R.id.bottom_nav_bar_profile):
-                    startActivity(new Intent(getApplicationContext(), UserActivity.class));
-                    finish();
-                    return true;
-                case (R.id.bottom_nav_bar_settings):
-                    startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                    finish();
-                    return true;
+                }
             }
             return false;
         });
