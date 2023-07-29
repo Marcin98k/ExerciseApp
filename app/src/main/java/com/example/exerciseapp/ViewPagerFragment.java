@@ -17,11 +17,6 @@ import java.util.List;
 
 public class ViewPagerFragment extends Fragment {
 
-    private TabLayout tabLayout;
-    private ViewPager2 viewPager2;
-    private ViewPagerAdapter viewPagerAdapter;
-
-
     private String[] fragmentTitles;
     private List<FourElementsModel> firstList;
     private List<FourElementsModel> secondList;
@@ -50,8 +45,9 @@ public class ViewPagerFragment extends Fragment {
     }
 
     private void initView(View v) {
-        tabLayout = v.findViewById(R.id.act_library_tab_layout);
-        viewPager2 = v.findViewById(R.id.act_library_view_pager);
+        TabLayout tabLayout = v.findViewById(R.id.act_library_tab_layout);
+        ViewPager2 viewPager2 = v.findViewById(R.id.act_library_view_pager);
+        ViewPagerAdapter viewPagerAdapter;
         if (firstList != null || secondList != null) {
             viewPagerAdapter = new ViewPagerAdapter(requireActivity(), fragmentTitles.length,
                     firstList, secondList);

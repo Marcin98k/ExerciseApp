@@ -13,10 +13,10 @@ import android.widget.RadioButton;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.exerciseapp.mInterfaces.ISummary;
+import com.example.exerciseapp.R;
+import com.example.exerciseapp.mEnums.ListType;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
-import com.example.exerciseapp.R;
 
 import java.util.List;
 
@@ -27,9 +27,9 @@ public class RadioButtonListAdapter extends RecyclerView.Adapter<RadioButtonList
     private List<ThreeElementLinearListModel> list;
 
     private String listName;
-    int selectedPosition = -1;
-    int oldPosition;
-    int currentPos;
+    private int selectedPosition = -1;
+    private int oldPosition;
+    private int currentPos;
 
     public RadioButtonListAdapter(Context context, String listName, List<ThreeElementLinearListModel> list
             , UpdateIntegersDB updateIntegersDB) {
@@ -69,11 +69,10 @@ public class RadioButtonListAdapter extends RecyclerView.Adapter<RadioButtonList
 
         holder.radioButton.setText(list.get(position).getName());
         holder.radioButton.setChecked(position == currentPos);
-
         if (holder.radioButton.isChecked()) {
-            holder.radioButton.setBackgroundColor(Color.BLUE);
+            holder.radioButton.setBackgroundResource(R.drawable.selected_radio_button);
         } else {
-            holder.radioButton.setBackgroundColor(Color.TRANSPARENT);
+            holder.radioButton.setBackgroundResource(R.drawable.unselected_radio_button);
         }
         holder.radioButton.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {

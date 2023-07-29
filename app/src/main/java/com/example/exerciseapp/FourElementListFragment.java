@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.exerciseapp.mAdapters.FourElementLinearListAdapter;
+import com.example.exerciseapp.mEnums.ListType;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mInterfaces.UpdateStringsDB;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
@@ -31,12 +32,13 @@ public class FourElementListFragment extends Fragment {
     private String listName;
 
 
-    UpdateIntegersDB updateIntegersDB;
-    UpdateIntegersDB updateIntegersDB1;
+    private UpdateIntegersDB updateIntegersDB;
+    private UpdateIntegersDB updateIntegersDB1;
 
-    UpdateStringsDB updateStrings;
-    UpdateStringsDB updateStrings1;
+    private UpdateStringsDB updateStrings;
+    private UpdateStringsDB updateStrings1;
 
+    private ListType listType;
 
     public FourElementListFragment() {
         // Required empty public constructor
@@ -48,6 +50,7 @@ public class FourElementListFragment extends Fragment {
         if(getArguments() != null) {
             list = getArguments().getParcelableArrayList("currentList");
             listName = getArguments().getString("listName");
+//            listType = getArguments().get
         }
     }
 
@@ -58,7 +61,8 @@ public class FourElementListFragment extends Fragment {
         View mView = inflater.inflate(R.layout.fragment_four_element_list, container, false);
         initView(mView);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(),
+                RecyclerView.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
 
         updateStrings = new UpdateStringsDB() {
@@ -75,7 +79,8 @@ public class FourElementListFragment extends Fragment {
                 updateIntegersDB1.values(listName, firstValue, secondValue, thirdValue);
             }
         };
-        adapter = new FourElementLinearListAdapter(requireContext(), list, listName, updateStrings);
+        adapter = new FourElementLinearListAdapter(requireContext(), list, listName,
+                updateStrings, listType);
 
         recyclerView.setAdapter(adapter);
 

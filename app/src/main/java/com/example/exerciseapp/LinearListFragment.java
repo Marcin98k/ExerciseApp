@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exerciseapp.mAdapters.FourElementLinearListAdapter;
 import com.example.exerciseapp.mAdapters.ThreeElementLinearListAdapter;
+import com.example.exerciseapp.mEnums.ListType;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
@@ -29,17 +31,20 @@ import java.util.List;
 public class LinearListFragment extends Fragment {
 
     private ListView listView;
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
+
     private ListAdapter adapter;
     private FourElementLinearListAdapter adapter1;
 
-    private List<ThreeElementLinearListModel> ThreeElementList = new ArrayList<>();
-    private List<FourElementLinearListModel> FourElementList = new ArrayList<>();
-    private List<FourElementLinearListModel> accountList = new ArrayList<>();
 
+    private List<ThreeElementLinearListModel> ThreeElementList = new ArrayList<>();
+    private List<FourElementLinearListModel> fourElementList;
+    private List<FourElementLinearListModel> accountList = new ArrayList<>();
     private int currentlyPosition;
 
-    UpdateIntegersDB updateIntegersDB;
+
+    private UpdateIntegersDB updateIntegersDB;
+    private ListType listType;
 
     public LinearListFragment() {
         // Required empty public constructor
@@ -49,7 +54,7 @@ public class LinearListFragment extends Fragment {
         void item(String list, int position, int currentlyPosition);
     }
 
-    SelectedItem selectedItem;
+    private SelectedItem selectedItem;
 
     private String listName;
 
@@ -61,7 +66,7 @@ public class LinearListFragment extends Fragment {
             if (listName.equals("tagTELL_main")) {
                 ThreeElementList = getArguments().getParcelableArrayList("currentList");
             } else if (listName.equals("tagTELL_units")) {
-                FourElementList = getArguments().getParcelableArrayList("currentList");
+                fourElementList = getArguments().getParcelableArrayList("currentList");
             } else if (listName.equals("tagTELL_account")) {
                 accountList = getArguments().getParcelableArrayList("currentList");
             }
@@ -90,17 +95,13 @@ public class LinearListFragment extends Fragment {
         }
         if (listName.equals("tagTELL_account")) {
             adapter1 = new FourElementLinearListAdapter(requireContext(), accountList,
-                    "tagTELL_account", updateIntegersDB);
+                    "tagTELL_account", updateIntegersDB, listType);
             Log.i(TAG, "onCreateView: - > tagTELL_account");
             recyclerView.setAdapter(adapter1);
         }
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                selectedItem.item(listName, i, currentlyPosition);
-            }
-        });
+        listView.setOnItemClickListener((adapterView, view, i, l) ->
+                selectedItem.item(listName, i, currentlyPosition));
         return mView;
     }
 
@@ -111,7 +112,7 @@ public class LinearListFragment extends Fragment {
             selectedItem = (SelectedItem) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
-                    + " must implements Selected Item");
+                    + " must implements SelectedItem");
         }
     }
 }

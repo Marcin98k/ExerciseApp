@@ -13,7 +13,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <android.widget.Button
         android:id="@+id/frag_library_button_first_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -22,28 +22,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.33" />
+        app:layout_constraintWidth_percent="0.45"
+        style="@style/MyStandardButtonGuidelines"/>
 
-    <Button
+    <android.widget.Button
         android:id="@+id/frag_library_button_second_btn"
         android:layout_width="0dp"
-        android:text="Empty"
+        android:text="@string/empty"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/view"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.33" />
+        app:layout_constraintWidth_percent="0.45"
+        style="@style/MyStandardButtonGuidelinesUnActive"/>
 
-    <Button
+    <android.widget.Button
         android:id="@+id/frag_library_button_third_btn"
         android:layout_width="0dp"
-        android:text="Create exercsie"
+        android:text="Create exercise"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/frag_library_button_first_btn"
         app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.83" />
+        app:layout_constraintWidth_percent="0.95"
+        style="@style/MyStandardButtonGuidelines"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

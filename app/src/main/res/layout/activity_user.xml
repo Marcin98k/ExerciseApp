@@ -3,18 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".UserActivity">
+
+    <TextView
+        android:id="@+id/act_user_title"
+        style="@style/MyActivityTitles"
+        android:layout_alignParentTop="true"
+        android:text="@string/profile" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
+        android:layout_above="@+id/act_user_bottom_nav_bar"
+        android:layout_below="@+id/act_user_title">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/light_blue"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <FrameLayout
@@ -25,7 +30,7 @@
             <FrameLayout
                 android:id="@+id/act_user_calendar_details"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/act_line_chart_weight"
@@ -45,13 +50,16 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.4"
                     android:gravity="center"
-                    android:text="Date" />
+                    android:textSize="18sp"
+                    android:text="@string/date" />
 
-                <Button
+                <android.widget.Button
                     android:id="@+id/act_user_edit_text_date"
+                    style="@style/MyStandardButtonGuidelines"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.6" />
+                    android:layout_weight="0.6"
+                    android:text="@string/nan" />
             </LinearLayout>
 
             <LinearLayout
@@ -65,27 +73,32 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.4"
+                    android:textSize="18sp"
                     android:gravity="center"
-                    android:text="kg" />
+                    android:text="@string/kg" />
 
                 <EditText
                     android:id="@+id/act_user_edit_text_user_weight"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.6"
-                    android:hint="Weight"
+                    android:hint="@string/weight"
                     android:padding="15dp"
-                    android:textAlignment="textEnd" />
+                    android:layout_margin="15dp"
+                    android:textAlignment="textEnd"
+                    android:autofillHints="0" />
             </LinearLayout>
 
-            <Button
+            <android.widget.Button
                 android:id="@+id/act_user_btn_update_weight"
+                style="@style/MyStandardButtonGuidelines"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Update" />
+                android:text="@string/update" />
         </LinearLayout>
     </ScrollView>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/act_user_bottom_nav_bar"
-        style="@style/MyMenuGuidelines" />
+        style="@style/MyMenuGuidelines"/>
 </RelativeLayout>

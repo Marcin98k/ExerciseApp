@@ -3,7 +3,8 @@
     android:id="@+id/sCustomRadioButton_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textAlignment="center">
-
-    <!--    android:button="@color/transparent"-->
+    android:textAlignment="center"
+    android:background="@null"
+    android:button="@color/transparent"
+    android:layout_marginVertical="10dp">
 </RadioButton>

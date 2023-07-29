@@ -35,9 +35,8 @@ import java.util.Objects;
 public class SettingsActivity extends AppCompatActivity implements
         LinearListFragment.SelectedItem, UpdateIntegersDB, UpdateStringsDB {
 
-    private static final int PERMISSION_REQUEST_CODE = 1;
-
     private static final String TAG = "SettingsActivity";
+
     //    LinearListFragment == TELL
     private final String tagMainList = "tagTELL_main";
     private final String tagLanguageList = "tagTELL_language";
@@ -83,7 +82,7 @@ public class SettingsActivity extends AppCompatActivity implements
 
         fragmentManager = getSupportFragmentManager();
 
-        if (findViewById(R.id.aSettings_mainContainer) != null) {
+        if (findViewById(R.id.act_settings_mainContainer) != null) {
 
             if (savedInstanceState != null) {
                 return;
@@ -95,7 +94,7 @@ public class SettingsActivity extends AppCompatActivity implements
             bundle.putString("listName", tagMainList);
             linearListFragment.setArguments(bundle);
             ft.addToBackStack(tagMainList);
-            ft.add(R.id.aSettings_mainContainer, linearListFragment, tagMainList);
+            ft.add(R.id.act_settings_mainContainer, linearListFragment, tagMainList);
             ft.commit();
         }
 
@@ -147,10 +146,10 @@ public class SettingsActivity extends AppCompatActivity implements
         }
         switch (action) {
             case ADD:
-                ft.add(R.id.aSettings_mainContainer, fragment, tag);
+                ft.add(R.id.act_settings_mainContainer, fragment, tag);
                 break;
             case REPLACE:
-                ft.replace(R.id.aSettings_mainContainer, fragment, tag);
+                ft.replace(R.id.act_settings_mainContainer, fragment, tag);
                 break;
             case REMOVE:
                 ft.remove(fragment);
@@ -171,10 +170,10 @@ public class SettingsActivity extends AppCompatActivity implements
         }
         switch (action) {
             case ADD:
-                ft.add(R.id.aSettings_mainContainer, fragment, tag);
+                ft.add(R.id.act_settings_mainContainer, fragment, tag);
                 break;
             case REPLACE:
-                ft.replace(R.id.aSettings_mainContainer, fragment, tag);
+                ft.replace(R.id.act_settings_mainContainer, fragment, tag);
                 break;
             case REMOVE:
                 ft.remove(fragment);
@@ -219,7 +218,9 @@ public class SettingsActivity extends AppCompatActivity implements
             switch (position) {
                 case 0:
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ProfileFragment profileFragment = new ProfileFragment();
+                    if (profileFragment == null) {
+                        profileFragment = new ProfileFragment();
+                    }
                     bundle = new Bundle();
                     bundle.putParcelableArrayList(informationName, (ArrayList<? extends Parcelable>) userUnit());
                     bundle.putParcelableArrayList(goalsName, (ArrayList<? extends Parcelable>) userGoals());
@@ -229,7 +230,7 @@ public class SettingsActivity extends AppCompatActivity implements
                     profileFragment.setArguments(bundle);
                     ft.setReorderingAllowed(true);
                     ft.addToBackStack(tagProfileLists);
-                    ft.replace(R.id.aSettings_mainContainer, profileFragment, tagProfileLists);
+                    ft.replace(R.id.act_settings_mainContainer, profileFragment, tagProfileLists);
                     ft.commit();
                     break;
                 case 1:
@@ -636,6 +637,7 @@ public class SettingsActivity extends AppCompatActivity implements
     public void values(String listName, int firstValue,
                        int secondValue, int thirdValue) {
 
+        Log.i(TAG, "values: (main): " + listName);
         switch (listName) {
             case informationName:
                 unitsID = secondValue;
@@ -646,7 +648,7 @@ public class SettingsActivity extends AppCompatActivity implements
                     selectHeightFragment = new SelectHeightFragment();
                     ft.setReorderingAllowed(true);
                     ft.addToBackStack(HEIGHT_TAG);
-                    ft.replace(R.id.aSettings_mainContainer, selectHeightFragment, HEIGHT_TAG);
+                    ft.replace(R.id.act_settings_mainContainer, selectHeightFragment, HEIGHT_TAG);
                     ft.commit();
                 } else if (firstValue == 1) {
                     FragmentManager fm = getSupportFragmentManager();
@@ -654,10 +656,12 @@ public class SettingsActivity extends AppCompatActivity implements
                     selectWeightFragment = new SelectWeightFragment();
                     ft.setReorderingAllowed(true);
                     ft.addToBackStack(WEIGHT_TAG);
-                    ft.replace(R.id.aSettings_mainContainer, selectWeightFragment, WEIGHT_TAG);
+                    ft.replace(R.id.act_settings_mainContainer, selectWeightFragment, WEIGHT_TAG);
                     ft.commit();
                 }
-                refreshFragment(tagProfileLists, FragmentAction.DETATT);
+                if (!fragmentManager.findFragmentByTag(tagProfileLists).isAdded()) {
+                    refreshFragment(tagProfileLists, FragmentAction.DETATT);
+                }
                 break;
             case performanceName:
                 dbHelper.updatePerformance(firstValue, secondValue);

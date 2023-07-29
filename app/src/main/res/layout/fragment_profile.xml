@@ -2,55 +2,75 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".ProfileFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
         android:orientation="vertical">
 
-        <TextView
+        <android.widget.Button
+            android:id="@+id/frag_profile_toggle_button_user_gender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="User info"
-            android:textSize="24sp"/>
+            android:text="User gender"
+            android:textSize="18sp"
+            style="@style/MyRollUpButtonAppearance"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fProfile_userGender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <android.widget.Button
+            android:id="@+id/frag_profile_toggle_button_user_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="User info"
+            android:textSize="18sp"
+            style="@style/MyRollUpButtonAppearance"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fProfile_userInformation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <TextView
+        <android.widget.Button
+            android:id="@+id/frag_profile_toggle_button_user_goals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="User goals"
-            android:textSize="24sp"/>
+            android:textSize="18sp"
+            style="@style/MyRollUpButtonAppearance"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fProfile_userGoals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <TextView
+        <android.widget.Button
+            android:id="@+id/frag_profile_toggle_button_user_performance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="User perform"
-            android:textSize="24sp"/>
+            android:text="User performance"
+            android:textSize="18sp"
+            style="@style/MyRollUpButtonAppearance"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fProfile_userPerformance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <TextView
+        <android.widget.Button
+            android:id="@+id/frag_profile_toggle_button_user_level"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="User level"
-            android:textSize="24sp"/>
+            android:textSize="18sp"
+            style="@style/MyRollUpButtonAppearance"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fProfile_userLevel"
             android:layout_width="match_parent"

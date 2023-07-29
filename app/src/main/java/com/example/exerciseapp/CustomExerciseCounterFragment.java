@@ -18,10 +18,8 @@ public class CustomExerciseCounterFragment extends Fragment implements View.OnCl
 
     private Button plusSetsBtn, minusSetsBtn;
     private TextView showSetsVolume;
-
     private Button plusExerciseVolumeBtn, minusExerciseVolumeBtn;
     private TextView showExerciseVolume;
-
     private Button plusRestVolumeBtn, minusRestVolumeBtn;
     private TextView showRestVolume;
 
@@ -30,17 +28,17 @@ public class CustomExerciseCounterFragment extends Fragment implements View.OnCl
     private int trainingVolume;
     private int restVolume;
 
-    //    Initializing constant;
+
     private static final int INCREASE_TIME_AT = 5;
 
-    //    Initializing enum;
+
     private ExerciseType exerciseType;
 
-    //    Initializing instance;
+
     private ClockClass clockClassExerciseVolume;
     private ClockClass clockClassRestVolume;
 
-    //    Initializing interface;
+
     private INewExercise iNewExercise;
 
 
@@ -50,6 +48,24 @@ public class CustomExerciseCounterFragment extends Fragment implements View.OnCl
 
     public CustomExerciseCounterFragment(ExerciseType exerciseType) {
         this.exerciseType = exerciseType;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            iNewExercise = (INewExercise) context;
+        } catch (NullPointerException e) {
+            throw new NullPointerException(context.toString() +
+                    " must implement INewExercise");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        iNewExercise.createExercise("selectExercise", exerciseType,
+                numberOfSets, trainingVolume, restVolume);
     }
 
     @Override
@@ -150,23 +166,5 @@ public class CustomExerciseCounterFragment extends Fragment implements View.OnCl
                         numberOfSets, trainingVolume, restVolume);
             }
         }
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            iNewExercise = (INewExercise) context;
-        } catch (NullPointerException e) {
-            throw new NullPointerException(context.toString() +
-                    " must implement INewExercise");
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        iNewExercise.createExercise("selectExercise", exerciseType,
-                numberOfSets, trainingVolume, restVolume);
     }
 }

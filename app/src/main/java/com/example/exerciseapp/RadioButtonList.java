@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exerciseapp.mAdapters.RadioButtonListAdapter;
+import com.example.exerciseapp.mEnums.ListType;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 
@@ -27,8 +28,8 @@ public class RadioButtonList extends Fragment {
 
     private List<ThreeElementLinearListModel> list = new ArrayList<>();
 
-    UpdateIntegersDB updateIntegersDB;
-    UpdateIntegersDB updateIntegersDB1;
+    private UpdateIntegersDB updateIntegersDB;
+    private UpdateIntegersDB updateIntegersDB1;
 
     public RadioButtonList() {
         // Required empty public constructor

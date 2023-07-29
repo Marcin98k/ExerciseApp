@@ -17,35 +17,35 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.exerciseapp.R;
+import com.example.exerciseapp.mEnums.ListType;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mInterfaces.UpdateStringsDB;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
-import com.example.exerciseapp.R;
 
 import java.util.List;
 
 public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourElementLinearListAdapter.ViewHolder> {
 
-    Context mContext;
+    private Context mContext;
 
-    UpdateIntegersDB valueDB;
-    UpdateStringsDB updateStringsDB;
+
+    private UpdateIntegersDB valueDB;
+    private UpdateStringsDB updateStringsDB;
 
     private List<FourElementLinearListModel> list;
-
     private String listName;
-
     private int oldPosition = 0;
+    private ListType listType;
 
-    public FourElementLinearListAdapter() {
-
-    }
     public FourElementLinearListAdapter(Context context, List<FourElementLinearListModel> list,
-                                        String listName, UpdateIntegersDB valueDB) {
+                                        String listName, UpdateIntegersDB valueDB,
+                                        ListType listType) {
         this.mContext = context;
         this.list = list;
         this.listName = listName;
         this.valueDB = valueDB;
+        this.listType = listType;
 
         if (listName.equals("userGoals")) {
             for (int i = 0; i < list.size(); i++) {
@@ -55,18 +55,22 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
             }
         }
     }
+
     public FourElementLinearListAdapter(Context context, List<FourElementLinearListModel> list,
-                                        String listName, UpdateStringsDB updateStringsDB) {
+                                        String listName, UpdateStringsDB updateStringsDB,
+                                        ListType listType) {
         this.mContext = context;
         this.list = list;
         this.listName = listName;
         this.updateStringsDB = updateStringsDB;
+        this.listType = listType;
 
         if (this.listName.equals("tagTELL_account")) {
             Log.e(TAG, "FourElementLinearListAdapter: "
                     + list.toString());
         }
     }
+
 
     @NonNull
     @Override
@@ -89,15 +93,24 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
                     alert.setTitle(list.get(viewHolder.getAdapterPosition()).getName());
                     final View customLayout = LayoutInflater.from(mContext).inflate(R.layout.alert_window, parent, false);
                     alert.setView(customLayout);
-                    alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    alert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             EditText editText = customLayout.findViewById(R.id.sAlertWindow_editText);
-                            int value = Integer.parseInt(editText.getText().toString());
-                            Log.i(TAG, "onClick: " + value);
+                            if (!editText.getText().toString().equals("")) {
+                                int value = Integer.parseInt(editText.getText().toString());
+                                Log.i(TAG, "onClick(Dialog): " + value);
 
-                            valueDB.values(listName, list.get(viewHolder.getAdapterPosition()).getId(),
-                                    value, 0);
+                                if (editText.equals(""))
+                                    valueDB.values(listName, list.get(viewHolder.getAdapterPosition()).getId(),
+                                            value, 0);
+                            }
+                        }
+                    });
+                    alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
                         }
                     });
                     AlertDialog dialog = alert.create();
@@ -106,7 +119,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
                 } else if (listName.equals("userGoals")) {
 
                     int temp;
-                    Log.i(TAG, "onClick: " + viewHolder.getAdapterPosition());
+                    Log.i(TAG, "onClick(userGoals): " + viewHolder.getAdapterPosition());
                     if (list.get(viewHolder.getAdapterPosition()).getFirstValue().equals("0")) {
                         list.get(viewHolder.getAdapterPosition()).setFirstValue("1");
                         temp = 1;
@@ -116,7 +129,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
                     }
 
                     valueDB.values(listName, list.get(viewHolder.getAdapterPosition()).getId(),
-                            temp,0);
+                            temp, 0);
                 } else if (listName.equals("tagTELL_account")) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
                     alert.setTitle(list.get(viewHolder.getAdapterPosition()).getName());
@@ -127,7 +140,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
                         public void onClick(DialogInterface dialogInterface, int i) {
                             EditText editText = customLayout.findViewById(R.id.sAlertWindow_editText);
                             String value = editText.getText().toString();
-                            Log.i(TAG, "onClick: " + value);
+                            Log.i(TAG, "onClick(account): " + value);
 
                             updateStringsDB.strValues(listName, viewHolder.getAdapterPosition(),
                                     list.get(viewHolder.getAdapterPosition()).getId(),
@@ -136,7 +149,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
                     });
                     AlertDialog dialog = alert.create();
                     dialog.show();
-                    } else {
+                } else {
                     valueDB.values(listName, oldPosition, pos, 0);
                 }
                 notifyDataSetChanged();
@@ -150,16 +163,25 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
 
         holder.icon.setImageResource(list.get(position).getIcon());
         holder.name.setText(list.get(position).getName());
-        if (list.get(position).getFirstValue().equals("1")) {
-            holder.itemView.setBackgroundColor(Color.BLUE);
-        } else {
-            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+        if (listType == ListType.MULTIPLE_CHOICE_BUTTONS) {
+            Log.i(TAG, "onBindViewHolder(FourElement): Multiple");
+            if (list.get(position).getFirstValue().equals("1")) {
+                holder.icon.setImageResource(R.drawable.ic_check_circle);
+            } else {
+                holder.icon.setImageResource(R.drawable.ic_uncheck_circle);
+            }
+        } else if (listType == ListType.SELECT_BUTTONS) {
+            Log.i(TAG, "onBindViewHolder(FourElement): Select");
+            if (list.get(position).getFirstValue().equals("1")) {
+                holder.itemView.setBackgroundColor(Color.BLUE);
+            } else {
+                holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+            }
         }
         holder.firstValue.setText(list.get(position).getFirstValue());
-        if (listName.equals("userInformation")) {
-            holder.secondValue.setText(list.get(position).getSecondValue());
-        } else {
-            holder.secondValue.setText(" " + list.get(position).getId());
+
+        if (position == getItemCount() - 1) {
+            holder.underline.setVisibility(View.GONE);
         }
     }
 
@@ -173,7 +195,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
         private final ImageView icon;
         private final TextView name;
         private final TextView firstValue;
-        private final TextView secondValue;
+        private final View underline;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -181,7 +203,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
             icon = itemView.findViewById(R.id.sFourElementLinearBlock_icon);
             name = itemView.findViewById(R.id.sFourElementLinearBlock_name);
             firstValue = itemView.findViewById(R.id.sFourElementLinearBlock_firstValue);
-            secondValue = itemView.findViewById(R.id.sFourElementLinearBlock_secondValue);
+            underline = itemView.findViewById(R.id.asset_four_elements_linear_block_underline);
         }
     }
 }
