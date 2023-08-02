@@ -17,7 +17,7 @@
         android:id="@+id/frag_library_button_first_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Lists"
+        android:text="@string/lists"
         app:layout_constraintEnd_toStartOf="@+id/view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +40,7 @@
     <android.widget.Button
         android:id="@+id/frag_library_button_third_btn"
         android:layout_width="0dp"
-        android:text="Create exercise"
+        android:text="@string/create_exercise"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

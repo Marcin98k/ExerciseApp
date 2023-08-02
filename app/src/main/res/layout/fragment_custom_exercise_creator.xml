@@ -10,7 +10,7 @@
         android:id="@+id/frag_custom_exercise_creator_btn_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textOff="Select exercise"
+        android:textOff="@string/select_exercise"
         android:textAllCaps="false" />
 
     <FrameLayout
@@ -22,7 +22,7 @@
         android:id="@+id/frag_custom_exercise_creator_btn_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textOff="Show details"
+        android:textOff="@string/select_details"
         android:textAllCaps="false"/>
 
     <FrameLayout
@@ -31,26 +31,22 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        style="@style/MyTextViewLabelAppearance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Selected exercise name: " />
+        android:text="@string/selected_exercise_name_d" />
 
     <TextView
         android:id="@+id/frag_custom_exercise_creator_exercise_name"
-        style="@style/MyTextViewValueAppearance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
-        style="@style/MyTextViewLabelAppearance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="*Type: " />
+        android:text="@string/type_d" />
 
     <TextView
         android:id="@+id/frag_custom_exercise_creator_exercise_type"
-        style="@style/MyTextViewValueAppearance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -61,80 +57,66 @@
         android:weightSum="1">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:orientation="vertical">
 
             <TextView
-                style="@style/MyTextViewLabelAppearance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="*Sets: " />
+                                android:gravity="center_horizontal"
+                android:text="@string/sets_d" />
 
             <TextView
                 android:id="@+id/frag_custom_exercise_creator_exercise_sets"
-                style="@style/MyTextViewValueAppearance"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"/>
+
+
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_weight="0.5">
 
             <TextView
-                style="@style/MyTextViewLabelAppearance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="*Volume: " />
+                android:text="@string/volume_d" />
 
             <TextView
                 android:id="@+id/frag_custom_exercise_creator_exercise_volume"
-                style="@style/MyTextViewValueAppearance"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"/>
         </LinearLayout>
     </LinearLayout>
-
     <TextView
-        style="@style/MyTextViewLabelAppearance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="*Rest: " />
+        android:text="@string/rest_d" />
 
     <TextView
         android:id="@+id/frag_custom_exercise_creator_exercise_rest"
-        style="@style/MyTextViewValueAppearance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <TextView
-        style="@style/MyTextViewLabelAppearance"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="*Name: " />
 
     <EditText
         android:id="@+id/frag_custom_exercise_creator_custom_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter your exercise name"
-        android:minHeight="50dp"
-        android:padding="10dp"
-        android:textSize="18sp"
-        android:autofillHints="" />
+        android:hint="@string/Enter_a_name_for_the_exercise"/>
 
     <android.widget.Button
         android:id="@+id/frag_custom_exercise_creator_btn_create"
         style="@style/MyStandardButtonGuidelines"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/create" />
+        android:text="Create"/>
 </LinearLayout>

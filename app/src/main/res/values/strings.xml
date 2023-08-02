@@ -39,13 +39,40 @@
     <string name="time">Time</string>
     <string name="repetition">Repetition</string>
     <string name="unknown">Unknown</string>
+
     <string name="settings">Settings</string>
     <string name="profile">Profile</string>
     <string name="update">Update</string>
-    <string name="kg">kg</string>
+    <string name="kg" translatable="false">kg</string>
     <string name="date">Date</string>
-    <string name="nan">NaN</string>
+    <string name="nan" translatable="false">NaN</string>
     <string name="empty">Empty</string>
     <string name="workout">Workout</string>
     <string name="create">Create</string>
+    <string name="language">Language</string>
+    <string name="notification">Notification</string>
+    <string name="account">Account</string>
+    <string name="questions">Questions</string>
+    <string name="future_functions">Future functions</string>
+    <string name="about">About</string>
+    <string name="gender">Gender</string>
+    <string name="dimensions">Dimensions</string>
+    <string name="goals">Goals</string>
+    <string name="performance">Performance</string>
+    <string name="level">Level</string>
+    <string name="lists">Lists</string>
+    <string name="create_exercise">Create exercise</string>
+    <string name="select_exercise">Select exercise</string>
+    <string name="select_details">Select details</string>
+
+<!--    ***_d  d -> dots -->
+    <string name="selected_exercise_name_d">Selected exercise name:</string>
+    <string name="type_d">Type:</string>
+    <string name="sets_d">Set:</string>
+    <string name="volume_d">Volume:</string>
+    <string name="rest_d">Rest:</string>
+    <string name="enter_your_exercise_name">Enter your exercise name</string>
+    <string name="home">Home</string>
+    <string name="Enter_a_name_for_the_exercise">Enter a name for the exercise</string>
+
 </resources>

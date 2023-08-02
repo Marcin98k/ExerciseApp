@@ -35,7 +35,6 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
 
     private static final String TAG = "CustomExerciseCreatorFragment";
     private static final String FRAGMENT_NAME = "Create exercise";
-    private String activityName = "";
 
 
     private ToggleButton selectExercise;
@@ -86,7 +85,7 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
     public void onResume() {
         super.onResume();
         if (iTitleChangeListener != null) {
-            iTitleChangeListener.title(activityName + "/" + FRAGMENT_NAME);
+            iTitleChangeListener.title(FRAGMENT_NAME);
         }
     }
 
@@ -94,16 +93,13 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
     public void onPause() {
         super.onPause();
         if (iTitleChangeListener != null) {
-            iTitleChangeListener.title(activityName);
+            iTitleChangeListener.title("");
         }
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            activityName = getArguments().getString("activityName");
-        }
     }
 
     @Override

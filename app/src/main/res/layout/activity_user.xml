@@ -5,17 +5,34 @@
     android:layout_height="match_parent"
     tools:context=".UserActivity">
 
-    <TextView
-        android:id="@+id/act_user_title"
-        style="@style/MyActivityTitles"
-        android:layout_alignParentTop="true"
-        android:text="@string/profile" />
+    <LinearLayout
+        android:id="@+id/act_user_title_container"
+        style="@style/MyActivityTitlesPartContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/act_user_title_part_one"
+            style="@style/MyActivityTitlesPartOne"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/nan" />
+
+        <TextView
+            android:id="@+id/act_user_title_part_two"
+            style="@style/MyActivityTitlesPartTwo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/act_user_bottom_nav_bar"
-        android:layout_below="@+id/act_user_title">
+        android:layout_below="@+id/act_user_title_container">
 
         <LinearLayout
             android:layout_width="match_parent"

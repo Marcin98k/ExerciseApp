@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.ExerciseApp" parent="Theme.MaterialComponents.NoActionBar">
         <!-- Primary brand color. -->
@@ -27,14 +27,13 @@
         <item name="android:layout_marginBottom">10sp</item>
         <item name="android:typeface">serif</item>
     </style>
-
+    
     <style name="main_Button">
         <item name="textAllCaps">false</item>
         <item name="android:typeface">serif</item>
     </style>
 
-    <style name="myMainContainerInputText"
-        parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="myMainContainerInputText" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="errorEnabled">true</item>
     </style>
 
@@ -48,6 +47,7 @@
         <item name="android:drawablePadding">12dp</item>
         <item name="android:minHeight">50dp</item>
     </style>
+
 
     <style name="MyStandardButtonGuidelines" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/standard_button_shape</item>
@@ -79,15 +79,28 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="MyActivityTitles" parent="TextAppearance.AppCompat">
+    <style name="MyActivityTitlesAppearance" parent="TextAppearance.AppCompat">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minHeight">50dp</item>
+        <item name="android:paddingVertical">15dp</item>
+        <item name="android:typeface">sans</item>
+    </style>
+
+    <style name="MyActivityTitlesPartContainer">
         <item name="android:background">@color/dark_grey</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingHorizontal">15dp</item>
+    </style>
+
+    <style name="MyActivityTitlesPartOne" parent="MyActivityTitlesAppearance">
         <item name="android:gravity">center_vertical</item>
         <item name="android:textSize">24sp</item>
-        <item name="android:padding">15dp</item>
-        <item name="android:typeface">sans</item>
+    </style>
+
+    <style name="MyActivityTitlesPartTwo" parent="MyActivityTitlesAppearance">
+        <item name="android:gravity">bottom|center</item>
+        <item name="android:textSize">22sp</item>
     </style>
 
     <style name="MyTextViewLabelAppearance" parent="TextAppearance.AppCompat">
@@ -110,4 +123,5 @@
         <item name="android:drawableStart">@drawable/ic_double_arrow_down</item>
         <item name="android:drawableEnd">@drawable/ic_double_arrow_down</item>
     </style>
+>>>>>>> Stashed changes
 </resources>

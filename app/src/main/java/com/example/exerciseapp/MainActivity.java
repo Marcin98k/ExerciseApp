@@ -2,6 +2,7 @@ package com.example.exerciseapp;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,12 +10,14 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mClasses.StorageClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mDatabases.DBHelper;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
 import com.example.exerciseapp.mModels.ExerciseModel;
 import com.example.exerciseapp.mModels.IntegerModel;
+import com.example.exerciseapp.mModels.LanguageModel;
 import com.example.exerciseapp.mModels.TaskDateModel;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -34,6 +37,12 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isLogged = true;
     private long userID;
+
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(GlobalClass.initLanguage(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,12 +255,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void insertUnits() {
 
-        ThreeElementLinearListModel lan_pl = new ThreeElementLinearListModel(-1, 0, "Polish", 1);
-        ThreeElementLinearListModel lan_en = new ThreeElementLinearListModel(-1, 0, "English", 0);
-        ThreeElementLinearListModel lan_rus = new ThreeElementLinearListModel(-1, 0, "Russian", 0);
+        LanguageModel lan_pl = new LanguageModel(-1,"Polish", false, "pl", "");
+        LanguageModel lan_en = new LanguageModel(-1, "English", true, "en", "");
         dbHelper.insertLanguage(lan_pl);
         dbHelper.insertLanguage(lan_en);
-        dbHelper.insertLanguage(lan_rus);
+
     }
 
     private void insertUnitsAppearance() {

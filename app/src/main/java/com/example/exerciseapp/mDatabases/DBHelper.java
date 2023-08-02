@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 import com.example.exerciseapp.mEnums.RowNames;
+import com.example.exerciseapp.mModels.LanguageModel;
 import com.example.exerciseapp.mModels.StringModel;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
 import com.example.exerciseapp.mModels.IntegerModel;
@@ -106,6 +107,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String FUTURE_DESCRIPTION = "DESCRIPTION";
 
     private static final String LANGUAGE_TAB = "LANGUAGE";
+    private static final String LANGUAGE_PREFIX = "LANGUAGE_PREFIX";
 
 
     public DBHelper(@Nullable Context context) {
@@ -244,7 +246,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String createLanguageTab = "CREATE TABLE " + LANGUAGE_TAB
                 + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + STRING_VAL + " TEXT, " + INT_VAL + " INTEGER, "
-                + IMG_PATH + " INTEGER);";
+                + LANGUAGE_PREFIX + " TEXT, " + IMG_PATH + " INTEGER);";
         sqLiteDatabase.execSQL(createLanguageTab);
     }
 
@@ -1048,25 +1050,25 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean insertLanguage(ThreeElementLinearListModel threeElementLinearListModel) {
+    public boolean insertLanguage(LanguageModel languageModel) {
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-
-        cv.put(STRING_VAL, threeElementLinearListModel.getName());
-        cv.put(INT_VAL, threeElementLinearListModel.getAction());
-        cv.put(IMG_PATH, threeElementLinearListModel.getIcon());
+        cv.put(STRING_VAL, languageModel.getName());
+        cv.put(INT_VAL, languageModel.getStatus() ? 1 : 0);
+        cv.put(LANGUAGE_PREFIX, languageModel.getPrefix());
+        cv.put(IMG_PATH, languageModel.getImage());
 
         long insert = db.insert(LANGUAGE_TAB, null, cv);
 
         return insert != -1;
     }
 
-    public List<ThreeElementLinearListModel> showLanguage() {
+    public List<LanguageModel> showLanguage() {
 
         SQLiteDatabase db = getReadableDatabase();
-        List<ThreeElementLinearListModel> list = new ArrayList<>();
+        List<LanguageModel> list = new ArrayList<>();
         String search = "SELECT * FROM " + LANGUAGE_TAB;
         Cursor cursor = db.rawQuery(search, null);
 
@@ -1075,11 +1077,12 @@ public class DBHelper extends SQLiteOpenHelper {
             do {
                 int id = cursor.getInt(0);
                 String name = cursor.getString(1);
-                int action = cursor.getInt(2);
-                int icon = cursor.getInt(3);
+                boolean status = cursor.getInt(2) == 1;
+                String prefix = cursor.getString(3);
+                String image = cursor.getString(4);
 
-                ThreeElementLinearListModel model = new ThreeElementLinearListModel(id, icon, name, action);
-                list.add(model);
+                LanguageModel languageModel = new LanguageModel(id, name, status, prefix, image);
+                list.add(languageModel);
             } while (cursor.moveToNext());
         }
 
@@ -1096,8 +1099,8 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues removeVal = new ContentValues();
         addVal.put(INT_VAL, 1);
         removeVal.put(INT_VAL, 0);
-        int updateOld = db.update(LANGUAGE_TAB, removeVal, ID + " = " + (oldPos + 1), null);
-        int updateNew = db.update(LANGUAGE_TAB, addVal, ID + " = " + (newPos + 1), null);
+        int updateOld = db.update(LANGUAGE_TAB, removeVal, ID + " = " + (oldPos), null);
+        int updateNew = db.update(LANGUAGE_TAB, addVal, ID + " = " + (newPos), null);
 
         return (updateOld != -1 && updateNew != -1);
     }

@@ -2,6 +2,7 @@ package com.example.exerciseapp;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -14,9 +15,11 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.exerciseapp.mClasses.CreateExerciseClass;
+import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mInterfaces.INewExercise;
 import com.example.exerciseapp.mInterfaces.ISingleIntegerValue;
+import com.example.exerciseapp.mInterfaces.ISummary;
 import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ExerciseModel;
@@ -32,8 +35,10 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
 
     private BottomNavigationView bottomNavigationView;
     private TextView activityTitle;
+    private TextView fragmentTitle;
 
-    private static final String activityName = "Workout";
+    private String activityName;
+
 
     private long id;
     private long workoutId;
@@ -54,6 +59,11 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
     private ContentBD contentBD;
     private CustomExerciseCreatorFragment creatorExerciseFragment;
     private CreateExerciseClass createExerciseClass;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(GlobalClass.initLanguage(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,9 +145,11 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
 
     private void initView(Bundle savedInstanceState) {
 
-        activityTitle = findViewById(R.id.act_library_title);
+        activityTitle = findViewById(R.id.act_library_title_part_one);
+        fragmentTitle = findViewById(R.id.act_library_title_part_two);
         bottomNavigationView = findViewById(R.id.act_library_bottom_nav_bar);
 
+        activityName = getString(R.string.workout);
         activityTitle.setText(activityName);
 
         if (findViewById(R.id.act_library_container) != null) {
@@ -158,16 +170,13 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
 
         switch (listName) {
             case FIRST_LIST:
-                Log.e(TAG, "values: first_list");
                 replaceFragment(R.id.act_library_container, new DetailsFragment(), TAG_DETAIL);
                 break;
             case SECOND_LIST:
-                Log.e(TAG, "values: second_list");
                 replaceFragment(R.id.act_library_container, new WorkoutList(), TAG_WORKOUT_LIST);
                 workoutId = firstValue;
                 break;
             case "detailsFragment":
-                Log.e(TAG, "values: details_list");
                 Intent intent = new Intent(LibraryActivity.this, ExerciseActivity.class);
                 if (workoutId != 0) {
                     intent.putExtra("id", (long) workoutId);
@@ -179,11 +188,11 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
                 startActivity(intent);
                 break;
             case "workoutList":
-                Log.e(TAG, "values: workoutList ");
+                Log.i(TAG, "values: workoutList ");
                 replaceFragment(R.id.act_library_container, new DetailsFragment(), TAG_DETAIL);
                 break;
             case "ExerciseModelList":
-                Log.e(TAG, "values: ExerciseModelList | firstValue: " + firstValue + " s: " + secondValue + " t: " + thirdValue);
+                Log.i(TAG, "values: " + firstValue +  " s: " + secondValue + " t: " + thirdValue);
                 createExerciseClass.setValue("exercise", firstValue);
                 creatorExerciseFragment.fillFields();
                 break;
@@ -238,6 +247,6 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
 
     @Override
     public void title(String value) {
-        activityTitle.setText(value);
+        fragmentTitle.setText(value);
     }
 }

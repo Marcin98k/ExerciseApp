@@ -1,10 +1,6 @@
 package com.example.exerciseapp.mAdapters;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import android.content.Context;
-import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exerciseapp.R;
-import com.example.exerciseapp.mEnums.ListType;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 
@@ -23,13 +18,16 @@ import java.util.List;
 public class RadioButtonListAdapter extends RecyclerView.Adapter<RadioButtonListAdapter.ViewHolder> {
 
     private Context mContext;
-    private UpdateIntegersDB updateIntegersDB;
-    private List<ThreeElementLinearListModel> list;
 
+
+    private List<ThreeElementLinearListModel> list;
     private String listName;
-    private int selectedPosition = -1;
-    private int oldPosition;
-    private int currentPos;
+    int selectedPosition = -1;
+    int oldPosition;
+    int currentPos;
+
+
+    private UpdateIntegersDB updateIntegersDB;
 
     public RadioButtonListAdapter(Context context, String listName, List<ThreeElementLinearListModel> list
             , UpdateIntegersDB updateIntegersDB) {
@@ -39,18 +37,10 @@ public class RadioButtonListAdapter extends RecyclerView.Adapter<RadioButtonList
         this.updateIntegersDB = updateIntegersDB;
 
         for (int i = 0; i < list.size(); i++) {
-            if (listName.equals("userGender") || listName.equals("userLevel")) {
-                if (list.get(i).getAction() == 1) {
-                    oldPosition = list.get(i).getId();
-                    selectedPosition = list.get(i).getId();
-                    currentPos = i;
-                }
-            } else {
-                if (list.get(i).getAction() == 1) {
-                    oldPosition = i;
-                    selectedPosition = i;
-                    currentPos = i;
-                }
+            if (list.get(i).getAction() == 1) {
+                oldPosition = list.get(i).getId();
+                selectedPosition = list.get(i).getId();
+                currentPos = i;
             }
         }
     }
@@ -60,7 +50,6 @@ public class RadioButtonListAdapter extends RecyclerView.Adapter<RadioButtonList
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View mView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.custom_radio_button, parent, false);
-
         return new ViewHolder(mView);
     }
 
@@ -74,16 +63,12 @@ public class RadioButtonListAdapter extends RecyclerView.Adapter<RadioButtonList
         } else {
             holder.radioButton.setBackgroundResource(R.drawable.unselected_radio_button);
         }
+
         holder.radioButton.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
-                if (listName.equals("userGender") || listName.equals("userLevel")) {
-                    selectedPosition = list.get(holder.getAdapterPosition()).getId();
-                } else {
-                    selectedPosition = holder.getAdapterPosition();
-                }
-                currentPos = holder.getAdapterPosition();
+                selectedPosition = list.get(holder.getBindingAdapterPosition()).getId();
+                currentPos = holder.getBindingAdapterPosition();
                 notifyDataSetChanged();
-                Log.i(TAG, "RadioButtonListAdapter: " + oldPosition + " " + selectedPosition);
                 updateIntegersDB.values(listName, oldPosition, selectedPosition, 0);
             }
         });

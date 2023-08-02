@@ -13,7 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exerciseapp.mAdapters.RadioButtonListAdapter;
-import com.example.exerciseapp.mEnums.ListType;
+
+import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 
@@ -24,15 +25,47 @@ public class RadioButtonList extends Fragment {
 
     private RecyclerView recyclerView;
     private RadioButtonListAdapter adapter;
-    private String listName;
 
-    private List<ThreeElementLinearListModel> list = new ArrayList<>();
+
+    private String listName;
+    private String fragmentName;
+    private List<ThreeElementLinearListModel> list;
+
 
     private UpdateIntegersDB updateIntegersDB;
     private UpdateIntegersDB updateIntegersDB1;
+    private ITitleChangeListener iTitleChangeListener;
 
     public RadioButtonList() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            updateIntegersDB1 = (UpdateIntegersDB) context;
+            iTitleChangeListener = (ITitleChangeListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context +
+                    " must implement UpdateIntegersDB and/or ITitleChangeListener");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (iTitleChangeListener != null) {
+            iTitleChangeListener.title(fragmentName);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (iTitleChangeListener != null) {
+            iTitleChangeListener.title("");
+        }
     }
 
     @Override
@@ -40,11 +73,11 @@ public class RadioButtonList extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             list = getArguments().getParcelableArrayList("currentList");
-            listName = getArguments().getString("listName");
-        } else {
-            ThreeElementLinearListModel model = new ThreeElementLinearListModel(-1, 0, "Null", 0);
-            list.add(model);
-            listName = "null";
+            listName = getArguments().getString("listName", "UnknownListName");
+            fragmentName = getArguments().getString("fragmentName", "NaN");
+        }
+        if (list == null) {
+            list = new ArrayList<>();
         }
     }
 
@@ -52,8 +85,13 @@ public class RadioButtonList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_radio_button_list, container, false);
+        initView(mView);
+        return mView;
+    }
 
-        recyclerView = mView.findViewById(R.id.fRadioButtonList_recyclerView);
+    private void initView(View v) {
+
+        recyclerView = v.findViewById(R.id.fRadioButtonList_recyclerView);
 
         updateIntegersDB = (listName, firstValue, secondValue, thirdValue) -> {
             adapter.notifyDataSetChanged();
@@ -63,17 +101,5 @@ public class RadioButtonList extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
         adapter = new RadioButtonListAdapter(requireActivity(), listName, list, updateIntegersDB);
         recyclerView.setAdapter(adapter);
-
-        return mView;
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            updateIntegersDB1 = (UpdateIntegersDB) context;
-        } catch (RuntimeException e) {
-            throw new RuntimeException(context.toString() + " just implement");
-        }
     }
 }

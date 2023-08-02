@@ -1,5 +1,9 @@
 package com.example.exerciseapp;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -24,6 +28,8 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         this.firstList = firstList;
         this.secondList = secondList;
         pagerType = ViewPagerType.List;
+        Log.i(TAG, "onCreate: 0 + " + firstList);
+        Log.i(TAG, "onCreate: 0 + " + secondList);
     }
 
     public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, int tableLength) {

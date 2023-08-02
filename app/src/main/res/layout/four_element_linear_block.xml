@@ -42,14 +42,30 @@
             android:paddingVertical="5dp"
             android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/sFourElementLinearBlock_firstValue"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="start"
+        <LinearLayout
             android:layout_weight="0.45"
-            android:paddingVertical="5dp"
-            android:textSize="18sp" />
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/sFourElementLinearBlock_firstValue"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:paddingVertical="5dp"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/sFourElementLinearBlock_secondValue"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:paddingVertical="5dp"
+                android:textSize="18sp" />
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -15,7 +15,7 @@
             android:id="@+id/frag_profile_toggle_button_user_gender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="User gender"
+            android:text="@string/gender"
             android:textSize="18sp"
             style="@style/MyRollUpButtonAppearance"/>
 
@@ -28,7 +28,7 @@
             android:id="@+id/frag_profile_toggle_button_user_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="User info"
+            android:text="@string/dimensions"
             android:textSize="18sp"
             style="@style/MyRollUpButtonAppearance"/>
 
@@ -41,7 +41,7 @@
             android:id="@+id/frag_profile_toggle_button_user_goals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="User goals"
+            android:text="@string/goals"
             android:textSize="18sp"
             style="@style/MyRollUpButtonAppearance"/>
 
@@ -54,7 +54,7 @@
             android:id="@+id/frag_profile_toggle_button_user_performance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="User performance"
+            android:text="@string/performance"
             android:textSize="18sp"
             style="@style/MyRollUpButtonAppearance"/>
 
@@ -67,7 +67,7 @@
             android:id="@+id/frag_profile_toggle_button_user_level"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="User level"
+            android:text="@string/level"
             android:textSize="18sp"
             style="@style/MyRollUpButtonAppearance"/>
 

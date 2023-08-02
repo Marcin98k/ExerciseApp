@@ -4,7 +4,6 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exerciseapp.R;
 import com.example.exerciseapp.mEnums.ListType;
+import com.example.exerciseapp.mEnums.NumberOfItem;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mInterfaces.UpdateStringsDB;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
@@ -30,24 +30,29 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
     private Context mContext;
 
 
+    private List<FourElementLinearListModel> list;
+    private String listName;
+    private static final String ZERO = "0";
+    private static final String ONE = "1";
+    private int oldPosition = 0;
+    private ListType listType;
+    private NumberOfItem numberOfItem;
+
+
     private UpdateIntegersDB valueDB;
     private UpdateStringsDB updateStringsDB;
 
-    private List<FourElementLinearListModel> list;
-    private String listName;
-    private int oldPosition = 0;
-    private ListType listType;
-
     public FourElementLinearListAdapter(Context context, List<FourElementLinearListModel> list,
                                         String listName, UpdateIntegersDB valueDB,
-                                        ListType listType) {
+                                        ListType listType, NumberOfItem numberOfItem) {
         this.mContext = context;
         this.list = list;
         this.listName = listName;
         this.valueDB = valueDB;
         this.listType = listType;
+        this.numberOfItem = numberOfItem;
 
-        if (listName.equals("userGoals")) {
+        if (listType.equals(ListType.MULTIPLE_CHOICE_BUTTONS)) {
             for (int i = 0; i < list.size(); i++) {
                 if (Integer.parseInt(list.get(i).getFirstValue()) == 1) {
                     oldPosition = list.get(i).getId();
@@ -58,17 +63,13 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
 
     public FourElementLinearListAdapter(Context context, List<FourElementLinearListModel> list,
                                         String listName, UpdateStringsDB updateStringsDB,
-                                        ListType listType) {
+                                        ListType listType, NumberOfItem numberOfItem) {
         this.mContext = context;
         this.list = list;
         this.listName = listName;
         this.updateStringsDB = updateStringsDB;
         this.listType = listType;
-
-        if (this.listName.equals("tagTELL_account")) {
-            Log.e(TAG, "FourElementLinearListAdapter: "
-                    + list.toString());
-        }
+        this.numberOfItem = numberOfItem;
     }
 
 
@@ -80,80 +81,73 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
 
         ViewHolder viewHolder = new ViewHolder(mView);
 
-        mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int pos = list.get(viewHolder.getAdapterPosition()).getId();
+        mView.setOnClickListener(view -> {
+            int pos = list.get(viewHolder.getBindingAdapterPosition()).getId();
 
-                if (listName.equals("userInformation")) {
-                    valueDB.values(listName, viewHolder.getAdapterPosition(), pos, list.get(viewHolder.getAdapterPosition()).getSecondId());
-                    Log.i(TAG, "onClick(userInfo): " + viewHolder.getAdapterPosition() + " position: " + pos);
-                } else if (listName.equals("userPerformance")) {
-                    AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
-                    alert.setTitle(list.get(viewHolder.getAdapterPosition()).getName());
-                    final View customLayout = LayoutInflater.from(mContext).inflate(R.layout.alert_window, parent, false);
-                    alert.setView(customLayout);
-                    alert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            EditText editText = customLayout.findViewById(R.id.sAlertWindow_editText);
-                            if (!editText.getText().toString().equals("")) {
-                                int value = Integer.parseInt(editText.getText().toString());
-                                Log.i(TAG, "onClick(Dialog): " + value);
-
-                                if (editText.equals(""))
-                                    valueDB.values(listName, list.get(viewHolder.getAdapterPosition()).getId(),
-                                            value, 0);
-                            }
-                        }
-                    });
-                    alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    AlertDialog dialog = alert.create();
-                    dialog.show();
-
-                } else if (listName.equals("userGoals")) {
-
+            switch (listType) {
+                case SELECTABLE_BUTTONS:
+                    valueDB.values(listName, viewHolder.getBindingAdapterPosition(), pos,
+                            list.get(viewHolder.getBindingAdapterPosition()).getSecondId());
+                    break;
+                case MULTIPLE_CHOICE_BUTTONS:
                     int temp;
-                    Log.i(TAG, "onClick(userGoals): " + viewHolder.getAdapterPosition());
-                    if (list.get(viewHolder.getAdapterPosition()).getFirstValue().equals("0")) {
-                        list.get(viewHolder.getAdapterPosition()).setFirstValue("1");
+                    if (list.get(viewHolder.getBindingAdapterPosition()).getFirstValue().equals(ZERO)) {
+                        list.get(viewHolder.getBindingAdapterPosition()).setFirstValue(ONE);
                         temp = 1;
                     } else {
-                        list.get(viewHolder.getAdapterPosition()).setFirstValue("0");
+                        list.get(viewHolder.getBindingAdapterPosition()).setFirstValue(ZERO);
                         temp = 0;
                     }
 
-                    valueDB.values(listName, list.get(viewHolder.getAdapterPosition()).getId(),
+                    valueDB.values(listName, list.get(viewHolder.getBindingAdapterPosition()).getId(),
                             temp, 0);
-                } else if (listName.equals("tagTELL_account")) {
+                    break;
+                case SELECTABLE_BUTTONS_STR: {
                     AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
-                    alert.setTitle(list.get(viewHolder.getAdapterPosition()).getName());
-                    final View customLayout = LayoutInflater.from(mContext).inflate(R.layout.alert_window, parent, false);
+                    alert.setTitle(list.get(viewHolder.getBindingAdapterPosition()).getName());
+                    final View customLayout = LayoutInflater.from(mContext).inflate(
+                            R.layout.alert_window, parent, false);
+                    EditText editText = customLayout.findViewById(R.id.sAlertWindow_editText);
+                    editText.setHint("text");
                     alert.setView(customLayout);
-                    alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            EditText editText = customLayout.findViewById(R.id.sAlertWindow_editText);
-                            String value = editText.getText().toString();
-                            Log.i(TAG, "onClick(account): " + value);
+                    alert.setPositiveButton("OK", (dialogInterface, i) -> {
+                        String value = editText.getText().toString();
+                        Log.i(TAG, "onClick(account): " + value);
 
-                            updateStringsDB.strValues(listName, viewHolder.getAdapterPosition(),
-                                    list.get(viewHolder.getAdapterPosition()).getId(),
-                                    value);
-                        }
+                        updateStringsDB.strValues(listName, viewHolder.getBindingAdapterPosition(),
+                                list.get(viewHolder.getBindingAdapterPosition()).getId(),
+                                value);
                     });
+                    alert.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
                     AlertDialog dialog = alert.create();
                     dialog.show();
-                } else {
-                    valueDB.values(listName, oldPosition, pos, 0);
+                    break;
                 }
-                notifyDataSetChanged();
+                case SELECTABLE_BUTTONS_INT: {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
+                    alert.setTitle(list.get(viewHolder.getBindingAdapterPosition()).getName());
+                    final View customLayout = LayoutInflater.from(mContext).inflate(
+                            R.layout.alert_window, parent, false);
+                    EditText editText = customLayout.findViewById(R.id.sAlertWindow_editText);
+                    editText.setHint("number");
+                    alert.setView(customLayout);
+                    alert.setPositiveButton("Update", (dialogInterface, i) -> {
+                        if (!editText.getText().toString().equals("")) {
+                            int value = Integer.parseInt(editText.getText().toString());
+                            valueDB.values(listName, list.get(viewHolder.getBindingAdapterPosition()).getId(),
+                                    value, 0);
+                        }
+                    });
+                    alert.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
+                    AlertDialog dialog = alert.create();
+                    dialog.show();
+                    break;
+                }
+                default:
+                    valueDB.values(listName, oldPosition, pos, 0);
+                    break;
             }
+            notifyDataSetChanged();
         });
         return viewHolder;
     }
@@ -163,22 +157,25 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
 
         holder.icon.setImageResource(list.get(position).getIcon());
         holder.name.setText(list.get(position).getName());
+
         if (listType == ListType.MULTIPLE_CHOICE_BUTTONS) {
-            Log.i(TAG, "onBindViewHolder(FourElement): Multiple");
-            if (list.get(position).getFirstValue().equals("1")) {
+            if (list.get(position).getFirstValue().equals(ONE)) {
                 holder.icon.setImageResource(R.drawable.ic_check_circle);
             } else {
                 holder.icon.setImageResource(R.drawable.ic_uncheck_circle);
             }
-        } else if (listType == ListType.SELECT_BUTTONS) {
-            Log.i(TAG, "onBindViewHolder(FourElement): Select");
-            if (list.get(position).getFirstValue().equals("1")) {
-                holder.itemView.setBackgroundColor(Color.BLUE);
-            } else {
-                holder.itemView.setBackgroundColor(Color.TRANSPARENT);
-            }
         }
-        holder.firstValue.setText(list.get(position).getFirstValue());
+
+        if (numberOfItem.equals(NumberOfItem.ONE)) {
+            holder.firstValue.setText(list.get(position).getFirstValue());
+        } else if (numberOfItem.equals(NumberOfItem.TWO)) {
+            holder.firstValue.setText(list.get(position).getFirstValue());
+            holder.secondValue.setText(list.get(position).getSecondValue());
+        } else if (numberOfItem.equals(NumberOfItem.NULL)) {
+            Log.i(TAG, "onBindViewHolder: NULL not show TextView's");
+        }else {
+            holder.firstValue.setText(list.get(position).getFirstValue());
+        }
 
         if (position == getItemCount() - 1) {
             holder.underline.setVisibility(View.GONE);
@@ -195,6 +192,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
         private final ImageView icon;
         private final TextView name;
         private final TextView firstValue;
+        private final TextView secondValue;
         private final View underline;
 
         public ViewHolder(@NonNull View itemView) {
@@ -203,6 +201,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
             icon = itemView.findViewById(R.id.sFourElementLinearBlock_icon);
             name = itemView.findViewById(R.id.sFourElementLinearBlock_name);
             firstValue = itemView.findViewById(R.id.sFourElementLinearBlock_firstValue);
+            secondValue = itemView.findViewById(R.id.sFourElementLinearBlock_secondValue);
             underline = itemView.findViewById(R.id.asset_four_elements_linear_block_underline);
         }
     }

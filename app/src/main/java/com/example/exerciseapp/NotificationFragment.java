@@ -1,18 +1,17 @@
 package com.example.exerciseapp;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
+import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
 import com.example.exerciseapp.mModels.IntegerModel;
 
 import java.util.ArrayList;
@@ -26,17 +25,52 @@ public class NotificationFragment extends Fragment {
     private List<IntegerModel> list = new ArrayList<>();
     private String listName;
 
+    private String fragmentName;
+
+
+    private ITitleChangeListener iTitleChangeListener;
 
     public NotificationFragment() {
         // Required empty public constructor
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            iTitleChangeListener = (ITitleChangeListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context +
+                    " must implement ITitleChangeListener");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (iTitleChangeListener != null) {
+            iTitleChangeListener.title(fragmentName);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (iTitleChangeListener != null) {
+            iTitleChangeListener.title("");
+        }
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            listName = getArguments().getString("listName", "unknownListName");
+
             list = getArguments().getParcelableArrayList("currentList");
-            listName = getArguments().getString("listName");
+            if (list == null) {
+                list = new ArrayList<>();
+            }
         }
     }
 
@@ -45,11 +79,11 @@ public class NotificationFragment extends Fragment {
                              Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_notification, container, false);
         initView(mView);
-        Log.i(TAG, "onCreateView(Notification): " + list.toString());
         return mView;
     }
 
     private void initView(View v) {
         textView = v.findViewById(R.id.fNotification_tv);
+        fragmentName = getString(R.string.notification);
     }
 }

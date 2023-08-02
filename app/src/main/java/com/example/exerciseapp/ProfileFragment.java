@@ -15,7 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exerciseapp.mAdapters.FourElementLinearListAdapter;
 import com.example.exerciseapp.mAdapters.RadioButtonListAdapter;
+
+
 import com.example.exerciseapp.mEnums.ListType;
+import com.example.exerciseapp.mEnums.NumberOfItem;
+import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
@@ -41,15 +45,17 @@ public class ProfileFragment extends Fragment {
     private RecyclerView levelList;
 
 
-    private List<FourElementLinearListModel> userInformationList = new ArrayList<>();
-    private List<FourElementLinearListModel> userGoalsList = new ArrayList<>();
-    private List<FourElementLinearListModel> userPerformanceList = new ArrayList<>();
-    private List<ThreeElementLinearListModel> userLevelList = new ArrayList<>();
-    private List<ThreeElementLinearListModel> userGenderList = new ArrayList<>();
-    private final List<FourElementLinearListModel> emptyList = new ArrayList<>();
-    private final List<ThreeElementLinearListModel> emptyRadioList = new ArrayList<>();
+    private String fragmentName;
+    private List<FourElementLinearListModel> userInformationList;
+    private List<FourElementLinearListModel> userGoalsList;
+    private List<FourElementLinearListModel> userPerformanceList;
+    private List<ThreeElementLinearListModel> userLevelList;
+    private List<ThreeElementLinearListModel> userGenderList;
+    private List<FourElementLinearListModel> emptyList;
+    private List<ThreeElementLinearListModel> emptyRadioList;
     private FourElementLinearListAdapter adapter;
     private RadioButtonListAdapter radioAdapter;
+
 
 
     private final String INFORMATION = "userInformation";
@@ -58,11 +64,48 @@ public class ProfileFragment extends Fragment {
     private final String LEVEL = "userLevel";
     private final String GENDER = "userGender";
 
+
     private UpdateIntegersDB valueDB;
     private UpdateIntegersDB valueDB1;
+    private ITitleChangeListener iTitleChangeListener;
 
     public ProfileFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        try {
+            valueDB1 = (UpdateIntegersDB) context;
+        } catch (RuntimeException e) {
+            throw new RuntimeException(context +
+                    " must implement ValueDB");
+        }
+
+        try {
+            iTitleChangeListener = (ITitleChangeListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context +
+                    " must implement ITitleChangeListener");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (iTitleChangeListener != null) {
+            iTitleChangeListener.title(fragmentName);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (iTitleChangeListener != null) {
+            iTitleChangeListener.title("");
+        }
     }
 
     @Override
@@ -92,13 +135,13 @@ public class ProfileFragment extends Fragment {
                     getArguments().getParcelableArrayList("userLevel") == null) {
                 userLevelList = fillRadioList("userLevel");
             } else {
-                userLevelList = getArguments().getParcelableArrayList("userLevel");
+            userLevelList = getArguments().getParcelableArrayList("userLevel");
             }
             if (getArguments().getParcelableArrayList("userGender").isEmpty() ||
                     getArguments().getParcelableArrayList("userGender") == null) {
                 userGenderList = fillRadioList("userGender");
             } else {
-                userGenderList = getArguments().getParcelableArrayList("userGender");
+            userGenderList = getArguments().getParcelableArrayList("userGender");
             }
         }
     }
@@ -109,10 +152,19 @@ public class ProfileFragment extends Fragment {
         View mView = inflater.inflate(R.layout.fragment_profile, container, false);
         initView(mView);
 
+
+        initRecyclerView(informationList, userInformationList, INFORMATION,
+                ListType.SELECTABLE_BUTTONS, NumberOfItem.ONE);
         initRadioButtonList(genderList, userGenderList, GENDER);
-        initRecyclerView(informationList, userInformationList, INFORMATION, ListType.SELECT_BUTTONS);
-        initRecyclerView(performanceList, userPerformanceList, PERFORMANCE, ListType.SELECT_BUTTONS);
-        initRecyclerView(goalsList, userGoalsList, GOALS, ListType.MULTIPLE_CHOICE_BUTTONS);
+
+
+        initRadioButtonList(genderList, userGenderList, GENDER);
+        initRecyclerView(informationList, userInformationList, INFORMATION,
+                ListType.SELECTABLE_BUTTONS, NumberOfItem.TWO);
+        initRecyclerView(performanceList, userPerformanceList, PERFORMANCE,
+                ListType.SELECTABLE_BUTTONS_INT, NumberOfItem.ONE);
+        initRecyclerView(goalsList, userGoalsList, GOALS,
+                ListType.MULTIPLE_CHOICE_BUTTONS, NumberOfItem.NULL);
         initRadioButtonList(levelList, userLevelList, LEVEL);
 
         expandOrCollapseList(genderButton, genderList);
@@ -151,36 +203,41 @@ public class ProfileFragment extends Fragment {
     }
 
     private List<FourElementLinearListModel> fillList(String name) {
-        FourElementLinearListModel model = new FourElementLinearListModel(-1, 0, name, "0", "");
+        emptyList = new ArrayList<>();
+        FourElementLinearListModel model = new FourElementLinearListModel(
+                -1, 0, name, "0", "");
         emptyList.add(model);
         return emptyList;
     }
-
     private List<ThreeElementLinearListModel> fillRadioList(String name) {
+        emptyRadioList = new ArrayList<>();
         ThreeElementLinearListModel model = new ThreeElementLinearListModel(
-                -1, 0, "name", 0);
+                -1, 0, name, 0);
         emptyRadioList.add(model);
         return emptyRadioList;
     }
 
-    private void initRadioButtonList(RecyclerView view, List<ThreeElementLinearListModel> list,
-                                     String tag) {
+    private void initRadioButtonList(RecyclerView view, List<ThreeElementLinearListModel> list, String tag) {
 
         view.setHasFixedSize(true);
-        view.setLayoutManager(new LinearLayoutManager(requireContext(),
-                LinearLayoutManager.VERTICAL, false));
+        view.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
 
-        radioAdapter = new RadioButtonListAdapter(requireContext(), tag, list, valueDB);
+
+        radioAdapter = new RadioButtonListAdapter(requireContext()
+                , tag, list, valueDB);
+
 
         valueDB = (listName, firstValue, secondValue, thirdValue) -> view.post(() -> {
             radioAdapter.notifyDataSetChanged();
             valueDB1.values(listName, firstValue, secondValue, thirdValue);
         });
-
+        radioAdapter = new RadioButtonListAdapter(requireContext(), tag, list, valueDB);
         view.setAdapter(radioAdapter);
     }
 
     private void initView(View v) {
+
+        fragmentName = getString(R.string.profile);
 
         informationButton = v.findViewById(R.id.frag_profile_toggle_button_user_info);
         informationList = v.findViewById(R.id.fProfile_userInformation);
@@ -199,7 +256,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initRecyclerView(RecyclerView view, List<FourElementLinearListModel> list,
-                                  String tag, ListType listType) {
+                                  String tag, ListType listType, NumberOfItem numberOfItem) {
 
         view.setHasFixedSize(true);
         view.setLayoutManager(new LinearLayoutManager(requireContext(),
@@ -210,18 +267,8 @@ public class ProfileFragment extends Fragment {
             valueDB1.values(listName, firstValue, secondValue, thirdValue);
         });
         adapter = new FourElementLinearListAdapter(requireContext(),
-                list, tag, valueDB, listType);
+                list, tag, valueDB, listType, numberOfItem);
         view.setAdapter(adapter);
-    }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            valueDB1 = (UpdateIntegersDB) context;
-        } catch (RuntimeException e) {
-            throw new RuntimeException(context.toString() +
-                    " must implement ValueDB");
-        }
     }
 }

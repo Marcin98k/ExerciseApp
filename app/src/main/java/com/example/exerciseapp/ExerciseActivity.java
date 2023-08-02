@@ -2,6 +2,7 @@ package com.example.exerciseapp;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 import com.example.exerciseapp.mInterfaces.ISummary;
@@ -54,6 +56,11 @@ public class ExerciseActivity extends AppCompatActivity implements
     private EmptyFragment emptyFragment;
     private SummaryFragment summaryFragment;
     private TimeBreakFragment timeBreakFragment = new TimeBreakFragment();
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(GlobalClass.initLanguage(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
