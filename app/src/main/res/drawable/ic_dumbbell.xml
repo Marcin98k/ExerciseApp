@@ -1,0 +1,6 @@
+<vector android:height="24dp" android:viewportHeight="50"
+    android:viewportWidth="50" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#FF000000" android:pathData="M18,44.9a1,1 0,0 1,0 1.4l-2.3,2a1,1 0,0 1,-1.4 0L1.7,34.6a1,1 0,0 1,0 -1.4l2.2,-2a1,1 0,0 1,1.4 0L18,45zM34,19.2a1,1 0,0 1,0 1.4L20.4,33.4a1,1 0,0 1,-1.4 0l-3.3,-3.6a1,1 0,0 1,0 -1.4l13.7,-12.7a1,1 0,0 1,1.4 0l3.3,3.5zM22.6,40.5c0.4,0.4 0.4,1 0,1.4l-2.2,2a1,1 0,0 1,-1.4 0L6.3,30.3a1,1 0,0 1,0 -1.4l2.3,-2a1,1 0,0 1,1.4 0l12.6,13.6zM43.6,19.7a1,1 0,0 1,0 1.4l-2.1,2a1,1 0,0 1,-1.5 0L27.4,9.5a1,1 0,0 1,0 -1.4l2.2,-2A1,1 0,0 1,31 6l12.7,13.6zM48.3,15.4a1,1 0,0 1,0 1.4l-2.2,2a1,1 0,0 1,-1.4 0L32,5a1,1 0,0 1,0.1 -1.4l2.2,-2a1,1 0,0 1,1.4 0l12.6,13.7z"/>
+</vector>
+
+<!--    http://map-icons.com/ -->

@@ -1,6 +1,9 @@
 package com.example.exerciseapp;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +19,6 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.List;
 
 public class ViewPagerFragment extends Fragment {
-
-    private TabLayout tabLayout;
-    private ViewPager2 viewPager2;
-    private ViewPagerAdapter viewPagerAdapter;
-
 
     private String[] fragmentTitles;
     private List<FourElementsModel> firstList;
@@ -50,8 +48,9 @@ public class ViewPagerFragment extends Fragment {
     }
 
     private void initView(View v) {
-        tabLayout = v.findViewById(R.id.act_library_tab_layout);
-        viewPager2 = v.findViewById(R.id.act_library_view_pager);
+        TabLayout tabLayout = v.findViewById(R.id.act_library_tab_layout);
+        ViewPager2 viewPager2 = v.findViewById(R.id.act_library_view_pager);
+        ViewPagerAdapter viewPagerAdapter;
         if (firstList != null || secondList != null) {
             viewPagerAdapter = new ViewPagerAdapter(requireActivity(), fragmentTitles.length,
                     firstList, secondList);

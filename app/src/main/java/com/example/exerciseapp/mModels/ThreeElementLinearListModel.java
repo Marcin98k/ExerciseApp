@@ -11,6 +11,7 @@ public class ThreeElementLinearListModel implements Parcelable {
     private int icon;
     private String name;
     private int action;
+    private String strVal;
 
     private String image;
 
@@ -28,12 +29,21 @@ public class ThreeElementLinearListModel implements Parcelable {
         this.action = action;
     }
 
+    public ThreeElementLinearListModel(int id, String name, int action, String strVal, String image) {
+        this.id = (int) id;
+        this.name = name;
+        this.action = action;
+        this.strVal = strVal;
+        this.image = image;
+    }
+
     protected ThreeElementLinearListModel(Parcel in) {
         id = in.readInt();
         icon = in.readInt();
         name = in.readString();
         action = in.readInt();
         image = in.readString();
+        strVal = in.readString();
     }
 
     public static final Creator<ThreeElementLinearListModel> CREATOR = new Creator<ThreeElementLinearListModel>() {
@@ -88,6 +98,14 @@ public class ThreeElementLinearListModel implements Parcelable {
         this.image = image;
     }
 
+    public String getStrVal() {
+        return strVal;
+    }
+
+    public void setStrVal(String strVal) {
+        this.strVal = strVal;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -101,5 +119,6 @@ public class ThreeElementLinearListModel implements Parcelable {
         parcel.writeString(name);
         parcel.writeInt(action);
         parcel.writeString(image);
+        parcel.writeString(strVal);
     }
 }

@@ -2,6 +2,9 @@ package com.example.exerciseapp;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,11 +12,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.exerciseapp.mAdapters.FourElementLinearListAdapter;
+
+
+import com.example.exerciseapp.mEnums.ListType;
+import com.example.exerciseapp.mEnums.NumberOfItem;
+import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
+
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mInterfaces.UpdateStringsDB;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
@@ -27,15 +32,22 @@ public class FourElementListFragment extends Fragment {
     private RecyclerView recyclerView;
     private FourElementLinearListAdapter adapter;
 
+
     private List<FourElementLinearListModel> list = new ArrayList<>();
     private String listName;
+    private String fragmentName;
 
 
-    UpdateIntegersDB updateIntegersDB;
-    UpdateIntegersDB updateIntegersDB1;
+    private UpdateIntegersDB updateIntegersDB;
+    private UpdateIntegersDB updateIntegersDB1;
 
-    UpdateStringsDB updateStrings;
-    UpdateStringsDB updateStrings1;
+
+    private UpdateStringsDB updateStrings;
+    private UpdateStringsDB updateStrings1;
+    private ITitleChangeListener iTitleChangeListener;
+
+    private ListType listType;
+    private NumberOfItem numberOfItem;
 
 
     public FourElementListFragment() {
@@ -43,11 +55,72 @@ public class FourElementListFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            updateIntegersDB1 = (UpdateIntegersDB) context;
+        } catch (RuntimeException e) {
+            throw new RuntimeException(context +
+                    " must implement UpdateIntegersDB");
+        }
+
+        try {
+            updateStrings1 = (UpdateStringsDB) context;
+        } catch (RuntimeException e) {
+            throw new RuntimeException(context +
+                    " must implement UpdateStringsDB");
+        }
+
+        try {
+            iTitleChangeListener = (ITitleChangeListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context +
+                    " must implement ITitleChangeListener");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (iTitleChangeListener != null) {
+            iTitleChangeListener.title(fragmentName);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (iTitleChangeListener != null) {
+            iTitleChangeListener.title("");
+        }
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null) {
+        if (getArguments() != null) {
+
+            listName = getArguments().getString("listName", "unknownListName");
+            fragmentName = getArguments().getString("fragmentName", "NaN");
+
             list = getArguments().getParcelableArrayList("currentList");
+
             listName = getArguments().getString("listName");
+
+            if (list == null) {
+                list = new ArrayList<>();
+            }
+
+            listType = (ListType) getArguments().getSerializable("listType");
+            if (listType == null) {
+                listType = ListType.NULL;
+            }
+
+            numberOfItem = (NumberOfItem) getArguments().getSerializable("numberOfItem");
+            if (numberOfItem == null) {
+                numberOfItem = NumberOfItem.NULL;
+            }
+
         }
     }
 
@@ -57,6 +130,7 @@ public class FourElementListFragment extends Fragment {
         // Inflate the layout for this fragment
         View mView = inflater.inflate(R.layout.fragment_four_element_list, container, false);
         initView(mView);
+
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
@@ -75,32 +149,35 @@ public class FourElementListFragment extends Fragment {
                 updateIntegersDB1.values(listName, firstValue, secondValue, thirdValue);
             }
         };
-        adapter = new FourElementLinearListAdapter(requireContext(), list, listName, updateStrings);
+        adapter = new FourElementLinearListAdapter(requireContext(), list, listName, updateStrings,
+                listType, numberOfItem);
 
         recyclerView.setAdapter(adapter);
+
+
 
         return mView;
     }
 
     private void initView(View v) {
         recyclerView = v.findViewById(R.id.fFourElementListFragment);
-    }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            updateIntegersDB1 = (UpdateIntegersDB) context;
-        } catch (RuntimeException e) {
-            throw new RuntimeException(context.toString() +
-                    " must implement UpdateIntegersDB");
-        }
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(),
+                RecyclerView.VERTICAL, false));
+        recyclerView.setHasFixedSize(true);
 
-        try {
-            updateStrings1 = (UpdateStringsDB) context;
-        } catch (RuntimeException e) {
-            throw new RuntimeException(context.toString() +
-                    " must implement UpdateStringDB");
-        }
+        updateStrings = (listName, position, id, firstVal) -> {
+            adapter.notifyDataSetChanged();
+            updateStrings1.strValues(listName, position, id, firstVal);
+        };
+
+        updateIntegersDB = (listName, firstValue, secondValue, thirdValue) -> {
+            adapter.notifyDataSetChanged();
+            updateIntegersDB1.values(listName, firstValue, secondValue, thirdValue);
+        };
+        adapter = new FourElementLinearListAdapter(requireContext(), list, listName,
+                updateStrings, listType, numberOfItem);
+
+        recyclerView.setAdapter(adapter);
     }
 }

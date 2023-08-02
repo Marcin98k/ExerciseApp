@@ -54,8 +54,7 @@ public class TimeBreakFragment extends Fragment{
         View mView = inflater.inflate(R.layout.fragment_time_break, container, false);
         initView(mView);
 
-        clockClass = new ClockClass(requireContext(), true, 10
-                ,true, false)
+        clockClass = new ClockClass(requireContext(), true, 6,true)
                 .setBar(progressBar)
                 .setAddBtn(addBtn).setSkipBtn(skipBtn)
                 .setTextView(showTime);

@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.example.exerciseapp.mClasses.InsertResult;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
 import com.example.exerciseapp.mModels.CustomUserExerciseModel;
+import com.example.exerciseapp.mModels.ExerciseIdentifier;
 import com.example.exerciseapp.mModels.ExerciseModel;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.TaskDateModel;
@@ -615,6 +616,41 @@ public class ContentBD extends SQLiteOpenHelper {
         return show;
     }
 
+    public String showExercisesFromWorkout(long workoutId) {
+
+        SQLiteDatabase db = getReadableDatabase();
+        String search = "SELECT " + WORKOUT_EXERCISES_ID + " FROM " + WORKOUT_TAB +
+                " WHERE " + ID + " = ?";
+        String[] args = {String.valueOf(workoutId)};
+
+        Cursor cursor = db.rawQuery(search, args);
+
+        String exerciseIds = "";
+        if (cursor.moveToFirst()) {
+            exerciseIds = cursor.getString(0);
+        }
+        cursor.close();
+        return exerciseIds;
+    }
+
+    public List<ExerciseModel> showExerciseByIdFromWorkout(long value) {
+
+        List<ExerciseModel> show = new ArrayList<>();
+        String search = "SELECT * FROM " + EXERCISE_TAB + " WHERE " + ID + " == " + value;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(search, null);
+
+        if (cursor.moveToFirst()) {
+            int id = cursor.getInt(0);
+            int type = cursor.getInt(6);
+            ExerciseModel model = new ExerciseModel(id,type);
+            show.add(model);
+        }
+
+        cursor.close();
+        return show;
+    }
+
     public List<ExerciseModel> showExerciseById(long value) {
 
         List<ExerciseModel> show = new ArrayList<>();
@@ -641,8 +677,6 @@ public class ContentBD extends SQLiteOpenHelper {
         }
 
         cursor.close();
-        db.close();
-
         return show;
     }
 

@@ -1,19 +1,26 @@
 package com.example.exerciseapp;
 
-import androidx.appcompat.app.AppCompatActivity;
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mClasses.StorageClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mDatabases.DBHelper;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
 import com.example.exerciseapp.mModels.ExerciseModel;
 import com.example.exerciseapp.mModels.IntegerModel;
+import com.example.exerciseapp.mModels.LanguageModel;
 import com.example.exerciseapp.mModels.TaskDateModel;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,42 +32,59 @@ public class MainActivity extends AppCompatActivity {
     private Button libraryBtn;
     private Button userBtn;
     private Button exerciseBtn;
+    private BottomNavigationView bottomNavigationView;
+
+
+    private boolean isLogged = true;
+    private long userID;
+
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(GlobalClass.initLanguage(newBase));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (isLogged) {
+            initView();
+            initMenu();
+
+            welcomeBtn.setOnClickListener(v -> {
+                Intent intent = new Intent(this, WelcomeActivity.class);
+                startActivity(intent);
+            });
+            settingsBtn.setOnClickListener(v -> {
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+            });
+            libraryBtn.setOnClickListener(v -> {
+                Intent intent = new Intent(this, LibraryActivity.class);
+                startActivity(intent);
+            });
+            userBtn.setOnClickListener(v -> {
+                Intent intent = new Intent(this, UserActivity.class);
+                startActivity(intent);
+            });
+            exerciseBtn.setOnClickListener(v -> {
+                Intent intent = new Intent(this, ExerciseActivity.class);
+                startActivity(intent);
+            });
+        } else {
+            startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+        }
+
         dbHelper = new DBHelper(MainActivity.this);
         contentBD = new ContentBD(MainActivity.this);
-        initView();
-
-
-        welcomeBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(this, WelcomeActivity.class);
-            startActivity(intent);
-        });
-        settingsBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-        });
-        libraryBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(this, LibraryActivity.class);
-            startActivity(intent);
-        });
-        userBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(this, UserActivity.class);
-            startActivity(intent);
-        });
-        exerciseBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ExerciseActivity.class);
-            startActivity(intent);
-        });
 
         if (dbHelper.getCount("LANGUAGE") <= 0) {
             insertUnits();
         }
 
-        if (contentBD.getCount("EQUIPMENT_TAB") <= 0){
+        if (contentBD.getCount("EQUIPMENT_TAB") <= 0) {
             insertEquipment();
         }
         if (contentBD.getCount("APPEARANCE_TAB") <= 0) {
@@ -83,8 +107,17 @@ public class MainActivity extends AppCompatActivity {
             insertExtensionExercise();
         }
 
+        if (dbHelper.getCount("APPEARANCE") <= 0) {
+            insertUnitsAppearance();
+        } else {
+            Log.e(TAG, "onCreate: Appearance is filled");
+        }
+        if (dbHelper.getCount("FUTURE") <= 0) {
+            dbHelper.insertFutureTab("Test@test");
+        }
         initInternalFolders();
     }
+
 
     private void initView() {
         welcomeBtn = findViewById(R.id.aMain_welcome);
@@ -92,6 +125,37 @@ public class MainActivity extends AppCompatActivity {
         libraryBtn = findViewById(R.id.aMain_library);
         userBtn = findViewById(R.id.aMain_user);
         exerciseBtn = findViewById(R.id.aMain_exercise);
+        bottomNavigationView = findViewById(R.id.act_main_bottom_nav_bar);
+    }
+
+    private void initMenu() {
+        bottomNavigationView.setSelectedItemId(R.id.bottom_nav_bar_main);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+
+            boolean executeFinally = true;
+            try {
+                switch (item.getItemId()) {
+                    case (R.id.bottom_nav_bar_main):
+                        return true;
+                    case (R.id.bottom_nav_bar_workout):
+                        startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
+                        return true;
+                    case (R.id.bottom_nav_bar_profile):
+                        startActivity(new Intent(getApplicationContext(), UserActivity.class));
+                        return true;
+                    case (R.id.bottom_nav_bar_settings):
+                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                        executeFinally = false;
+                        return true;
+                }
+            } finally {
+                if (executeFinally) {
+                    overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_left);
+                    finish();
+                }
+            }
+            return false;
+        });
     }
 
     private void insertExtensionExercise() {
@@ -145,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
         contentBD.insertTaskWithDate(two);
         contentBD.insertTaskWithDate(three);
     }
+
     private void insertContentAppearance() {
         AppearanceBlockModel chest = new AppearanceBlockModel(-1,
                 R.drawable.ic_person, "Chest", "Chest description", "BodyPart");
@@ -171,11 +236,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void insertEquipment() {
         ThreeElementLinearListModel dumbbells = new ThreeElementLinearListModel(-1,
-                R.drawable.ic_hexagon, "Dumbbells",0);
+                R.drawable.ic_hexagon, "Dumbbells", 0);
         ThreeElementLinearListModel resistanceRubber = new ThreeElementLinearListModel(-1,
-                R.drawable.ic_block, "ResistanceRubber",0);
+                R.drawable.ic_block, "ResistanceRubber", 0);
         ThreeElementLinearListModel paralletes = new ThreeElementLinearListModel(-1,
-                R.drawable.ic_hexagon, "Paralletes",0);
+                R.drawable.ic_hexagon, "Paralletes", 0);
         contentBD.insertEquipment(dumbbells);
         contentBD.insertEquipment(resistanceRubber);
         contentBD.insertEquipment(paralletes);
@@ -190,12 +255,130 @@ public class MainActivity extends AppCompatActivity {
 
     private void insertUnits() {
 
-        ThreeElementLinearListModel lan_pl = new ThreeElementLinearListModel(-1, 0, "Polish", 1);
-        ThreeElementLinearListModel lan_en = new ThreeElementLinearListModel(-1, 0, "English", 0);
-        ThreeElementLinearListModel lan_rus = new ThreeElementLinearListModel(-1, 0, "Russian", 0);
+        LanguageModel lan_pl = new LanguageModel(-1,"Polish", false, "pl", "");
+        LanguageModel lan_en = new LanguageModel(-1, "English", true, "en", "");
         dbHelper.insertLanguage(lan_pl);
         dbHelper.insertLanguage(lan_en);
-        dbHelper.insertLanguage(lan_rus);
+
+    }
+
+    private void insertUnitsAppearance() {
+
+
+//        Gender;
+        AppearanceBlockModel gender1 = new AppearanceBlockModel(
+                -1, R.drawable.ic_male, "", getResources().getString(R.string.male),
+                0, "", "Gender");
+        AppearanceBlockModel gender2 = new AppearanceBlockModel(
+                -1, R.drawable.ic_female, "", getResources().getString(R.string.female),
+                0, "", "Gender");
+        AppearanceBlockModel gender3 = new AppearanceBlockModel(
+                -1, R.drawable.ic_block, "", getResources().getString(R.string.other),
+                0, "", "Gender");
+
+        dbHelper.insertAppearanceBlock(gender1);
+        dbHelper.insertAppearanceBlock(gender2);
+        dbHelper.insertAppearanceBlock(gender3);
+
+//        Units;
+        AppearanceBlockModel unit1 = new AppearanceBlockModel(
+                -1, R.drawable.ic_hexagon, "", "Height",
+                0, "", "Units");
+        AppearanceBlockModel unit2 = new AppearanceBlockModel(
+                -1, R.drawable.ic_hexagon, "", "Weight",
+                0, "", "Units");
+
+        dbHelper.insertAppearanceBlock(unit1);
+        dbHelper.insertAppearanceBlock(unit2);
+
+
+//        Units other table;
+        AppearanceBlockModel model = new AppearanceBlockModel(-1, "cm");
+        AppearanceBlockModel model1 = new AppearanceBlockModel(-1, "in");
+
+        dbHelper.insertHeightTab(model);
+        dbHelper.insertHeightTab(model1);
+
+
+        AppearanceBlockModel model2 = new AppearanceBlockModel(-1, "kg");
+        AppearanceBlockModel model3 = new AppearanceBlockModel(-1, "lbs");
+
+        dbHelper.insertWeightTab(model2);
+        dbHelper.insertWeightTab(model3);
+
+
+//        Goals;
+        AppearanceBlockModel goal1 = new AppearanceBlockModel(
+                -1, 0, "", getResources().getString(R.string.strength),
+                0, "", "Goal");
+        AppearanceBlockModel goal2 = new AppearanceBlockModel(
+                -1, 0, "", getResources().getString(R.string.muscle),
+                0, "", "Goal");
+        AppearanceBlockModel goal3 = new AppearanceBlockModel(
+                -1, 0, "", getResources().getString(R.string.fatLose),
+                0, "", "Goal");
+        AppearanceBlockModel goal4 = new AppearanceBlockModel(
+                -1, 0, "", getResources().getString(R.string.technique),
+                0, "", "Goal");
+
+        dbHelper.insertAppearanceBlock(goal1);
+        dbHelper.insertAppearanceBlock(goal2);
+        dbHelper.insertAppearanceBlock(goal3);
+        dbHelper.insertAppearanceBlock(goal4);
+
+
+//        Level;
+        AppearanceBlockModel level1 = new AppearanceBlockModel(
+                -1, R.drawable.ic_star_one, "", getResources().getString(R.string.beginner),
+                0, "", "Level");
+        AppearanceBlockModel level2 = new AppearanceBlockModel(
+                -1, R.drawable.ic_star_two, "", getResources().getString(R.string.intermediate),
+                0, "", "Level");
+        AppearanceBlockModel level3 = new AppearanceBlockModel(
+                -1, R.drawable.ic_star_three, "", getResources().getString(R.string.advanced),
+                0, "", "Level");
+
+        dbHelper.insertAppearanceBlock(level1);
+        dbHelper.insertAppearanceBlock(level2);
+        dbHelper.insertAppearanceBlock(level3);
+
+
+//        Performance;
+        AppearanceBlockModel performance1 = new AppearanceBlockModel(
+                -1, 0, "", getResources().getString(R.string.push),
+                0, "", "Performance");
+        AppearanceBlockModel performance2 = new AppearanceBlockModel(
+                -1, 0, "", getResources().getString(R.string.pull),
+                0, "", "Performance");
+        AppearanceBlockModel performance3 = new AppearanceBlockModel(
+                -1, 0, "", getResources().getString(R.string.squad),
+                0, "", "Performance");
+        AppearanceBlockModel performance4 = new AppearanceBlockModel(
+                -1, 0, "", getResources().getString(R.string.dip),
+                0, "", "Performance");
+
+        dbHelper.insertAppearanceBlock(performance1);
+        dbHelper.insertAppearanceBlock(performance2);
+        dbHelper.insertAppearanceBlock(performance3);
+        dbHelper.insertAppearanceBlock(performance4);
+
+
+//        User section ID{17 - 20};
+
+        AppearanceBlockModel username = new AppearanceBlockModel(
+                -1, R.drawable.ic_person, "", "Username",
+                0, "", "User");
+        AppearanceBlockModel email = new AppearanceBlockModel(
+                -1, R.drawable.ic_email, "", "E-mail",
+                0, "", "User");
+        AppearanceBlockModel password = new AppearanceBlockModel(
+                -1, R.drawable.ic_lock, "", "Password",
+                0, "", "User");
+
+        dbHelper.insertAppearanceBlock(username);
+        dbHelper.insertAppearanceBlock(email);
+        dbHelper.insertAppearanceBlock(password);
+
     }
 }
 

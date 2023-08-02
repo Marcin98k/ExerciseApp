@@ -1,38 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:orientation="vertical">
+    tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/aMain_welcome"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="WelcomeActivity"
-        />
-    <Button
-        android:id="@+id/aMain_settings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="SettingsActivity"/>
-    <Button
-        android:id="@+id/aMain_library"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="LibraryActivity"/>
-    <Button
-        android:id="@+id/aMain_user"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="UserActivity"/>
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/aMain_exercise"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ExerciseActivity"/>
+        <FrameLayout
+            android:id="@+id/act_main_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-</LinearLayout>
+        <android.widget.Button
+            android:id="@+id/aMain_welcome"
+            style="@style/MyStandardButtonGuidelines"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="WelcomeActivity" />
+
+        <android.widget.Button
+            android:id="@+id/aMain_settings"
+            style="@style/MyStandardButtonGuidelines"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SettingsActivity" />
+
+        <android.widget.Button
+            android:id="@+id/aMain_library"
+            style="@style/MyStandardButtonGuidelines"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="LibraryActivity" />
+
+        <android.widget.Button
+            android:id="@+id/aMain_user"
+            style="@style/MyStandardButtonGuidelines"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="UserActivity" />
+
+        <android.widget.Button
+            android:id="@+id/aMain_exercise"
+            style="@style/MyStandardButtonGuidelines"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ExerciseActivity" />
+    </LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/act_main_bottom_nav_bar"
+        style="@style/MyMenuGuidelines"/>
+</RelativeLayout>

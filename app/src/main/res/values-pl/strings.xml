@@ -34,4 +34,43 @@
     <string name="weight">Waga</string>
     <string name="plus">+</string>
     <string name="minus">-</string>
+
+    <string name="send">Wyślij</string>
+    <string name="your_message">Twoja wiadomość</string>
+    <string name="subject">Temat:</string>
+
+    <string name="time">Czas</string>
+    <string name="repetition">Powtórzenia</string>
+    <string name="unknown">Nieznane</string>
+    <string name="settings">Ustawienia</string>
+    <string name="profile">Profil</string>
+    <string name="update">Zaktualizuj</string>
+    <string name="date">Data</string>
+    <string name="empty">Pusty</string>
+    <string name="workout">Trening</string>
+    <string name="create">Stwórz</string>
+    <string name="language">Język</string>
+    <string name="notification">Powiadomienia</string>
+    <string name="account">Konto</string>
+    <string name="questions">Pytania</string>
+    <string name="future_functions">Przyszłe funkcje</string>
+    <string name="about">O aplikacji</string>
+    <string name="gender">Płeć</string>
+    <string name="dimensions">Wymiary</string>
+    <string name="goals">Cele</string>
+    <string name="performance">Wydajność</string>
+    <string name="level">Poziom</string>
+    <string name="lists">Listy</string>
+    <string name="create_exercise">Stwórz ćwiczenie</string>
+    <string name="select_exercise">Wybierz ćwiczenie</string>
+    <string name="select_details">Wybierz szczegóły</string>
+
+    <!--    ***_d  d -> dots -->
+    <string name="selected_exercise_name_d">Wybrana nazwa ćwicznia:</string>
+    <string name="type_d">Typ:</string>
+    <string name="sets_d">Set:</string>
+    <string name="volume_d">Objętość:</string>
+    <string name="rest_d">Przerwa:</string>
+    <string name="enter_your_exercise_name">Wpisz nazwę swojego ćwiczenia</string>
+    <string name="home">Home</string>
 </resources>

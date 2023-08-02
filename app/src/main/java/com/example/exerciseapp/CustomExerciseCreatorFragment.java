@@ -1,5 +1,6 @@
 package com.example.exerciseapp;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
@@ -18,6 +21,7 @@ import com.example.exerciseapp.mClasses.ClockClass;
 import com.example.exerciseapp.mClasses.CreateExerciseClass;
 import com.example.exerciseapp.mClasses.InsertResult;
 import com.example.exerciseapp.mDatabases.ContentBD;
+import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.CustomUserExerciseModel;
 import com.example.exerciseapp.mModels.ExerciseModel;
@@ -30,9 +34,11 @@ import java.util.List;
 public class CustomExerciseCreatorFragment extends Fragment implements UpdateIntegersDB {
 
     private static final String TAG = "CustomExerciseCreatorFragment";
-    private ToggleButton selectExercise;
-    private ToggleButton selectVolume;
+    private static final String FRAGMENT_NAME = "Create exercise";
 
+
+    private ToggleButton selectExercise;
+    private ToggleButton selectDetails;
     private TextView exerciseName;
     private TextView exerciseType;
     private TextView exerciseSets;
@@ -44,7 +50,6 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
 
     private List<FourElementsModel> fourElementsModelList;
     private static final String[] CUSTOM_EXERCISE_TITLES = new String[]{"Repetition", "Time"};
-    private String nameOfExercise;
     private String nameOfCustomExercise;
     private Integer numberOfExerciseID;
     private Integer numberOfExerciseType;
@@ -53,16 +58,48 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
     private Integer numberOfExerciseRest;
 
 
-
     private ViewPagerFragment viewPagerFragment;
     private SearchList searchList;
     private ContentBD contentBD;
     private CreateExerciseClass createExerciseClass;
     private ClockClass clockClassVolumeTime;
     private ClockClass clockClassRestTime;
+    private ITitleChangeListener iTitleChangeListener;
 
     public CustomExerciseCreatorFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            iTitleChangeListener = (ITitleChangeListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context +
+                    " must implement ITitleChangeListener");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (iTitleChangeListener != null) {
+            iTitleChangeListener.title(FRAGMENT_NAME);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (iTitleChangeListener != null) {
+            iTitleChangeListener.title("");
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -91,7 +128,8 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
             if (isChecked) {
                 if (searchList == null) {
                     searchList = new SearchList("ExerciseModelList", fourElementsModelList);
-                    ft.add(R.id.frag_custom_exercise_creator_select_container, searchList, "ExerciseModelTag");
+                    ft.add(R.id.frag_custom_exercise_creator_select_container, searchList,
+                            "ExerciseModelTag");
                     ft.commit();
                 } else {
                     ft.attach(searchList);
@@ -103,7 +141,7 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
             }
         }));
 
-        selectVolume.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+        selectDetails.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
             if (isChecked) {
                 if (viewPagerFragment == null) {
@@ -159,7 +197,7 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
     private void initView(View v) {
 
         selectExercise = v.findViewById(R.id.frag_custom_exercise_creator_btn_select);
-        selectVolume = v.findViewById(R.id.frag_custom_exercise_creator_btn_volume);
+        selectDetails = v.findViewById(R.id.frag_custom_exercise_creator_btn_details);
 
         exerciseName = v.findViewById(R.id.frag_custom_exercise_creator_exercise_name);
         exerciseType = v.findViewById(R.id.frag_custom_exercise_creator_exercise_type);
@@ -169,7 +207,7 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
 
         customExerciseName = v.findViewById(R.id.frag_custom_exercise_creator_custom_name);
 
-        btnCreate = v.findViewById(R.id.frag_custom_exercies_creator_btn_create);
+        btnCreate = v.findViewById(R.id.frag_custom_exercise_creator_btn_create);
     }
 
     public void fillFields() {
@@ -193,8 +231,9 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
         }
         exerciseSets.setText(String.valueOf(numberOfExerciseSets));
 
+        String nameOfExercise;
         if (numberOfExerciseID == null || numberOfExerciseID <= 0) {
-            nameOfExercise = "Null or empty";
+            nameOfExercise = "---";
         } else {
             nameOfExercise = contentBD.showExerciseById(numberOfExerciseID).get(0).getName();
         }

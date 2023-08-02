@@ -2,17 +2,19 @@ package com.example.exerciseapp;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 import com.example.exerciseapp.mInterfaces.ISummary;
@@ -21,46 +23,51 @@ import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExerciseActivity extends AppCompatActivity
-        implements FragmentSupportListener, UpdateIntegersDB, ISummary {
+public class ExerciseActivity extends AppCompatActivity implements
+        FragmentSupportListener, UpdateIntegersDB, ISummary {
 
-    //    Initializing widgets;
-    private FrameLayout container;
     private Button nextBtn;
 
-    //    Initializing variables;
+
     private byte typeExercise = 0;
     private long id = 0;
     private byte scenario;
     private byte currentFragment;
     private int rest;
     private int currentExercise;
-    private long exerciseId;
-
     private long idMain;
     private byte genusSummary;
     private List<WorkoutModel> workoutPattern;
+    private long startTime;
 
-    //    Initializing constant;
-    private final String REPETITION_EXE_TAG = "tagRepetitionExerciseFragment";
-    private final String TIME_EXE_TAG = "tagTimeExerciseFragment";
-    private final String TIME_BREAK_TAG = "tagBreakExerciseFragment";
-    private final String EMPTY_TAG = "tagEmptyFragment";
 
-    //    Initializing instances;
+    private static final String REPETITION_EXE_TAG = "tagRepetitionExerciseFragment";
+    private static final String TIME_EXE_TAG = "tagTimeExerciseFragment";
+    private static final String TIME_BREAK_TAG = "tagBreakExerciseFragment";
+    private static final String EMPTY_TAG = "tagEmptyFragment";
+    private static final int MINUS_ONE = -1;
+    private static final int REPETITION_EXERCISE_FRAGMENT = 1;
+    private static final int TIME_EXERCISE_FRAGMENT = 2;
+
+
     private ContentBD contentBD;
     private TimeExerciseFragment timeExerciseFragment;
     private RepetitionExerciseFragment repetitionExerciseFragment;
-    private TimeBreakFragment timeBreakFragment;
     private EmptyFragment emptyFragment;
     private SummaryFragment summaryFragment;
+    private TimeBreakFragment timeBreakFragment = new TimeBreakFragment();
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(GlobalClass.initLanguage(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise);
-
         intView(savedInstanceState);
+        startTime = SystemClock.elapsedRealtime();
 
         nextBtn.setOnClickListener(v -> {
             if (repetitionExerciseFragment != null && repetitionExerciseFragment.isVisible()) {
@@ -69,10 +76,10 @@ public class ExerciseActivity extends AppCompatActivity
                 timeExerciseFragment.fragmentMessage();
             } else if (emptyFragment != null && emptyFragment.isVisible()) {
                 emptyFragment.fragmentMessage();
-            } else if(summaryFragment != null && summaryFragment.isVisible()) {
+            } else if (summaryFragment != null && summaryFragment.isVisible()) {
                 summaryFragment.fragmentMessage();
-            }else {
-                Log.i(TAG, "onCreate: " + emptyFragment);
+                elapsed();
+            } else {
                 throw new NullPointerException("(ExerciseActivity)nextBtn -> not work");
             }
         });
@@ -80,11 +87,7 @@ public class ExerciseActivity extends AppCompatActivity
 
     private void intView(Bundle savedInstanceState) {
 
-        container = findViewById(R.id.act_exercise_container);
         nextBtn = findViewById(R.id.act_exercise_button);
-
-        emptyFragment = new EmptyFragment();
-        summaryFragment = new SummaryFragment();
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -92,50 +95,49 @@ public class ExerciseActivity extends AppCompatActivity
             typeExercise = bundle.getByte("type");
             idMain = id;
         }
-
+        workoutPattern = new ArrayList<>();
+        contentBD = new ContentBD(this);
         if (findViewById(R.id.act_exercise_container) != null) {
 
             if (savedInstanceState != null) {
                 return;
             }
-            if (typeExercise != -1) {
-                addFragment(id, typeExercise);
-                genusSummary = 1;
-                return;
-            }
-            genusSummary = 2;
-            workoutPattern = new ArrayList<>();
-            contentBD = new ContentBD(this);
-            String temp = contentBD.showWorkoutById(id).get(0).getExerciseId();
-            String[] exerciseStr = temp.split(",");
-            long[] exercisesId = new long[exerciseStr.length];
-            for (int i = 0; i < exercisesId.length; i++) {
-                exercisesId[i] = Long.parseLong(exerciseStr[i]);
-            }
-            for (int i = 0; i < exercisesId.length; i++) {
-                WorkoutModel model = new WorkoutModel(i, exercisesId[i],
-                        (byte) contentBD.showExerciseById(exercisesId[i]).get(0).getType());
-                workoutPattern.add(model);
-            }
-
-//                Ending fragment;
-            WorkoutModel lastExercise = new WorkoutModel(exercisesId.length, -1, (byte) 0);
-            workoutPattern.add(lastExercise);
-
+            int sumExercise = 0;
             currentExercise = 0;
+            if (typeExercise > 0) {
+                WorkoutModel singleExercise = new WorkoutModel(0, id, typeExercise);
+                workoutPattern.add(singleExercise);
+                sumExercise++;
+                genusSummary = 1;
+            } else {
+                genusSummary = 2;
+                String exerciseIds = contentBD.showExercisesFromWorkout(id);
+                String[] exerciseList = exerciseIds.split(",");
+                long[] exercisesId = new long[exerciseList.length];
+                int exercisesIdLength = exercisesId.length;
+                for (int i = 0; i < exercisesIdLength; i++) {
+                    exercisesId[i] = Long.parseLong(exerciseList[i]);
+                    sumExercise++;
+                }
+                for (int i = 0; i < exercisesIdLength; i++) {
+                    WorkoutModel model = new WorkoutModel(i, exercisesId[i],
+                            (byte) contentBD.showExerciseByIdFromWorkout(exercisesId[i]).get(0).getType());
+                    workoutPattern.add(model);
+                }
+            }
             typeExercise = workoutPattern.get(currentExercise).getType();
             addFragment(workoutPattern.get(0).getExerciseId(), typeExercise);
 
+            WorkoutModel lastExercise = new WorkoutModel(sumExercise, MINUS_ONE, (byte) 0);
+            workoutPattern.add(lastExercise);
         }
     }
 
-    /**
-     * @param id   is responsible for displaying the correct content;
-     * @param type is responsible for displaying the correct fragment typeExercise;
-     *             <p>
-     *             The method responsible for adding a fragment to the activity after id
-     *             and show appropriate fragment typeExercise;
-     */
+    private void elapsed() {
+        long endTime = SystemClock.elapsedRealtime() - startTime;
+        Log.i(TAG, "elapsed: " + endTime);
+    }
+
     private void addFragment(long id, int type) {
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -150,17 +152,13 @@ public class ExerciseActivity extends AppCompatActivity
             timeExerciseFragment.setArguments(sendToFragment);
             ft.add(R.id.act_exercise_container, timeExerciseFragment, TIME_EXE_TAG);
         } else {
+            emptyFragment = new EmptyFragment();
             ft.add(R.id.act_exercise_container, emptyFragment, EMPTY_TAG);
         }
         ft.setReorderingAllowed(true);
         ft.commit();
     }
 
-
-    /**
-     * @param param Each exercise is divided into sets, if user completes them all,
-     *              then the exercise changes;
-     */
     @Override
     public void checkCondition(boolean param) {
         if (param) {
@@ -179,6 +177,7 @@ public class ExerciseActivity extends AppCompatActivity
             }
 
             if (workoutPattern == null) {
+                summaryFragment = new SummaryFragment();
                 Bundle bundle = new Bundle();
                 bundle.putLong("id", idMain);
                 bundle.putByte("genusSummary", genusSummary);
@@ -191,8 +190,8 @@ public class ExerciseActivity extends AppCompatActivity
             }
             currentExercise++;
             typeExercise = workoutPattern.get(workoutPattern.get(currentExercise).getId()).getType();
-            exerciseId = workoutPattern.get(workoutPattern.get(currentExercise).getId()).getExerciseId();
-            if (exerciseId == -1) {
+            if (workoutPattern.get(workoutPattern.get(currentExercise).getId()).getExerciseId() == MINUS_ONE) {
+                summaryFragment = new SummaryFragment();
                 Bundle bundle = new Bundle();
                 bundle.putLong("id", idMain);
                 bundle.putByte("genusSummary", genusSummary);
@@ -221,24 +220,19 @@ public class ExerciseActivity extends AppCompatActivity
         Bundle sendRestValue = new Bundle();
         sendRestValue.putInt("rest", rest);
 
-        timeBreakFragment = new TimeBreakFragment();
         switch (currentFragment) {
             case 1:
-                ft.detach(repetitionExerciseFragment);
-                timeBreakFragment.setArguments(sendRestValue);
-                ft.replace(R.id.act_exercise_container, timeBreakFragment, TIME_BREAK_TAG);
-                break;
             case 2:
-                ft.detach(timeExerciseFragment);
+                ft.detach(currentFragment == 1 ? repetitionExerciseFragment : timeExerciseFragment);
                 timeBreakFragment.setArguments(sendRestValue);
                 ft.replace(R.id.act_exercise_container, timeBreakFragment, TIME_BREAK_TAG);
                 break;
             case 3:
                 ft.remove(timeBreakFragment);
-                if (scenario == 1) {
+                if (scenario == REPETITION_EXERCISE_FRAGMENT) {
                     ft.attach(repetitionExerciseFragment);
                     ft.replace(R.id.act_exercise_container, repetitionExerciseFragment, REPETITION_EXE_TAG);
-                } else if (scenario == 2) {
+                } else if (scenario == TIME_EXERCISE_FRAGMENT) {
                     ft.attach(timeExerciseFragment);
                     ft.replace(R.id.act_exercise_container, timeExerciseFragment, TIME_EXE_TAG);
                 } else {
@@ -266,6 +260,7 @@ public class ExerciseActivity extends AppCompatActivity
     public void summaryMessage(String name, String strVal, int numVal, boolean conditionVal) {
         Log.i(TAG, "summaryMessage: ");
         if (name.equals("EmptyFragment") && conditionVal) {
+            summaryFragment = new SummaryFragment();
             Bundle bundle = new Bundle();
             bundle.putLong("id", idMain);
             bundle.putByte("genusSummary", genusSummary);

@@ -1,45 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginVertical="5dp"
     android:minHeight="75dp"
     android:orientation="horizontal"
-    android:weightSum="1">
+    android:weightSum="1.0"
+    android:elevation="15dp">
 
     <ImageView
         android:id="@+id/sFourElementLinearBlock_icon"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="0.2"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:contentDescription="TODO"
+        android:minWidth="75dp"
         android:padding="10dp"
-        android:layout_gravity="center"/>
-
-    <TextView
-        android:id="@+id/sFourElementLinearBlock_name"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="0.5"
-        android:padding="10dp"
-        android:gravity="center_vertical"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <LinearLayout
-        android:id="@+id/sFourElementLinearBlock_container"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="0.3"
-        android:padding="10dp"
-        android:layout_gravity="center"
-        android:orientation="horizontal">
+        android:id="@+id/asset_four_elements_linear_block_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sFourElementLinearBlock_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        android:weightSum="1.0">
 
         <TextView
-            android:id="@+id/sFourElementLinearBlock_firstValue"
-            android:layout_width="wrap_content"
+            android:id="@+id/sFourElementLinearBlock_name"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center"/>
-        <TextView
-            android:id="@+id/sFourElementLinearBlock_secondValue"
+            android:layout_weight="0.55"
+            android:gravity="start"
+            android:paddingVertical="5dp"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_weight="0.45"
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"/>
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/sFourElementLinearBlock_firstValue"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:paddingVertical="5dp"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/sFourElementLinearBlock_secondValue"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:paddingVertical="5dp"
+                android:textSize="18sp" />
+        </LinearLayout>
+
     </LinearLayout>
-</LinearLayout>
+
+    <View
+        android:id="@+id/asset_four_elements_linear_block_underline"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/grey"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,26 +1,64 @@
 package com.example.exerciseapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
 
 public class ContactFragment extends Fragment {
+
     private EditText subjectET;
     private EditText messageET;
     private Button sendBT;
+
+
     private String userEmail;
-    private final String APP_EMAIL = "marcin3009k@gmail.com";
+    private static final String APP_EMAIL = "marcin3009k@gmail.com";
+    private static final String FRAGMENT_NAME = "/Contact";
+
+
+    private ITitleChangeListener iTitleChangeListener;
 
     public ContactFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            iTitleChangeListener = (ITitleChangeListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context +
+                    " must implement ITitleChangeListener");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (iTitleChangeListener != null) {
+            iTitleChangeListener.title(FRAGMENT_NAME);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (iTitleChangeListener != null) {
+            iTitleChangeListener.title("");
+        }
     }
 
     @Override
@@ -38,15 +76,14 @@ public class ContactFragment extends Fragment {
                              Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_contact, container, false);
         initView(mView);
-
-
-        sendBT.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendMail();
-            }
-        });
+        sendBT.setOnClickListener(view -> sendMail());
         return mView;
+    }
+
+    private void initView(View v) {
+        subjectET = v.findViewById(R.id.fContact_subject);
+        messageET = v.findViewById(R.id.fContact_message);
+        sendBT = v.findViewById(R.id.fContact_button);
     }
 
     private void sendMail() {
@@ -55,17 +92,16 @@ public class ContactFragment extends Fragment {
         String message = messageET.getText().toString();
 
         Intent userMessageIntent = new Intent(Intent.ACTION_SEND);
-        userMessageIntent.putExtra(Intent.EXTRA_EMAIL, APP_EMAIL);
+        userMessageIntent.setType("message/rfc822");
+        userMessageIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{APP_EMAIL});
         userMessageIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
         userMessageIntent.putExtra(Intent.EXTRA_TEXT, (CharSequence) message);
+        userMessageIntent.putExtra(Intent.EXTRA_CC, new String[]{userEmail});
 
-        userMessageIntent.setType("message/rfc822");
-        startActivity(Intent.createChooser(userMessageIntent, "Choose an email client"));
-    }
-
-    private void initView(View v) {
-        subjectET = v.findViewById(R.id.fContact_subject);
-        messageET = v.findViewById(R.id.fContact_message);
-        sendBT = v.findViewById(R.id.fContact_button);
+        try {
+            startActivity(Intent.createChooser(userMessageIntent, "Choose an email client"));
+        } catch (android.content.ActivityNotFoundException e) {
+            Toast.makeText(requireContext(), "Email client not found.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

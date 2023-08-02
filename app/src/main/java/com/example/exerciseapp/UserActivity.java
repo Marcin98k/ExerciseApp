@@ -3,20 +3,26 @@ package com.example.exerciseapp;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mInterfaces.ISummary;
+import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.github.mikephil.charting.charts.LineChart;
@@ -26,6 +32,8 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -34,7 +42,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UserActivity extends AppCompatActivity implements UpdateIntegersDB, ISummary {
+public class UserActivity extends AppCompatActivity implements UpdateIntegersDB, ISummary,
+        ITitleChangeListener {
 
     private LineChart lineChartWeight;
     private Button selectDate;
@@ -42,15 +51,24 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
     private Button updateWeightBtn;
     private DatePickerDialog datePickerDialog;
 
+    private TextView activityTitle;
+    private TextView fragmentTitle;
+
     private final int USER_ID = 1;
     private int currentDate;
     private int selectedDateToDB;
+    private String activityName;
     private LocalDate today;
     private final DateTimeFormatter LONG_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyMMdd");
     private final DateTimeFormatter SHORT_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMdd");
     private final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd MMM yyyy");
 
     private ContentBD contentBD;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(GlobalClass.initLanguage(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +96,33 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
         currentDate = Integer.parseInt(current);
         selectedDateToDB = currentDate;
         selectDate.setText(String.valueOf(showDate));
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.act_user_bottom_nav_bar);
+        bottomNavigationView.setSelectedItemId(R.id.bottom_nav_bar_profile);
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+
+            switch (item.getItemId()) {
+                case (R.id.bottom_nav_bar_main):
+                    startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+                    overridePendingTransition(R.anim.slide_to_right, R.anim.slide_from_right);
+                    finish();
+                    return true;
+                case (R.id.bottom_nav_bar_workout):
+                    startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
+                    overridePendingTransition(R.anim.slide_to_right, R.anim.slide_from_right);
+                    finish();
+                    return true;
+                case (R.id.bottom_nav_bar_profile):
+                    return true;
+                case (R.id.bottom_nav_bar_settings):
+                    startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                    overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_left);
+                    finish();
+                    return true;
+            }
+            return false;
+        });
 
         initDatePickerDialog(selectDate);
         fillDB();
@@ -140,6 +185,11 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
         selectDate = findViewById(R.id.act_user_edit_text_date);
         userWeight = findViewById(R.id.act_user_edit_text_user_weight);
         updateWeightBtn = findViewById(R.id.act_user_btn_update_weight);
+        activityTitle = findViewById(R.id.act_user_title_part_one);
+        fragmentTitle = findViewById(R.id.act_user_title_part_two);
+
+        activityName = getString(R.string.profile);
+        activityTitle.setText(activityName);
     }
 
     private void fillDB() {
@@ -239,5 +289,10 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
     @Override
     public void summaryMessage(String name, String strVal, int numVal, boolean conditionVal) {
 
+    }
+
+    @Override
+    public void title(String value) {
+        fragmentTitle.setText(value);
     }
 }

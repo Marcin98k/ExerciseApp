@@ -14,24 +14,16 @@ import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 
 public class ClockClass {
 
-    //    Initializing context;
     private Context mContext;
 
-
-    //    Initializing interface;
     private FragmentSupportListener fragmentSupportListener;
 
-
-    //    Initializing widgets;
     private ProgressBar progressBar;
     private TextView showTimeTV;
-    private Button addTimeBtn;
+    private Button modifyTimeBtn;
     private Button skipTimeBtn;
-    private Button plusBtn;
-    private Button minusBtn;
 
 
-    //    Initializing variables;
     private int second = 0;
     private int minute = 0, hour = 0;
     private int transit = 0;
@@ -40,7 +32,6 @@ public class ClockClass {
     private String secondTxt, minuteTxt, hourTxt;
 
 
-    //    Thread;
     private Thread thread;
     private volatile boolean isRunning = true;
 
@@ -52,8 +43,6 @@ public class ClockClass {
     private boolean clockMax;
     //    Activate buttons = true; Disable buttons = false;
     private boolean buttonState;
-    //    Activate buttons = true; Disable buttons = false;
-    private boolean buttonPlusMinus;
 
     public ClockClass(Context context) {
         this.mContext = context;
@@ -67,76 +56,45 @@ public class ClockClass {
     }
 
     //    insert Context; set ClockState Increases = false, Decreases = true; set maxTime;
-    public ClockClass(Context context, boolean clockState, int maxTime,
-                      boolean buttonState, boolean buttonPlusMinus) {
+    public ClockClass(Context context, boolean clockState, int maxTime, boolean buttonState) {
         this.mContext = context;
         this.clockState = clockState;
         this.maxTime = maxTime;
         this.buttonState = buttonState;
-        this.buttonPlusMinus = buttonPlusMinus;
     }
 
-    //    insert ProgressBar;
     public ClockClass setBar(ProgressBar progressBar) {
         this.progressBar = progressBar;
         return this;
     }
 
-    //    insert a filed that shows the time;
     public ClockClass setTextView(TextView showTimeTV) {
         this.showTimeTV = showTimeTV;
         return this;
     }
 
-    //    insert a button that adds time;
-    public ClockClass setAddBtn(Button addTimeBtn) {
-        this.addTimeBtn = addTimeBtn;
+    public ClockClass setAddBtn(Button modifyTimeBtn) {
+        this.modifyTimeBtn = modifyTimeBtn;
         return this;
     }
 
-    //    insert a button that skip time;
     public ClockClass setSkipBtn(Button skipTimeBtn) {
         this.skipTimeBtn = skipTimeBtn;
         return this;
     }
 
-    //    insert max time;
-    public ClockClass setMaxTime(int maxTime) {
-        this.maxTime = maxTime;
-        return this;
-    }
-
-    //    insert a button that plus time;
-    public ClockClass setPlusBtn(Button plusBtn) {
-        this.plusBtn = plusBtn;
-        return this;
-    }
-
-    //    insert a button that minus time;
-    public ClockClass setMinusBtn(Button minusBtn) {
-        this.minusBtn = minusBtn;
-        return this;
-    }
-
-    //    insert a value (external second);
     public ClockClass setSecond(int second) {
         this.second = second;
         return this;
     }
-    public int getSecond() {
-        return second;
-    }
 
-    public ClockClass addSecond(int second) {
+    public void addSecond(int second) {
         this.second += second;
-        return this;
     }
 
-    public ClockClass minusSecond(int second) {
+    public void minusSecond(int second) {
         this.second -= second;
-        return this;
     }
-    //    Main part;
 
     public void runClock() {
 
@@ -145,19 +103,17 @@ public class ClockClass {
 
         if (clockState) {
             setTime();
+        } else {
+            maxTime = second;
         }
 
         if (buttonState) {
             addTime();
             skipTime();
         }
-        if (buttonPlusMinus) {
-            plusTime();
-            minusTime();
-        }
-
         updateProgressBar();
     }
+
     private void updateProgressBar() {
 
         thread = new Thread(() -> {
@@ -168,16 +124,18 @@ public class ClockClass {
                 }
 //                ***Time decreases***
                 if (clockState) {
-                    increaseTime();
+                    second--;
+                    currentProgress--;
                 } else {
 //                    ***Time increases***
-                    decreaseTime();
+                    second++;
+                    currentProgress++;
                 }
 
                 progressBar.setProgress(currentProgress);
 
 //                Change time in TextView;
-                new Handler(Looper.getMainLooper()).post(this::clockInstructionsInternal);
+                new Handler(Looper.getMainLooper()).post(() -> dynamicIncreaseTime(showTimeTV));
 
                 Log.d(TAG, "updateProgressBar: Thread: " + Thread.currentThread().getId() +
                         " sec: " + second);
@@ -190,13 +148,12 @@ public class ClockClass {
 //                Stop loop
                 if (second == 0 || second == maxTime) {
                     isRunning = false;
+                    if (fragmentSupportListener != null) {
+                        fragmentSupportListener.checkCondition(true);
+                    }
                 }
             }
             thread.interrupt();
-
-//            if (fragmentSupportListener != null) {
-//                fragmentSupportListener.checkCondition(true);
-//            }
         });
         thread.start();
     }
@@ -206,47 +163,14 @@ public class ClockClass {
         return this;
     }
 
-    //    Manipulate time part;
     private void setTime() {
         second = maxTime;
         currentProgress = second;
     }
 
-    private void increaseTime() {
-        second--;
-        currentProgress--;
-    }
-
-    private void decreaseTime() {
-        second++;
-        currentProgress++;
-
-        if (currentProgress == 60) {
-            currentProgress = 0;
-        }
-    }
-
-    private void plusTime() {
-
-        plusBtn.setOnClickListener(v -> {
-            maxTime += 5;
-            second += 5;
-            currentProgress += 5;
-        });
-    }
-
-    private void minusTime() {
-
-        minusBtn.setOnClickListener(v -> {
-            maxTime -= 5;
-            second -= 5;
-            currentProgress -= 5;
-        });
-    }
-
     private void addTime() {
 
-        addTimeBtn.setOnClickListener(v -> {
+        modifyTimeBtn.setOnClickListener(v -> {
 
 //                      ***Time decreases***
             if (clockState) {
@@ -277,7 +201,6 @@ public class ClockClass {
     }
 
     private void skipTime() {
-
         skipTimeBtn.setOnClickListener(v -> {
             stopThread();
             if (fragmentSupportListener != null) {
@@ -286,8 +209,6 @@ public class ClockClass {
         });
     }
 
-
-    //    Show time part;
     public void dynamicIncreaseTime(TextView text) {
 
 //        setTime();
@@ -319,130 +240,30 @@ public class ClockClass {
         clockInstructionsExt(text);
     }
 
-    private void clockInstructionsInternal() {
-
-        if (second >= 60) {
-            second -= 60;
-            minute++;
-        } else if (minute > 0 && second == 0) {
-            minute--;
-            second += 60;
-        }
-
-        if (minute >= 60) {
-            minute -= 60;
-            hour++;
-        } else if (hour > 0 && minute == 0) {
-            hour--;
-            minute += 60;
-        }
-        clockInstructions();
-    }
-
-    private void clockInstructions() {
-
-        String secondsClock = String.valueOf(second);
-        String minutesClock = String.valueOf(minute);
-        String hoursClock = String.valueOf(hour);
-        String bridgeMinutes = String.valueOf(minute + 1);
-        String bridgeHours = String.valueOf(hour + 1);
-
-        if (hour <= 9) {
-            hourTxt = "0" + hoursClock;
-        } else {
-            hourTxt = hoursClock;
-        }
-
-        if (minute <= 9) {
-            minuteTxt = "0" + minutesClock;
-        } else {
-            minuteTxt = minutesClock;
-        }
-
-        if (second <= 9) {
-            secondTxt = "0" + secondsClock;
-        } else {
-            secondTxt = secondsClock;
-        }
-
-        String firstClockOption = minuteTxt + ":" + secondTxt;
-
-        if (minute == 60) {
-
-            if (hour <= 9) {
-                hourTxt = bridgeHours;
-                String secondClockOption = "0" + hourTxt + ":00:" + secondTxt;
-                showTimeTV.setText(secondClockOption);
-            } else {
-                showTimeTV.setText(firstClockOption);
-            }
-        } else if (second == 60) {
-
-            if (minute <= 9) {
-                minuteTxt = bridgeMinutes;
-                String thirdClockOption = "0" + minuteTxt + ":00";
-                showTimeTV.setText(thirdClockOption);
-            } else {
-                showTimeTV.setText(firstClockOption);
-            }
-        } else {
-            showTimeTV.setText(firstClockOption);
-        }
-    }
-
-
     private void clockInstructionsExt(TextView textView) {
 
-        String secondsClock = String.valueOf(second);
-        String minutesClock = String.valueOf(minute);
-        String hoursClock = String.valueOf(hour);
         String bridgeMinutes = String.valueOf(minute + 1);
         String bridgeHours = String.valueOf(hour + 1);
 
-        if (hour <= 9) {
-            hourTxt = "0" + hoursClock;
-        } else {
-            hourTxt = hoursClock;
-        }
-
-        if (minute <= 9) {
-            minuteTxt = "0" + minutesClock;
-        } else {
-            minuteTxt = minutesClock;
-        }
-
-        if (second <= 9) {
-            secondTxt = "0" + secondsClock;
-        } else {
-            secondTxt = secondsClock;
-        }
+        hourTxt = formatTimeValue(hour);
+        minuteTxt = formatTimeValue(minute);
+        secondTxt = formatTimeValue(second);
 
         String firstClockOption = minuteTxt + ":" + secondTxt;
+        String clockOption = firstClockOption;
 
         if (minute == 60) {
-
-            if (hour <= 9) {
-                hourTxt = bridgeHours;
-                String secondClockOption = "0" + hourTxt + ":00:" + secondTxt;
-                textView.setText(secondClockOption);
-            } else {
-                textView.setText(firstClockOption);
-            }
+            clockOption = hour <= 9 ? "0" + bridgeHours + ":00:" + secondTxt : firstClockOption;
         } else if (second == 60) {
-
-            if (minute <= 9) {
-                minuteTxt = bridgeMinutes;
-                String thirdClockOption = "0" + minuteTxt + ":00";
-                textView.setText(thirdClockOption);
-            } else {
-                textView.setText(firstClockOption);
-            }
-        } else {
-            textView.setText(firstClockOption);
+            clockOption = minute <= 9 ? "0" + bridgeMinutes + ":00" : firstClockOption;
         }
+        textView.setText(clockOption);
     }
 
-    //    Interface part;
+    private String formatTimeValue(int value) {
+        return value <= 9 ? "0" + value : String.valueOf(value);
+    }
+
     public void setFragmentSupportListener(FragmentSupportListener listener) {
         fragmentSupportListener = listener;
     }

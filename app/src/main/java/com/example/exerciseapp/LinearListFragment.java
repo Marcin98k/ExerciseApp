@@ -19,6 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exerciseapp.mAdapters.FourElementLinearListAdapter;
 import com.example.exerciseapp.mAdapters.ThreeElementLinearListAdapter;
+
+
+import com.example.exerciseapp.mEnums.ListType;
+import com.example.exerciseapp.mEnums.NumberOfItem;
+
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
@@ -29,7 +34,7 @@ import java.util.List;
 public class LinearListFragment extends Fragment {
 
     private ListView listView;
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private ListAdapter adapter;
     private FourElementLinearListAdapter adapter1;
 
@@ -39,7 +44,11 @@ public class LinearListFragment extends Fragment {
 
     private int currentlyPosition;
 
-    UpdateIntegersDB updateIntegersDB;
+
+    private UpdateIntegersDB updateIntegersDB;
+    private ListType listType;
+    private NumberOfItem numberOfItem;
+
 
     public LinearListFragment() {
         // Required empty public constructor
@@ -90,7 +99,7 @@ public class LinearListFragment extends Fragment {
         }
         if (listName.equals("tagTELL_account")) {
             adapter1 = new FourElementLinearListAdapter(requireContext(), accountList,
-                    "tagTELL_account", updateIntegersDB);
+                    "tagTELL_account", updateIntegersDB, listType, numberOfItem);
             Log.i(TAG, "onCreateView: - > tagTELL_account");
             recyclerView.setAdapter(adapter1);
         }

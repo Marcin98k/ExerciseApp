@@ -1,7 +1,10 @@
 package com.example.exerciseapp;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,20 +22,17 @@ import java.util.List;
 
 public class SearchList extends Fragment {
 
-    //    Initializing widgets;
-    private RecyclerView recyclerView;
 
-    //    Initializing variables
+    private RecyclerView recyclerView;
+    private SearchView searchView;
+
+
     private List<FourElementsModel> list;
     private String listName;
 
-    //    Initializing interface;
+
     private UpdateIntegersDB updateIntegersDB;
     private UpdateIntegersDB updateIntegersDB1;
-
-//    Initializing instances;
-
-    private SearchView searchView;
     private SearchAdapter searchAdapter;
 
     public SearchList() {
@@ -84,7 +84,7 @@ public class SearchList extends Fragment {
         try {
             updateIntegersDB1 = (UpdateIntegersDB) context;
         } catch (RuntimeException e) {
-            throw new RuntimeException(context.toString() +
+            throw new RuntimeException(context +
                     " must implement UpdateIntegersDB");
         }
     }
