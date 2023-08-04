@@ -40,11 +40,22 @@ import java.util.stream.Collectors;
 public class SettingsActivity extends AppCompatActivity implements
         LinearListFragment.SelectedItem, UpdateIntegersDB, UpdateStringsDB, ITitleChangeListener {
 
+    private TextView fragmentTitle;
 
+
+    private int unitsID;
+    private int numbersID;
+    private List<Integer> tab;
+    private final int USER_ID = 1;
+
+
+    private static final String TAG = "SettingsActivity";
+    private final String tagHeight = "tagHeight";
+    private final String tagWeight = "tagWeight";
     private static final int PERMISSION_REQUEST_CODE = 1;
 
-    private TextView fragmentTitle;
-    private static final String TAG = "SettingsActivity";
+
+
     //    LinearListFragment == TELL
     private static final String tagMainList = "tagTELL_main";
     private static final String tagLanguageList = "tagTELL_language";
@@ -56,17 +67,12 @@ public class SettingsActivity extends AppCompatActivity implements
     private static final String performanceName = "userPerformance";
     private static final String levelName = "userLevel";
     private static final String genderName = "userGender";
-    private SharedViewModel sharedViewModel;
-    private List<Integer> tab;
-    private SelectHeightFragment selectHeightFragment;
-    private SelectWeightFragment selectWeightFragment;
-    private final int USER_ID = 1;
+
+
     private Bundle bundle;
     private DBHelper dbHelper;
-    private int unitsID;
-    private int numbersID;
-    private final String tagHeight = "tagHeight";
-    private final String tagWeight = "tagWeight";
+    private SelectHeightFragment selectHeightFragment;
+    private SelectWeightFragment selectWeightFragment;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -103,35 +109,8 @@ public class SettingsActivity extends AppCompatActivity implements
         dbHelper = new DBHelper(this);
 
         tab = new ArrayList<>();
-        sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+        SharedViewModel sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
         sharedViewModel.getSharedInt().observe(this, tab::add);
-    }
-
-        private void initMenu() {
-
-        BottomNavigationView bottomNavigationView = findViewById(R.id.act_settings_bottom_nav_bar);
-        bottomNavigationView.setSelectedItemId(R.id.bottom_nav_bar_settings);
-
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-
-            switch (item.getItemId()) {
-                case (R.id.bottom_nav_bar_main):
-                    startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
-                    finish();
-                    return true;
-                case (R.id.bottom_nav_bar_workout):
-                    startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
-                    finish();
-                    return true;
-                case (R.id.bottom_nav_bar_profile):
-                    startActivity(new Intent(getApplicationContext(), UserActivity.class));
-                    finish();
-                    return true;
-                case (R.id.bottom_nav_bar_settings):
-                    return true;
-            }
-            return false;
-        });
     }
 
     private void initView(Bundle savedInstanceState) {
@@ -158,9 +137,37 @@ public class SettingsActivity extends AppCompatActivity implements
         }
     }
 
-    private void FragmentOperation(Fragment fragment, FragmentAction action,
-                                   boolean addToBackStack, String tag, List<?> list,
-                                   String fragmentName, ListType listType,
+    private void initMenu() {
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.act_settings_bottom_nav_bar);
+        bottomNavigationView.setSelectedItemId(R.id.bottom_nav_bar_settings);
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+
+            switch (item.getItemId()) {
+                case (R.id.bottom_nav_bar_main):
+                    startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+                    finish();
+                    return true;
+                case (R.id.bottom_nav_bar_workout):
+                    startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
+                    finish();
+                    return true;
+                case (R.id.bottom_nav_bar_profile):
+                    startActivity(new Intent(getApplicationContext(), UserActivity.class));
+                    finish();
+                    return true;
+                case (R.id.bottom_nav_bar_settings):
+                    return true;
+            }
+            return false;
+        });
+    }
+
+
+
+    private void FragmentOperation(Fragment fragment, FragmentAction action, boolean addToBackStack,
+                                   String tag, List<?> list, String fragmentName, ListType listType,
                                    NumberOfItem numberOfItem) {
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -215,6 +222,17 @@ public class SettingsActivity extends AppCompatActivity implements
         ft.commit();
     }
 
+
+
+    private ThreeElementLinearListModel fillList(int icon,
+                                                 String name, int action) {
+        return new ThreeElementLinearListModel(-1, icon, name, action);
+    }
+
+    private List<UserInformationModel> userInformationList() {
+        return dbHelper.getInformationUser(USER_ID);
+    }
+
     private List<ThreeElementLinearListModel> languageListModel() {
         return dbHelper.showLanguage()
                 .stream().map(languageModel -> new ThreeElementLinearListModel(
@@ -222,62 +240,6 @@ public class SettingsActivity extends AppCompatActivity implements
                         languageModel.getStatus() ? 1 : 0, languageModel.getPrefix(),
                         languageModel.getImage()
                 )).collect(Collectors.toList());
-    }
-
-
-    @Override
-    public void item(String list, int position, int currentlyPosition) {
-
-        if (Objects.equals(list, tagMainList)) {
-            switch (position) {
-                case 0:
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ProfileFragment profileFragment = new ProfileFragment();
-                    bundle = new Bundle();
-                    bundle.putParcelableArrayList(informationName, (ArrayList<? extends Parcelable>) userUnit());
-                    bundle.putParcelableArrayList(goalsName, (ArrayList<? extends Parcelable>) userGoals());
-                    bundle.putParcelableArrayList(performanceName, (ArrayList<? extends Parcelable>) userPerformance());
-                    bundle.putParcelableArrayList(levelName, (ArrayList<? extends Parcelable>) userLevel());
-                    bundle.putParcelableArrayList(genderName, (ArrayList<? extends Parcelable>) userGender());
-                    profileFragment.setArguments(bundle);
-                    ft.setReorderingAllowed(true);
-                    ft.addToBackStack(tagProfileLists);
-                    ft.replace(R.id.act_settings_mainContainer, profileFragment, tagProfileLists);
-                    ft.commit();
-                    break;
-                case 1:
-                   FragmentOperation(new FourElementListFragment(), FragmentAction.REPLACE,
-                           true, tagAccountList, accountList(),
-                           getString(R.string.account), ListType.SELECTABLE_BUTTONS,
-                           NumberOfItem.TWO);
-                    break;
-                case 2:
-                    FragmentOperation(new NotificationFragment(), FragmentAction.REPLACE,
-                            true, tagNotificationList, notificationList(),
-                            getString(R.string.notification), ListType.SELECTABLE_BUTTONS,
-                            NumberOfItem.ONE);
-                    break;
-                case 3:
-                    FragmentOperation(new RadioButtonList(), FragmentAction.REPLACE,
-                            true, tagLanguageList, languageListModel(),
-                            getString(R.string.language), ListType.RADIO_BUTTONS, NumberOfItem.ONE);
-                    break;
-                case 4:
-                    FragmentOperation(new ContactFragment(), FragmentAction.REPLACE,
-                            true, ContactFragment.class.getName());
-                    break;
-                case 5:
-                    FragmentOperation(new TimeBreakFragment(), FragmentAction.REPLACE,
-                            true, "TagTimeBreak");
-                    break;
-            }
-        }
-    }
-
-
-
-    private List<UserInformationModel> userInformationList() {
-        return dbHelper.showInformationUser(USER_ID);
     }
 
     private List<ThreeElementLinearListModel> mainList() {
@@ -292,23 +254,6 @@ public class SettingsActivity extends AppCompatActivity implements
         list.add(fillList(R.drawable.ic_lock, getString(R.string.future_functions), R.drawable.ic_arrow_right));
         list.add(fillList(R.drawable.ic_email, getString(R.string.about), R.drawable.ic_arrow_right));
 
-        return list;
-    }
-
-    private List<IntegerModel> notificationList() {
-
-        List<IntegerModel> list = new ArrayList<>();
-
-        int notification = userInformationList().get(0).getNotification();
-
-        int id = dbHelper.showUserNotifications(notification).get(0).getId();
-        int status = dbHelper.showUserNotifications(notification).get(0).getFirstValue();
-        int days = dbHelper.showUserNotifications(notification).get(0).getSecondValue();
-        int hour = dbHelper.showUserNotifications(notification).get(0).getThirdValue();
-        int workoutId = dbHelper.showUserNotifications(notification).get(0).getForthValue();
-
-        IntegerModel model = new IntegerModel(id, status, days, hour, workoutId);
-        list.add(model);
         return list;
     }
 
@@ -335,36 +280,31 @@ public class SettingsActivity extends AppCompatActivity implements
         return list;
     }
 
-    private ThreeElementLinearListModel fillList(int icon,
-                                                 String name, int action) {
-        return new ThreeElementLinearListModel(-1, icon, name, action);
-    }
-
     private List<FourElementLinearListModel> userUnit() {
         List<FourElementLinearListModel> show = new ArrayList<>();
         int units = userInformationList().get(0).getUnits();
 
-        int height = dbHelper.showUserUnit(units).get(0).getFirstValue();
-        int weight = dbHelper.showUserUnit(units).get(0).getSecondValue();
+        int height = dbHelper.getUserUnit(units).get(0).getFirstValue();
+        int weight = dbHelper.getUserUnit(units).get(0).getSecondValue();
 
-        int unitHeight = dbHelper.showUserUnit(units).get(0).getThirdValue();
-        int unitWeight = dbHelper.showUserUnit(units).get(0).getForthValue();
+        int unitHeight = dbHelper.getUserUnit(units).get(0).getThirdValue();
+        int unitWeight = dbHelper.getUserUnit(units).get(0).getForthValue();
 
-        int mHeight1 = dbHelper.showMiddleIndex(height).get(0).getFirstValue();
-        int mHeight11 = dbHelper.showMiddleIndex(height).get(0).getSecondValue();
+        int mHeight1 = dbHelper.getMiddleIndex(height).get(0).getFirstValue();
+        int mHeight11 = dbHelper.getMiddleIndex(height).get(0).getSecondValue();
 
-        int mWeight1 = dbHelper.showMiddleIndex(weight).get(0).getFirstValue();
-        int mWeight11 = dbHelper.showMiddleIndex(weight).get(0).getSecondValue();
+        int mWeight1 = dbHelper.getMiddleIndex(weight).get(0).getFirstValue();
+        int mWeight11 = dbHelper.getMiddleIndex(weight).get(0).getSecondValue();
 
-        List<AppearanceBlockModel> appearanceBlockModelList = dbHelper.showAppearanceBlock(mHeight11);
-        List<AppearanceBlockModel> appearanceBlockModelList1 = dbHelper.showAppearanceBlock(mWeight11);
+        List<AppearanceBlockModel> appearanceBlockModelList = dbHelper.getAppearanceBlock(mHeight11);
+        List<AppearanceBlockModel> appearanceBlockModelList1 = dbHelper.getAppearanceBlock(mWeight11);
 
         FourElementLinearListModel modelHeight = new FourElementLinearListModel(
                 units,
                 appearanceBlockModelList.get(0).getIcon(),
                 appearanceBlockModelList.get(0).getName(),
                 String.valueOf(mHeight1),
-                dbHelper.showUnitHeight(unitHeight).get(0).getName(),
+                dbHelper.getUnitHeight(unitHeight),
                 height);
 
         FourElementLinearListModel modelWeight = new FourElementLinearListModel(
@@ -372,7 +312,7 @@ public class SettingsActivity extends AppCompatActivity implements
                 appearanceBlockModelList1.get(0).getIcon(),
                 appearanceBlockModelList1.get(0).getName(),
                 String.valueOf(mWeight1),
-                dbHelper.showUnitWeight(unitWeight).get(0).getName(),
+                dbHelper.getUnitWeight(unitWeight),
                 weight);
         show.add(modelHeight);
         show.add(modelWeight);
@@ -386,51 +326,51 @@ public class SettingsActivity extends AppCompatActivity implements
 
         int performance = userInformationList().get(0).getPerformance();
 
-        int per1 = dbHelper.showPerformance(performance).get(0).getFirstValue();
-        int per2 = dbHelper.showPerformance(performance).get(0).getSecondValue();
-        int per3 = dbHelper.showPerformance(performance).get(0).getThirdValue();
-        int per4 = dbHelper.showPerformance(performance).get(0).getForthValue();
+        int per1 = dbHelper.getPerformance(performance).get(0).getFirstValue();
+        int per2 = dbHelper.getPerformance(performance).get(0).getSecondValue();
+        int per3 = dbHelper.getPerformance(performance).get(0).getThirdValue();
+        int per4 = dbHelper.getPerformance(performance).get(0).getForthValue();
 
-        int mPer1 = dbHelper.showMiddleIndex(per1).get(0).getFirstValue();
-        int mPer11 = dbHelper.showMiddleIndex(per1).get(0).getSecondValue();
+        int mPer1 = dbHelper.getMiddleIndex(per1).get(0).getFirstValue();
+        int mPer11 = dbHelper.getMiddleIndex(per1).get(0).getSecondValue();
 
-        int mPer2 = dbHelper.showMiddleIndex(per2).get(0).getFirstValue();
-        int mPer22 = dbHelper.showMiddleIndex(per2).get(0).getSecondValue();
+        int mPer2 = dbHelper.getMiddleIndex(per2).get(0).getFirstValue();
+        int mPer22 = dbHelper.getMiddleIndex(per2).get(0).getSecondValue();
 
-        int mPer3 = dbHelper.showMiddleIndex(per3).get(0).getFirstValue();
-        int mPer33 = dbHelper.showMiddleIndex(per3).get(0).getSecondValue();
+        int mPer3 = dbHelper.getMiddleIndex(per3).get(0).getFirstValue();
+        int mPer33 = dbHelper.getMiddleIndex(per3).get(0).getSecondValue();
 
-        int mPer4 = dbHelper.showMiddleIndex(per4).get(0).getFirstValue();
-        int mPer44 = dbHelper.showMiddleIndex(per4).get(0).getSecondValue();
+        int mPer4 = dbHelper.getMiddleIndex(per4).get(0).getFirstValue();
+        int mPer44 = dbHelper.getMiddleIndex(per4).get(0).getSecondValue();
 
-        List<AppearanceBlockModel> appearanceBlockList1 = dbHelper.showAppearanceBlock(mPer11);
-        List<AppearanceBlockModel> appearanceBlockList2 = dbHelper.showAppearanceBlock(mPer22);
-        List<AppearanceBlockModel> appearanceBlockList3 = dbHelper.showAppearanceBlock(mPer33);
-        List<AppearanceBlockModel> appearanceBlockList4 = dbHelper.showAppearanceBlock(mPer44);
+        List<AppearanceBlockModel> appearanceBlockList1 = dbHelper.getAppearanceBlock(mPer11);
+        List<AppearanceBlockModel> appearanceBlockList2 = dbHelper.getAppearanceBlock(mPer22);
+        List<AppearanceBlockModel> appearanceBlockList3 = dbHelper.getAppearanceBlock(mPer33);
+        List<AppearanceBlockModel> appearanceBlockList4 = dbHelper.getAppearanceBlock(mPer44);
 
         FourElementLinearListModel model1 = new FourElementLinearListModel(
-                dbHelper.showMiddleIndex(per1).get(0).getId(),
+                dbHelper.getMiddleIndex(per1).get(0).getId(),
                 appearanceBlockList1.get(0).getIcon(),
                 appearanceBlockList1.get(0).getName(),
                 String.valueOf(mPer1),
                 "");
 
         FourElementLinearListModel model2 = new FourElementLinearListModel(
-                dbHelper.showMiddleIndex(per2).get(0).getId(),
+                dbHelper.getMiddleIndex(per2).get(0).getId(),
                 appearanceBlockList2.get(0).getIcon(),
                 appearanceBlockList2.get(0).getName(),
                 String.valueOf(mPer2),
                 "");
 
         FourElementLinearListModel model3 = new FourElementLinearListModel(
-                dbHelper.showMiddleIndex(per3).get(0).getId(),
+                dbHelper.getMiddleIndex(per3).get(0).getId(),
                 appearanceBlockList3.get(0).getIcon(),
                 appearanceBlockList3.get(0).getName(),
                 String.valueOf(mPer3),
                 "");
 
         FourElementLinearListModel model4 = new FourElementLinearListModel(
-                dbHelper.showMiddleIndex(per4).get(0).getId(),
+                dbHelper.getMiddleIndex(per4).get(0).getId(),
                 appearanceBlockList4.get(0).getIcon(),
                 appearanceBlockList4.get(0).getName(),
                 String.valueOf(mPer4),
@@ -444,58 +384,75 @@ public class SettingsActivity extends AppCompatActivity implements
         return show;
     }
 
+    private List<IntegerModel> notificationList() {
+
+        List<IntegerModel> list = new ArrayList<>();
+
+        int notification = userInformationList().get(0).getNotification();
+
+        int id = dbHelper.getNotifications(notification).get(0).getId();
+        int status = dbHelper.getNotifications(notification).get(0).getFirstValue();
+        int days = dbHelper.getNotifications(notification).get(0).getSecondValue();
+        int hour = dbHelper.getNotifications(notification).get(0).getThirdValue();
+        int workoutId = dbHelper.getNotifications(notification).get(0).getForthValue();
+
+        IntegerModel model = new IntegerModel(id, status, days, hour, workoutId);
+        list.add(model);
+        return list;
+    }
+
     private List<FourElementLinearListModel> userGoals() {
 
         List<FourElementLinearListModel> show = new ArrayList<>();
 
         int goals = userInformationList().get(0).getGoals();
 
-        int goal1 = dbHelper.showUserGoals(goals).get(0).getFirstValue();
-        int goal2 = dbHelper.showUserGoals(goals).get(0).getSecondValue();
-        int goal3 = dbHelper.showUserGoals(goals).get(0).getThirdValue();
-        int goal4 = dbHelper.showUserGoals(goals).get(0).getForthValue();
+        int goal1 = dbHelper.getGoals(goals).get(0).getFirstValue();
+        int goal2 = dbHelper.getGoals(goals).get(0).getSecondValue();
+        int goal3 = dbHelper.getGoals(goals).get(0).getThirdValue();
+        int goal4 = dbHelper.getGoals(goals).get(0).getForthValue();
 
-        int mGoal1 = dbHelper.showMiddleIndex(goal1).get(0).getFirstValue();
-        int mGoal11 = dbHelper.showMiddleIndex(goal1).get(0).getSecondValue();
+        int mGoal1 = dbHelper.getMiddleIndex(goal1).get(0).getFirstValue();
+        int mGoal11 = dbHelper.getMiddleIndex(goal1).get(0).getSecondValue();
 
-        int mGoal2 = dbHelper.showMiddleIndex(goal2).get(0).getFirstValue();
-        int mGoal22 = dbHelper.showMiddleIndex(goal2).get(0).getSecondValue();
+        int mGoal2 = dbHelper.getMiddleIndex(goal2).get(0).getFirstValue();
+        int mGoal22 = dbHelper.getMiddleIndex(goal2).get(0).getSecondValue();
 
-        int mGoal3 = dbHelper.showMiddleIndex(goal3).get(0).getFirstValue();
-        int mGoal33 = dbHelper.showMiddleIndex(goal3).get(0).getSecondValue();
+        int mGoal3 = dbHelper.getMiddleIndex(goal3).get(0).getFirstValue();
+        int mGoal33 = dbHelper.getMiddleIndex(goal3).get(0).getSecondValue();
 
-        int mGoal4 = dbHelper.showMiddleIndex(goal4).get(0).getFirstValue();
-        int mGoal44 = dbHelper.showMiddleIndex(goal4).get(0).getSecondValue();
+        int mGoal4 = dbHelper.getMiddleIndex(goal4).get(0).getFirstValue();
+        int mGoal44 = dbHelper.getMiddleIndex(goal4).get(0).getSecondValue();
 
 
-        List<AppearanceBlockModel> appearanceBlockList1 = dbHelper.showAppearanceBlock(mGoal11);
-        List<AppearanceBlockModel> appearanceBlockList2 = dbHelper.showAppearanceBlock(mGoal22);
-        List<AppearanceBlockModel> appearanceBlockList3 = dbHelper.showAppearanceBlock(mGoal33);
-        List<AppearanceBlockModel> appearanceBlockList4 = dbHelper.showAppearanceBlock(mGoal44);
+        List<AppearanceBlockModel> appearanceBlockList1 = dbHelper.getAppearanceBlock(mGoal11);
+        List<AppearanceBlockModel> appearanceBlockList2 = dbHelper.getAppearanceBlock(mGoal22);
+        List<AppearanceBlockModel> appearanceBlockList3 = dbHelper.getAppearanceBlock(mGoal33);
+        List<AppearanceBlockModel> appearanceBlockList4 = dbHelper.getAppearanceBlock(mGoal44);
 
         FourElementLinearListModel model1 = new FourElementLinearListModel(
-                dbHelper.showMiddleIndex(goal1).get(0).getId(),
+                dbHelper.getMiddleIndex(goal1).get(0).getId(),
                 appearanceBlockList1.get(0).getIcon(),
                 appearanceBlockList1.get(0).getName(),
                 String.valueOf(mGoal1),
                 "");
 
         FourElementLinearListModel model2 = new FourElementLinearListModel(
-                dbHelper.showMiddleIndex(goal2).get(0).getId(),
+                dbHelper.getMiddleIndex(goal2).get(0).getId(),
                 appearanceBlockList2.get(0).getIcon(),
                 appearanceBlockList2.get(0).getName(),
                 String.valueOf(mGoal2),
                 "");
 
         FourElementLinearListModel model3 = new FourElementLinearListModel(
-                dbHelper.showMiddleIndex(goal3).get(0).getId(),
+                dbHelper.getMiddleIndex(goal3).get(0).getId(),
                 appearanceBlockList3.get(0).getIcon(),
                 appearanceBlockList3.get(0).getName(),
                 String.valueOf(mGoal3),
                 "");
 
         FourElementLinearListModel model4 = new FourElementLinearListModel(
-                dbHelper.showMiddleIndex(goal4).get(0).getId(),
+                dbHelper.getMiddleIndex(goal4).get(0).getId(),
                 appearanceBlockList4.get(0).getIcon(),
                 appearanceBlockList4.get(0).getName(),
                 String.valueOf(mGoal4),
@@ -515,37 +472,37 @@ public class SettingsActivity extends AppCompatActivity implements
 
         int level = userInformationList().get(0).getLevel();
 
-        int lvl1 = dbHelper.showLevel(level).get(0).getFirstValue();
-        int lvl2 = dbHelper.showLevel(level).get(0).getSecondValue();
-        int lvl3 = dbHelper.showLevel(level).get(0).getThirdValue();
+        int lvl1 = dbHelper.getLevel(level).get(0).getFirstValue();
+        int lvl2 = dbHelper.getLevel(level).get(0).getSecondValue();
+        int lvl3 = dbHelper.getLevel(level).get(0).getThirdValue();
 
-        int mLvl1 = dbHelper.showMiddleIndex(lvl1).get(0).getFirstValue();
-        int mLvl2 = dbHelper.showMiddleIndex(lvl1).get(0).getSecondValue();
+        int mLvl1 = dbHelper.getMiddleIndex(lvl1).get(0).getFirstValue();
+        int mLvl2 = dbHelper.getMiddleIndex(lvl1).get(0).getSecondValue();
 
-        int mLvl11 = dbHelper.showMiddleIndex(lvl2).get(0).getFirstValue();
-        int mLvl22 = dbHelper.showMiddleIndex(lvl2).get(0).getSecondValue();
+        int mLvl11 = dbHelper.getMiddleIndex(lvl2).get(0).getFirstValue();
+        int mLvl22 = dbHelper.getMiddleIndex(lvl2).get(0).getSecondValue();
 
-        int mLvl111 = dbHelper.showMiddleIndex(lvl3).get(0).getFirstValue();
-        int mLvl222 = dbHelper.showMiddleIndex(lvl3).get(0).getSecondValue();
+        int mLvl111 = dbHelper.getMiddleIndex(lvl3).get(0).getFirstValue();
+        int mLvl222 = dbHelper.getMiddleIndex(lvl3).get(0).getSecondValue();
 
-        List<AppearanceBlockModel> appearanceBlockList1 = dbHelper.showAppearanceBlock(mLvl2);
-        List<AppearanceBlockModel> appearanceBlockList2 = dbHelper.showAppearanceBlock(mLvl22);
-        List<AppearanceBlockModel> appearanceBlockList3 = dbHelper.showAppearanceBlock(mLvl222);
+        List<AppearanceBlockModel> appearanceBlockList1 = dbHelper.getAppearanceBlock(mLvl2);
+        List<AppearanceBlockModel> appearanceBlockList2 = dbHelper.getAppearanceBlock(mLvl22);
+        List<AppearanceBlockModel> appearanceBlockList3 = dbHelper.getAppearanceBlock(mLvl222);
 
         ThreeElementLinearListModel model1 = new ThreeElementLinearListModel(
-                dbHelper.showMiddleIndex(lvl1).get(0).getId(),
+                dbHelper.getMiddleIndex(lvl1).get(0).getId(),
                 appearanceBlockList1.get(0).getIcon(),
                 appearanceBlockList1.get(0).getName(),
                 mLvl1);
 
         ThreeElementLinearListModel model2 = new ThreeElementLinearListModel(
-                dbHelper.showMiddleIndex(lvl2).get(0).getId(),
+                dbHelper.getMiddleIndex(lvl2).get(0).getId(),
                 appearanceBlockList2.get(0).getIcon(),
                 appearanceBlockList2.get(0).getName(),
                 mLvl11);
 
         ThreeElementLinearListModel model3 = new ThreeElementLinearListModel(
-                dbHelper.showMiddleIndex(lvl3).get(0).getId(),
+                dbHelper.getMiddleIndex(lvl3).get(0).getId(),
                 appearanceBlockList3.get(0).getIcon(),
                 appearanceBlockList3.get(0).getName(),
                 mLvl111);
@@ -563,38 +520,38 @@ public class SettingsActivity extends AppCompatActivity implements
 
         int gender = userInformationList().get(0).getGender();
 
-        int male = dbHelper.showGender(gender).get(0).getFirstValue();
-        int female = dbHelper.showGender(gender).get(0).getSecondValue();
-        int other = dbHelper.showGender(gender).get(0).getThirdValue();
+        int male = dbHelper.getGender(gender).get(0).getFirstValue();
+        int female = dbHelper.getGender(gender).get(0).getSecondValue();
+        int other = dbHelper.getGender(gender).get(0).getThirdValue();
 
-        int male1 = dbHelper.showMiddleIndex(male).get(0).getFirstValue();
-        int male2 = dbHelper.showMiddleIndex(male).get(0).getSecondValue();
+        int male1 = dbHelper.getMiddleIndex(male).get(0).getFirstValue();
+        int male2 = dbHelper.getMiddleIndex(male).get(0).getSecondValue();
 
-        int female1 = dbHelper.showMiddleIndex(female).get(0).getFirstValue();
-        int female2 = dbHelper.showMiddleIndex(female).get(0).getSecondValue();
+        int female1 = dbHelper.getMiddleIndex(female).get(0).getFirstValue();
+        int female2 = dbHelper.getMiddleIndex(female).get(0).getSecondValue();
 
-        int other1 = dbHelper.showMiddleIndex(other).get(0).getFirstValue();
-        int other2 = dbHelper.showMiddleIndex(other).get(0).getSecondValue();
+        int other1 = dbHelper.getMiddleIndex(other).get(0).getFirstValue();
+        int other2 = dbHelper.getMiddleIndex(other).get(0).getSecondValue();
 
 
-        List<AppearanceBlockModel> maleModel = dbHelper.showAppearanceBlock(male2);
-        List<AppearanceBlockModel> femaleModel = dbHelper.showAppearanceBlock(female2);
-        List<AppearanceBlockModel> otherModel = dbHelper.showAppearanceBlock(other2);
+        List<AppearanceBlockModel> maleModel = dbHelper.getAppearanceBlock(male2);
+        List<AppearanceBlockModel> femaleModel = dbHelper.getAppearanceBlock(female2);
+        List<AppearanceBlockModel> otherModel = dbHelper.getAppearanceBlock(other2);
 
         ThreeElementLinearListModel model1 = new ThreeElementLinearListModel(
-                dbHelper.showMiddleIndex(male).get(0).getId(),
+                dbHelper.getMiddleIndex(male).get(0).getId(),
                 maleModel.get(0).getIcon(),
                 maleModel.get(0).getName(),
                 male1);
 
         ThreeElementLinearListModel model2 = new ThreeElementLinearListModel(
-                dbHelper.showMiddleIndex(female).get(0).getId(),
+                dbHelper.getMiddleIndex(female).get(0).getId(),
                 femaleModel.get(0).getIcon(),
                 femaleModel.get(0).getName(),
                 female1);
 
         ThreeElementLinearListModel model3 = new ThreeElementLinearListModel(
-                dbHelper.showMiddleIndex(other).get(0).getId(),
+                dbHelper.getMiddleIndex(other).get(0).getId(),
                 otherModel.get(0).getIcon(),
                 otherModel.get(0).getName(),
                 other1);
@@ -605,6 +562,8 @@ public class SettingsActivity extends AppCompatActivity implements
 
         return show;
     }
+
+
 
     @Override
     public void strValues(String listName, int position, int id, String firstVal) {
@@ -622,11 +581,8 @@ public class SettingsActivity extends AppCompatActivity implements
         }
     }
 
-
-
     @Override
-    public void values(String listName, int firstValue,
-                       int secondValue, int thirdValue) {
+    public void values(String listName, int firstValue, int secondValue, int thirdValue) {
 
         switch (listName) {
             case informationName:
@@ -680,6 +636,55 @@ public class SettingsActivity extends AppCompatActivity implements
             default:
                 Log.e(TAG, "values:  listName --> default");
                 break;
+        }
+    }
+
+    @Override
+    public void item(String list, int position, int currentlyPosition) {
+
+        if (Objects.equals(list, tagMainList)) {
+            switch (position) {
+                case 0:
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ProfileFragment profileFragment = new ProfileFragment();
+                    bundle = new Bundle();
+                    bundle.putParcelableArrayList(informationName, (ArrayList<? extends Parcelable>) userUnit());
+                    bundle.putParcelableArrayList(goalsName, (ArrayList<? extends Parcelable>) userGoals());
+                    bundle.putParcelableArrayList(performanceName, (ArrayList<? extends Parcelable>) userPerformance());
+                    bundle.putParcelableArrayList(levelName, (ArrayList<? extends Parcelable>) userLevel());
+                    bundle.putParcelableArrayList(genderName, (ArrayList<? extends Parcelable>) userGender());
+                    profileFragment.setArguments(bundle);
+                    ft.setReorderingAllowed(true);
+                    ft.addToBackStack(tagProfileLists);
+                    ft.replace(R.id.act_settings_mainContainer, profileFragment, tagProfileLists);
+                    ft.commit();
+                    break;
+                case 1:
+                    FragmentOperation(new FourElementListFragment(), FragmentAction.REPLACE,
+                            true, tagAccountList, accountList(),
+                            getString(R.string.account), ListType.SELECTABLE_BUTTONS,
+                            NumberOfItem.TWO);
+                    break;
+                case 2:
+                    FragmentOperation(new NotificationFragment(), FragmentAction.REPLACE,
+                            true, tagNotificationList, notificationList(),
+                            getString(R.string.notification), ListType.SELECTABLE_BUTTONS,
+                            NumberOfItem.ONE);
+                    break;
+                case 3:
+                    FragmentOperation(new RadioButtonList(), FragmentAction.REPLACE,
+                            true, tagLanguageList, languageListModel(),
+                            getString(R.string.language), ListType.RADIO_BUTTONS, NumberOfItem.ONE);
+                    break;
+                case 4:
+                    FragmentOperation(new ContactFragment(), FragmentAction.REPLACE,
+                            true, ContactFragment.class.getName());
+                    break;
+                case 5:
+                    FragmentOperation(new TimeBreakFragment(), FragmentAction.REPLACE,
+                            true, "TagTimeBreak");
+                    break;
+            }
         }
     }
 

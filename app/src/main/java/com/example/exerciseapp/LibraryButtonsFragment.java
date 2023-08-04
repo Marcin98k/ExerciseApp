@@ -14,20 +14,23 @@ import com.example.exerciseapp.mInterfaces.ISingleIntegerValue;
 
 public class LibraryButtonsFragment extends Fragment implements View.OnClickListener {
 
-    //    Initializing widgets;
-    private Button firstBtn, secondBtn, thirdBtn;
-
-    //    Initializing constant;
     public static final String NAME = "LibraryButtonFragment";
 
-    //    Initializing interface;
     private ISingleIntegerValue iSingleIntegerValue;
-
 
     public LibraryButtonsFragment() {
         // Required empty public constructor
     }
-
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            iSingleIntegerValue = (ISingleIntegerValue) context;
+        } catch (NullPointerException e) {
+            throw new NullPointerException(context.toString() +
+                    " must implement ISingleIntegerValue");
+        }
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -38,13 +41,13 @@ public class LibraryButtonsFragment extends Fragment implements View.OnClickList
 
     private void initView(View v) {
 
-        firstBtn = v.findViewById(R.id.frag_library_button_first_btn);
+        Button firstBtn = v.findViewById(R.id.frag_library_button_first_btn);
         firstBtn.setOnClickListener(this);
 
-        secondBtn = v.findViewById(R.id.frag_library_button_second_btn);
+        Button secondBtn = v.findViewById(R.id.frag_library_button_second_btn);
         secondBtn.setOnClickListener(this);
 
-        thirdBtn = v.findViewById(R.id.frag_library_button_third_btn);
+        Button thirdBtn = v.findViewById(R.id.frag_library_button_third_btn);
         thirdBtn.setOnClickListener(this);
     }
 
@@ -60,17 +63,6 @@ public class LibraryButtonsFragment extends Fragment implements View.OnClickList
             case (R.id.frag_library_button_third_btn):
                 iSingleIntegerValue.singleIntValue(NAME, 3);
                 break;
-        }
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            iSingleIntegerValue = (ISingleIntegerValue) context;
-        } catch (NullPointerException e) {
-            throw new NullPointerException(context.toString() +
-                    " must implement ISingleIntegerValue");
         }
     }
 }

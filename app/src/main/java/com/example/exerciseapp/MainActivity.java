@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "onCreate: Appearance is filled");
         }
         if (dbHelper.getCount("FUTURE") <= 0) {
-            dbHelper.insertFutureTab("Test@test");
+            dbHelper.insertFutureTab("Test@test", 0);
         }
         initInternalFolders();
     }

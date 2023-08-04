@@ -373,20 +373,20 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
                 dbHelper.showMiddleTab().get(length + 13).getId(),
                 dbHelper.showMiddleTab().get(length + 14).getId(),
                 dbHelper.showMiddleTab().get(length + 15).getId());
-        dbHelper.insertUserPerformance(performanceModel);
+        dbHelper.insertPerformance(performanceModel);
 
         IntegerModel notificationModel = new IntegerModel(-1,
                 1,3, 4, 2);
-        dbHelper.insertUserNotifications(notificationModel);
+        dbHelper.insertNotifications(notificationModel);
 
         UserInformationModel userInformation = new UserInformationModel(
                 -1, "name", "email", "password",
-                dbHelper.showLastGender().get(0).getId(),
-                dbHelper.showUnitsTab().get(0).getId(),
-                dbHelper.showLastUserPerformance().get(0).getId(),
-                dbHelper.showLastUserGoals().get(0).getId(),
-                dbHelper.showLastLevel().get(0).getId(),
-                dbHelper.showLastUserNotification().get(0).getId());
+                dbHelper.getLastID("GENDER"),
+                dbHelper.getLastID("USER_UNITS"),
+                dbHelper.getLastID("USER_PERFORMANCE"),
+                dbHelper.getLastID("GOALS"),
+                dbHelper.getLastID("LEVEL"),
+                dbHelper.getLastID("NOTIFICATIONS"));
         dbHelper.insertUserInformation(userInformation);
 
     }

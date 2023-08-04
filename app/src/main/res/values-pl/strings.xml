@@ -73,4 +73,7 @@
     <string name="rest_d">Przerwa:</string>
     <string name="enter_your_exercise_name">Wpisz nazwę swojego ćwiczenia</string>
     <string name="home">Home</string>
+
+    <string name="Enter_a_name_for_the_exercise">Podaj nazwę swojego ćwiczenia</string>
+    <string name="plans">Plany</string>
 </resources>

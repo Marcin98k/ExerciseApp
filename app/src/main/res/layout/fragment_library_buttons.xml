@@ -28,7 +28,7 @@
     <android.widget.Button
         android:id="@+id/frag_library_button_second_btn"
         android:layout_width="0dp"
-        android:text="@string/empty"
+        android:text="@string/plans"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/view"

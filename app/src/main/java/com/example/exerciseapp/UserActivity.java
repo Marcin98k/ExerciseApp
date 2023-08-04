@@ -172,7 +172,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
                 Toast.makeText(this, "you not update weight", Toast.LENGTH_SHORT).show();
 
             } else {
-                contentBD.updateUserBioWeight(selectedDateToDB,
+                contentBD.updateUserBioWeight(USER_ID, selectedDateToDB,
                         Integer.parseInt(userWeight.getText().toString().trim()));
                 Toast.makeText(this, "Added to database \n day: " +
                                 selectedDateToDB + "\n weight: " + userWeight.getText().toString().trim(),

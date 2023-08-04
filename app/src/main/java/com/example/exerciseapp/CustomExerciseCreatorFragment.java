@@ -14,9 +14,11 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.exerciseapp.mClasses.BackgroundTask;
 import com.example.exerciseapp.mClasses.ClockClass;
 import com.example.exerciseapp.mClasses.CreateExerciseClass;
 import com.example.exerciseapp.mClasses.InsertResult;
@@ -30,6 +32,7 @@ import com.example.exerciseapp.mModels.IntegerModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CustomExerciseCreatorFragment extends Fragment implements UpdateIntegersDB {
 
@@ -56,6 +59,8 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
     private Integer numberOfExerciseSets;
     private Integer numberOfExerciseVolume;
     private Integer numberOfExerciseRest;
+
+    private FragmentManager fm;
 
 
     private ViewPagerFragment viewPagerFragment;
@@ -113,24 +118,36 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
         fourElementsModelList = new ArrayList<>();
         clockClassVolumeTime = new ClockClass(requireContext());
         clockClassRestTime = new ClockClass(requireContext());
+        fm = getChildFragmentManager();
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
 
-        List<ExerciseModel> temp = contentBD.showExercise();
-
-        for (int i = 0; i < temp.size(); i++) {
-            FourElementsModel model = new FourElementsModel(
-                    temp.get(i).getId(), temp.get(i).getImage(), temp.get(i).getName(),
-                    String.valueOf(temp.get(i).getType()), R.drawable.ic_hexagon);
-            fourElementsModelList.add(model);
-        }
+//            FourElementsModel model = new FourElementsModel(
+//                    showExercise.get(i).getId(), showExercise.get(i).getImage(), showExercise.get(i).getName(),
+//                    String.valueOf(showExercise.get(i).getType()), R.drawable.ic_hexagon);
+//            fourElementsModelList.add(model);
+//        }
 
         selectExercise.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
-            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
             if (isChecked) {
                 if (searchList == null) {
-                    searchList = new SearchList("ExerciseModelList", fourElementsModelList);
-                    ft.add(R.id.frag_custom_exercise_creator_select_container, searchList,
-                            "ExerciseModelTag");
-                    ft.commit();
+                    BackgroundTask.executeWithLoading(
+                            () -> {
+                                List<ExerciseModel> showExercise = contentBD.showExercise();
+                                    fourElementsModelList = showExercise.stream()
+                                            .map(exerciseModel -> new FourElementsModel(
+                                                    exerciseModel.getId(), exerciseModel.getImage(),
+                                                    exerciseModel.getName(), String.valueOf(exerciseModel.getType()),
+                                                    R.drawable.ic_hexagon
+                                            )).collect(Collectors.toList());
+                            },
+                            () -> fm.beginTransaction().replace(R.id.frag_custom_exercise_creator_select_container,
+                                    new LoadingFragment()).commit(),
+                            () -> {
+                                searchList = new SearchList("ExerciseModelList", fourElementsModelList);
+                                fm.beginTransaction().replace(R.id.frag_custom_exercise_creator_select_container, searchList,
+                                        "ExerciseModelTag").commit();
+                            }
+                    );
                 } else {
                     ft.attach(searchList);
                     ft.commit();
@@ -142,7 +159,6 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
         }));
 
         selectDetails.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
             if (isChecked) {
                 if (viewPagerFragment == null) {
                     viewPagerFragment = new ViewPagerFragment();

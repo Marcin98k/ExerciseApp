@@ -65,7 +65,7 @@
     <string name="select_exercise">Select exercise</string>
     <string name="select_details">Select details</string>
 
-<!--    ***_d  d -> dots -->
+    <!--    ***_d  d -> dots -->
     <string name="selected_exercise_name_d">Selected exercise name:</string>
     <string name="type_d">Type:</string>
     <string name="sets_d">Set:</string>
@@ -74,5 +74,6 @@
     <string name="enter_your_exercise_name">Enter your exercise name</string>
     <string name="home">Home</string>
     <string name="Enter_a_name_for_the_exercise">Enter a name for the exercise</string>
+    <string name="plans">Plans</string>
 
 </resources>

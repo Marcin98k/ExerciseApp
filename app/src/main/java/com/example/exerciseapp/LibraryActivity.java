@@ -11,15 +11,17 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.exerciseapp.mClasses.BackgroundTask;
 import com.example.exerciseapp.mClasses.CreateExerciseClass;
 import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
+import com.example.exerciseapp.mInterfaces.CallbackList;
 import com.example.exerciseapp.mInterfaces.INewExercise;
 import com.example.exerciseapp.mInterfaces.ISingleIntegerValue;
-import com.example.exerciseapp.mInterfaces.ISummary;
 import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ExerciseModel;
@@ -28,16 +30,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 public class LibraryActivity extends AppCompatActivity implements UpdateIntegersDB,
         ISingleIntegerValue, INewExercise, ITitleChangeListener {
 
     private BottomNavigationView bottomNavigationView;
-    private TextView activityTitle;
     private TextView fragmentTitle;
-
-    private String activityName;
 
 
     private long id;
@@ -54,6 +54,9 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
     private static final String TAG_WORKOUT_LIST = "tagWorkoutList";
     public static final String LIBRARY_BUTTON_TAG = "LibraryButtonTag";
     public static final String CUSTOM_EXERCISE_CREATOR_TAG = "CustomExerciseCreatorTag";
+
+
+    private final FragmentManager fragmentManager = getSupportFragmentManager();
 
 
     private ContentBD contentBD;
@@ -76,34 +79,27 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
         createExerciseClass = new ViewModelProvider(this).get(CreateExerciseClass.class);
 
         setDefaultValuesToLists();
-        fillLists();
     }
 
-    private void setDefaultValuesToLists() {
-        //        default values;
-        createExerciseClass.setValue(createExerciseClass.TYPE, 1);
-        createExerciseClass.setValue(createExerciseClass.SETS, 1);
-        createExerciseClass.setValue(createExerciseClass.VOLUME, 1);
-        createExerciseClass.setValue(createExerciseClass.REST, 5);
-        createExerciseClass.setValue(createExerciseClass.EXERCISE, 0);
-    }
+    private void initView(Bundle savedInstanceState) {
 
-    private void fillLists() {
+        TextView activityTitle = findViewById(R.id.act_library_title_part_one);
+        fragmentTitle = findViewById(R.id.act_library_title_part_two);
+        bottomNavigationView = findViewById(R.id.act_library_bottom_nav_bar);
 
-        List<ExerciseModel> showExercise = contentBD.showExercise();
-        List<ExerciseModel> showWorkout = contentBD.showWorkout();
+        String activityName = getString(R.string.workout);
+        activityTitle.setText(activityName);
 
-        exerciseList = showExercise.stream()
-                .map(exercise -> new FourElementsModel(
-                        exercise.getId(), exercise.getImage(), exercise.getName(),
-                        String.valueOf(exercise.getType()), R.drawable.ic_hexagon
-                )).collect(Collectors.toList());
-
-        workoutList = showWorkout.stream()
-                .map(workout -> new FourElementsModel(
-                        workout.getId(), workout.getImage(), workout.getName(),
-                        String.valueOf(workout.getType()), R.drawable.ic_hexagon
-                )).collect(Collectors.toList());
+        if (findViewById(R.id.act_library_container) != null) {
+            if (savedInstanceState != null) {
+                return;
+            }
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.setReorderingAllowed(true);
+            ft.addToBackStack(LIBRARY_BUTTON_TAG);
+            ft.add(R.id.act_library_container, new LibraryButtonsFragment(), LIBRARY_BUTTON_TAG);
+            ft.commit();
+        }
     }
 
     private void initMenu() {
@@ -132,6 +128,69 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
         });
     }
 
+
+    private void fillLists(CallbackList callbackList) {
+
+        CountDownLatch latch = new CountDownLatch(2);
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.act_library_container, new LoadingFragment())
+                .commit();
+
+        BackgroundTask.executeWithLoading(
+                () -> {
+                    List<ExerciseModel> showExercise = contentBD.showExercise();
+
+                    exerciseList = showExercise.stream()
+                            .map(exercise -> new FourElementsModel(
+                                    exercise.getId(), exercise.getImage(), exercise.getName(),
+                                    String.valueOf(exercise.getType()), R.drawable.ic_hexagon
+                            )).collect(Collectors.toList());
+                    latch.countDown();
+                },
+                () -> {
+//                    Empty;
+                },
+                () -> {
+//                    Empty;
+                }
+        );
+        BackgroundTask.executeWithLoading(
+                () -> {
+                    List<ExerciseModel> showWorkout = contentBD.showWorkout();
+                    workoutList = showWorkout.stream()
+                            .map(workout -> new FourElementsModel(
+                                    workout.getId(), workout.getImage(), workout.getName(),
+                                    String.valueOf(workout.getType()), R.drawable.ic_hexagon
+                            )).collect(Collectors.toList());
+                    latch.countDown();
+                },
+                () -> {
+//                    Empty;
+                },
+                () -> {
+//                    Empty;
+                }
+        );
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        fragmentManager.popBackStack();
+        callbackList.onListsLoaded();
+    }
+
+    private void setDefaultValuesToLists() {
+        //        default values;
+        createExerciseClass.setValue(createExerciseClass.TYPE, 1);
+        createExerciseClass.setValue(createExerciseClass.SETS, 1);
+        createExerciseClass.setValue(createExerciseClass.VOLUME, 1);
+        createExerciseClass.setValue(createExerciseClass.REST, 5);
+        createExerciseClass.setValue(createExerciseClass.EXERCISE, 0);
+    }
+
     private void replaceFragment(int container, Fragment fragment, String tag) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Bundle bundle = new Bundle();
@@ -143,26 +202,6 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
         ft.commit();
     }
 
-    private void initView(Bundle savedInstanceState) {
-
-        activityTitle = findViewById(R.id.act_library_title_part_one);
-        fragmentTitle = findViewById(R.id.act_library_title_part_two);
-        bottomNavigationView = findViewById(R.id.act_library_bottom_nav_bar);
-
-        activityName = getString(R.string.workout);
-        activityTitle.setText(activityName);
-
-        if (findViewById(R.id.act_library_container) != null) {
-            if (savedInstanceState != null) {
-                return;
-            }
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.setReorderingAllowed(true);
-            ft.addToBackStack(LIBRARY_BUTTON_TAG);
-            ft.add(R.id.act_library_container, new LibraryButtonsFragment(), LIBRARY_BUTTON_TAG);
-            ft.commit();
-        }
-    }
 
     @Override
     public void values(String listName, int firstValue, int secondValue, int thirdValue) {
@@ -192,7 +231,7 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
                 replaceFragment(R.id.act_library_container, new DetailsFragment(), TAG_DETAIL);
                 break;
             case "ExerciseModelList":
-                Log.i(TAG, "values: " + firstValue +  " s: " + secondValue + " t: " + thirdValue);
+                Log.i(TAG, "values: " + firstValue + " s: " + secondValue + " t: " + thirdValue);
                 createExerciseClass.setValue("exercise", firstValue);
                 creatorExerciseFragment.fillFields();
                 break;
@@ -208,21 +247,20 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
             Bundle bundle = new Bundle();
             switch (value) {
                 case 1:
-                    ViewPagerFragment viewPagerFragment = new ViewPagerFragment();
-                    bundle.putString("activityName", activityName);
-                    bundle.putStringArray("titles", fragmentTitles);
-                    bundle.putParcelableArrayList(FIRST_LIST, (ArrayList<? extends Parcelable>) exerciseList);
-                    bundle.putParcelableArrayList(SECOND_LIST, (ArrayList<? extends Parcelable>) workoutList);
-                    viewPagerFragment.setArguments(bundle);
-                    ft.addToBackStack(TAG_VIEW_PAGER);
-                    ft.replace(R.id.act_library_container, viewPagerFragment, TAG_VIEW_PAGER);
+                    fillLists(() -> {
+                        ViewPagerFragment viewPagerFragment = new ViewPagerFragment();
+                        bundle.putStringArray("titles", fragmentTitles);
+                        bundle.putParcelableArrayList(FIRST_LIST, (ArrayList<? extends Parcelable>) exerciseList);
+                        bundle.putParcelableArrayList(SECOND_LIST, (ArrayList<? extends Parcelable>) workoutList);
+                        viewPagerFragment.setArguments(bundle);
+                        ft.addToBackStack(TAG_VIEW_PAGER);
+                        ft.replace(R.id.act_library_container, viewPagerFragment, TAG_VIEW_PAGER);
+                    });
                     break;
                 case 2:
                     break;
                 case 3:
                     creatorExerciseFragment = new CustomExerciseCreatorFragment();
-                    bundle.putString("activityName", activityName);
-                    creatorExerciseFragment.setArguments(bundle);
                     ft.addToBackStack(CUSTOM_EXERCISE_CREATOR_TAG);
                     ft.replace(R.id.act_library_container, creatorExerciseFragment, CUSTOM_EXERCISE_CREATOR_TAG);
                     break;
@@ -235,7 +273,8 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
     }
 
     @Override
-    public void createExercise(String name, ExerciseType exerciseType, int sets, int volume, int rest) {
+    public void createExercise(String name, ExerciseType exerciseType, int sets, int volume,
+                               int rest) {
 
         createExerciseClass.setValue(createExerciseClass.TYPE, exerciseType == ExerciseType.REPETITION ? 1 : 0);
         createExerciseClass.setValue(createExerciseClass.SETS, sets);

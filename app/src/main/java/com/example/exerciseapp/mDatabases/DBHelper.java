@@ -10,11 +10,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 import com.example.exerciseapp.mEnums.RowNames;
-import com.example.exerciseapp.mModels.LanguageModel;
-import com.example.exerciseapp.mModels.StringModel;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
 import com.example.exerciseapp.mModels.IntegerModel;
-import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
+import com.example.exerciseapp.mModels.LanguageModel;
+import com.example.exerciseapp.mModels.StringModel;
 import com.example.exerciseapp.mModels.UserInformationModel;
 
 import java.util.ArrayList;
@@ -23,12 +22,8 @@ import java.util.List;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String ID = "ID";
-
     private static final String STRING_VAL = "STR_VALUE";
     private static final String INT_VAL = "INT_VALUE";
-
-    private static final String APPEARANCE = "APPEARANCE";
-
     private static final String IMG_PATH = "IMAGE_PATH";
 
 
@@ -42,6 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String USER_GOALS_ID = "GOALS";
     private static final String USER_LEVEL_ID = "LEVEL";
     private static final String USER_NOTIFICATION_ID = "NOTIFICATION";
+
 
     private static final String USER_GOALS_TAB = "GOALS";
     //    Boolean (INTEGER 0/1);
@@ -78,7 +74,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     private static final String USER_UNITS_TAB = "USER_UNITS";
-
     private static final String USER_HEIGHT = "HEIGHT";
     private static final String USER_WEIGHT = "WEIGHT";
     private static final String USER_UNIT_HEIGHT = "UNIT_HEIGHT";
@@ -97,14 +92,19 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String LEVEL_INTERMEDIATE = "INTERMEDIATE";
     private static final String LEVEL_ADVANCED = "ADVANCED";
 
+
     private static final String NOTIFICATIONS_TAB = "NOTIFICATIONS";
     private static final String NOTIFICATIONS_STATUS = "STATUS";
     private static final String NOTIFICATION_DAYS = "DAYS";
     private static final String NOTIFICATION_HOURS = "HOURS";
     private static final String NOTIFICATION_WORKOUT_ID = "WORKOUT";
 
+
     private static final String FUTURE_TAB = "FUTURE";
     private static final String FUTURE_DESCRIPTION = "DESCRIPTION";
+    //    0 -> Not ready, 1 -> In the process, 2 -> Ready;
+    private static final String FUTURE_STATUS = "STATUS";
+
 
     private static final String LANGUAGE_TAB = "LANGUAGE";
     private static final String LANGUAGE_PREFIX = "LANGUAGE_PREFIX";
@@ -121,12 +121,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + APPEARANCE_ICON + " INTEGER, " + APPEARANCE_IMAGE + " TEXT, "
                 + APPEARANCE_NAME + " TEXT, " + APPEARANCE_ACTION + " INTEGER, "
-                + APPEARANCE_DESCRIPTION + " TEXT, "+ APPEARANCE_TAG + " TEXT);";
+                + APPEARANCE_DESCRIPTION + " TEXT, " + APPEARANCE_TAG + " TEXT);";
         sqLiteDatabase.execSQL(createAppearanceTab);
 
         String createFutureTab = "CREATE TABLE " + FUTURE_TAB
                 + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + FUTURE_DESCRIPTION + " TEXT)";
+                + FUTURE_DESCRIPTION + " TEXT," + FUTURE_STATUS + " INTEGER)";
         sqLiteDatabase.execSQL(createFutureTab);
 
         String createNotificationsTab = "CREATE TABLE " + NOTIFICATIONS_TAB
@@ -151,7 +151,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + LEVEL_TAB + " (" + ID + "), "
                 + " FOREIGN KEY (" + USER_NOTIFICATION_ID + ") REFERENCES "
                 + NOTIFICATIONS_TAB + " (" + ID + "));";
-                sqLiteDatabase.execSQL(createUserInformationTab);
+        sqLiteDatabase.execSQL(createUserInformationTab);
 
         String createGenderTab = "CREATE TABLE " + GENDER_TAB
                 + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -187,8 +187,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 + MIDDLE_TAB + " (" + ID + "));";
         sqLiteDatabase.execSQL(createUserPerformanceTab);
 
-
-//        !!!#
         String createUserUnitsTab = "CREATE TABLE " + USER_UNITS_TAB
                 + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + USER_HEIGHT + " INTEGER, "
@@ -224,29 +222,20 @@ public class DBHelper extends SQLiteOpenHelper {
                 + " FOREIGN KEY (" + LEVEL_INTERMEDIATE + ") REFERENCES "
                 + MIDDLE_TAB + " (" + ID + "), "
                 + " FOREIGN KEY (" + LEVEL_ADVANCED + ") REFERENCES "
-                + MIDDLE_TAB + " (" + ID + "));";;
+                + MIDDLE_TAB + " (" + ID + "));";
+        ;
         sqLiteDatabase.execSQL(createLevelTab);
 
         String createMiddleTab = "CREATE TABLE " + MIDDLE_TAB
                 + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + INT_VAL + " INTEGER, " + MIDDLE_APPEARANCE + " INTEGER) ";
-//                + " FOREIGN KEY (" + MIDDLE_APPEARANCE + ") REFERENCES "
-//                + APPEARANCE_TAB + " (" + ID + "));";;
         sqLiteDatabase.execSQL(createMiddleTab);
-
-
-
-
-
-
-
-
 
         //        STRING_VAL -> LANGUAGE USER_NAME, INT_VAL -> IS ACTIVE;
         String createLanguageTab = "CREATE TABLE " + LANGUAGE_TAB
                 + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + STRING_VAL + " TEXT, " + INT_VAL + " INTEGER, "
-                + LANGUAGE_PREFIX + " TEXT, " + IMG_PATH + " INTEGER);";
+                + LANGUAGE_PREFIX + " TEXT, " + IMG_PATH + " TEXT);";
         sqLiteDatabase.execSQL(createLanguageTab);
     }
 
@@ -257,894 +246,658 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public boolean insertMiddleTab(IntegerModel integerModel) {
 
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
+        try (SQLiteDatabase db = getWritableDatabase()) {
 
-        values.put(INT_VAL, integerModel.getFirstValue());
-        values.put(MIDDLE_APPEARANCE, integerModel.getSecondValue());
+            ContentValues values = new ContentValues();
+            values.put(INT_VAL, integerModel.getFirstValue());
+            values.put(MIDDLE_APPEARANCE, integerModel.getSecondValue());
 
-        long insert = db.insert(MIDDLE_TAB, null, values);
-
-        return insert != -1;
-    }
-
-    public boolean insertFutureTab(String value) {
-
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put(FUTURE_DESCRIPTION, value);
-
-        long insert = db.insert(FUTURE_TAB, null, values);
-
-        return insert != -1;
-    }
-
-    public List<StringModel> showFutureTab() {
-
-        List<StringModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + FUTURE_TAB;
-        Cursor cursor = db.rawQuery(search, null);
-
-        if (cursor.moveToFirst()) {
-
-            do {
-                int id = cursor.getInt(0);
-                String value = cursor.getString(1);
-
-                StringModel model = new StringModel(id, value);
-                list.add(model);
-            } while (cursor.moveToNext());
+            return db.insert(MIDDLE_TAB, null, values) != -1;
         }
-
-        cursor.close();
-        db.close();
-
-        return list;
     }
 
     public List<IntegerModel> showMiddleTab() {
 
         List<IntegerModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
         String search = "SELECT * FROM " + MIDDLE_TAB;
-        Cursor cursor = db.rawQuery(search, null);
 
-        if (cursor.moveToFirst()) {
-
-            do {
-                int id = cursor.getInt(0);
-                int value = cursor.getInt(1);
-                int appearance = cursor.getInt(2);
-
-                IntegerModel model = new IntegerModel(id, value, appearance);
-                list.add(model);
-            } while (cursor.moveToNext());
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, null)) {
+            while (cursor.moveToNext()) {
+                IntegerModel integerModel = new IntegerModel(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(INT_VAL)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(MIDDLE_APPEARANCE)));
+                list.add(integerModel);
+            }
         }
-
-        cursor.close();
-        db.close();
-
         return list;
     }
-    public List<IntegerModel> showMiddleIndex(int param) {
 
-        List<IntegerModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + MIDDLE_TAB + " WHERE " + ID + " = " + param;
-        Cursor cursor = db.rawQuery(search, null);
+    public List<IntegerModel> getMiddleIndex(int id) {
 
-        if (cursor.moveToFirst()) {
+        List<IntegerModel> result = new ArrayList<>();
+        String search = "SELECT * FROM " + MIDDLE_TAB +
+                " WHERE " + ID + " ==  ?";
+        String[] args = {String.valueOf(id)};
 
-                int id = cursor.getInt(0);
-                int value = cursor.getInt(1);
-                int appearance = cursor.getInt(2);
-
-                IntegerModel model = new IntegerModel(id, value, appearance);
-                list.add(model);
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, args)) {
+            if (cursor.moveToFirst()) {
+                IntegerModel integerModel = new IntegerModel(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(INT_VAL)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(MIDDLE_APPEARANCE)));
+                result.add(integerModel);
+            }
         }
+        return result;
+    }
 
-        cursor.close();
-        db.close();
 
-        return list;
+    public boolean insertFutureTab(String value, int status) {
+
+        try (SQLiteDatabase db = getWritableDatabase()) {
+
+            ContentValues values = new ContentValues();
+            values.put(FUTURE_DESCRIPTION, value);
+            values.put(FUTURE_STATUS, status);
+
+            return db.insert(FUTURE_TAB, null, values) != -1;
+        }
+    }
+
+    public List<StringModel> showFutureTab() {
+
+        List<StringModel> result = new ArrayList<>();
+        String search = "SELECT * FROM " + FUTURE_TAB;
+
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, null)) {
+            while (cursor.moveToNext()) {
+                StringModel stringModel = new StringModel(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(FUTURE_DESCRIPTION)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(FUTURE_STATUS)));
+                result.add(stringModel);
+            }
+        }
+        return result;
     }
 
 
     public boolean insertGenderTab(IntegerModel integerModel) {
 
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
+        try (SQLiteDatabase db = getWritableDatabase()) {
 
-        values.put(USER_MALE, integerModel.getFirstValue());
-        values.put(USER_FEMALE, integerModel.getSecondValue());
-        values.put(USER_OTHER, integerModel.getThirdValue());
+            ContentValues values = new ContentValues();
+            values.put(USER_MALE, integerModel.getFirstValue());
+            values.put(USER_FEMALE, integerModel.getSecondValue());
+            values.put(USER_OTHER, integerModel.getThirdValue());
 
-        long insert = db.insert(GENDER_TAB, null, values);
-
-        return insert != -1;
-    }
-
-    public List<IntegerModel> showLastGender() {
-
-        List<IntegerModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + GENDER_TAB;
-        Cursor cursor = db.rawQuery(search, null);
-
-        if (cursor.moveToFirst()) {
-
-            do {
-                int id = cursor.getInt(0);
-                int male = cursor.getInt(1);
-                int female = cursor.getInt(2);
-                int other = cursor.getInt(3);
-
-                if (cursor.isLast()) {
-                    IntegerModel model = new IntegerModel(id, male, female, other);
-                    list.add(model);
-                }
-            } while (cursor.moveToNext());
+            return db.insert(GENDER_TAB, null, values) != -1;
         }
-
-        cursor.close();
-        db.close();
-
-        return list;
     }
+
+    public List<IntegerModel> getGender(int id) {
+
+        List<IntegerModel> result = new ArrayList<>();
+        String search = "SELECT * FROM " + GENDER_TAB +
+                " WHERE " + ID + " == ?";
+        String[] args = {String.valueOf(id)};
+
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, args)) {
+            if (cursor.moveToFirst()) {
+                IntegerModel integerModel = new IntegerModel(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_MALE)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_FEMALE)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_OTHER)));
+                result.add(integerModel);
+            }
+        }
+        return result;
+    }
+
+    public boolean switchGender(int oldPos, int newPos) {
+
+        String cause = ID + " == ?";
+        String[] oldArgs = {String.valueOf(oldPos)};
+        String[] newArgs = {String.valueOf(newPos)};
+
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            db.beginTransaction();
+            try {
+                ContentValues addVal = new ContentValues();
+                ContentValues removeVal = new ContentValues();
+                addVal.put(INT_VAL, 1);
+                removeVal.put(INT_VAL, 0);
+                int updateOld = db.update(MIDDLE_TAB, removeVal, cause, oldArgs);
+                int updateNew = db.update(MIDDLE_TAB, addVal, cause, newArgs);
+
+                db.setTransactionSuccessful();
+                return (updateOld != -1 && updateNew != -1);
+            } finally {
+                db.endTransaction();
+            }
+        }
+    }
+
 
     public boolean insertHeightTab(AppearanceBlockModel appearanceBlockModel) {
 
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
+        try (SQLiteDatabase db = getWritableDatabase()) {
 
-        values.put(UNIT, appearanceBlockModel.getName());
+            ContentValues values = new ContentValues();
+            values.put(UNIT, appearanceBlockModel.getName());
 
-        long insert = db.insert(UNIT_HEIGHT_TAB, null, values);
-
-        return insert != -1;
+            return db.insert(UNIT_HEIGHT_TAB, null, values) != -1;
+        }
     }
+
+    public String getUnitHeight(int id) {
+
+        String result = "";
+        String search = "SELECT * FROM " + UNIT_HEIGHT_TAB +
+                " WHERE " + ID + " == ?";
+        String[] args = {String.valueOf(id)};
+
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, args)) {
+            if (cursor.moveToFirst()) {
+                result = cursor.getString(cursor.getColumnIndexOrThrow(UNIT));
+            }
+        }
+        return result;
+    }
+
 
     public boolean insertWeightTab(AppearanceBlockModel appearanceBlockModel) {
 
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
+        try (SQLiteDatabase db = getWritableDatabase()) {
 
-        values.put(UNIT, appearanceBlockModel.getName());
+            ContentValues values = new ContentValues();
+            values.put(UNIT, appearanceBlockModel.getName());
 
-        long insert = db.insert(UNIT_WEIGHT_TAB, null, values);
-
-        return insert != -1;
+            return db.insert(UNIT_WEIGHT_TAB, null, values) != -1;
+        }
     }
+
+    public String getUnitWeight(int id) {
+
+        String result = "";
+        String search = "SELECT * FROM " + UNIT_WEIGHT_TAB
+                + " WHERE " + ID + " == ?";
+        String[] args = {String.valueOf(id)};
+
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, args)) {
+            if (cursor.moveToFirst()) {
+                result = cursor.getString(cursor.getColumnIndexOrThrow(UNIT));
+            }
+        }
+        return result;
+    }
+
+
+    public boolean updateHeight(int unitID, int numberID, int numberValue, int unitValue) {
+
+        String cause = ID + " == ?";
+        String[] unitArgs = {String.valueOf(unitID)};
+        String[] numberArgs = {String.valueOf(numberID)};
+
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            db.beginTransaction();
+            try {
+                ContentValues numberVal = new ContentValues();
+                ContentValues unitVal = new ContentValues();
+                numberVal.put(INT_VAL, numberValue);
+                unitVal.put(USER_UNIT_HEIGHT, unitValue);
+                int updateNumber = db.update(MIDDLE_TAB, numberVal, cause, numberArgs);
+                int updateUnit = db.update(USER_UNITS_TAB, unitVal, cause, unitArgs);
+
+                db.setTransactionSuccessful();
+                return (updateNumber != -1 && updateUnit != -1);
+            } finally {
+                db.endTransaction();
+            }
+        }
+    }
+
+    public boolean updateWeight(int unitID, int numberID, int numberValue, int unitValue) {
+
+        String cause = ID + " == ?";
+        String[] unitArgs = {String.valueOf(unitID)};
+        String[] numberArgs = {String.valueOf(numberID)};
+
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            db.beginTransaction();
+            try {
+                ContentValues numberVal = new ContentValues();
+                ContentValues unitVal = new ContentValues();
+                numberVal.put(INT_VAL, numberValue);
+                unitVal.put(USER_UNIT_WEIGHT, unitValue);
+                int updateNumber = db.update(MIDDLE_TAB, numberVal, cause, numberArgs);
+                int updateUnit = db.update(USER_UNITS_TAB, unitVal, cause, unitArgs);
+
+                db.setTransactionSuccessful();
+                return (updateNumber != -1 && updateUnit != -1);
+            } finally {
+                db.endTransaction();
+            }
+        }
+    }
+
 
     public boolean insertUnitsTab(IntegerModel integerModel) {
 
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
+        try (SQLiteDatabase db = getWritableDatabase()) {
 
-        values.put(USER_HEIGHT, integerModel.getFirstValue());
-        values.put(USER_WEIGHT, integerModel.getSecondValue());
-        values.put(USER_UNIT_HEIGHT, integerModel.getThirdValue());
-        values.put(USER_UNIT_WEIGHT, integerModel.getForthValue());
+            ContentValues values = new ContentValues();
+            values.put(USER_HEIGHT, integerModel.getFirstValue());
+            values.put(USER_WEIGHT, integerModel.getSecondValue());
+            values.put(USER_UNIT_HEIGHT, integerModel.getThirdValue());
+            values.put(USER_UNIT_WEIGHT, integerModel.getForthValue());
 
-        long insert = db.insert(USER_UNITS_TAB, null, values);
-
-        return insert != -1;
+            return db.insert(USER_UNITS_TAB, null, values) != -1;
+        }
     }
 
-    public List<IntegerModel> showUnitsTab() {
+    public List<IntegerModel> getUserUnit(int value) {
 
-        List<IntegerModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + USER_UNITS_TAB;
-        Cursor cursor = db.rawQuery(search, null);
+        List<IntegerModel> result = new ArrayList<>();
+        String search = "SELECT * FROM " + USER_UNITS_TAB +
+                " WHERE " + ID + " == ?";
+        String[] args = {String.valueOf(value)};
 
-        if (cursor.moveToFirst()) {
-
-            int id = cursor.getInt(0);
-            int height = cursor.getInt(1);
-            int weight = cursor.getInt(2);
-            int unitHeight = cursor.getInt(3);
-            int unitWeight = cursor.getInt(4);
-
-            IntegerModel model = new IntegerModel(
-                    id, height, weight, unitHeight, unitWeight);
-            list.add(model);
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, args)) {
+            if (cursor.moveToFirst()) {
+                IntegerModel integerModel = new IntegerModel(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_HEIGHT)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_WEIGHT)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_UNIT_HEIGHT)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_UNIT_WEIGHT)));
+                result.add(integerModel);
+            }
         }
-
-        cursor.close();
-        db.close();
-
-        return list;
-    }
-
-    public List<IntegerModel> showUserUnit(int value) {
-
-        List<IntegerModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + USER_UNITS_TAB + " WHERE ID = " + value;
-        Cursor cursor = db.rawQuery(search, null);
-
-        if (cursor.moveToFirst()) {
-
-            do {
-                int id = cursor.getInt(0);
-                int height = cursor.getInt(1);
-                int weight = cursor.getInt(2);
-                int unit_height = cursor.getInt(3);
-                int unit_weight = cursor.getInt(4);
-
-                IntegerModel model = new IntegerModel(id, height, weight, unit_height, unit_weight);
-                list.add(model);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-
-        return list;
-    }
-
-    public List<StringModel> showUnitHeight(int value) {
-
-        List<StringModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + UNIT_HEIGHT_TAB + " WHERE ID = " + value;
-        Cursor cursor = db.rawQuery(search, null);
-
-        if (cursor.moveToFirst()) {
-
-            do {
-                int id = cursor.getInt(0);
-                String unit_height = cursor.getString(1);
-
-                StringModel model = new StringModel(id, unit_height);
-                list.add(model);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-
-        return list;
-    }
-
-    public List<StringModel> showUnitWeight(int value) {
-
-        List<StringModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + UNIT_WEIGHT_TAB + " WHERE ID = " + value;
-        Cursor cursor = db.rawQuery(search, null);
-
-        if (cursor.moveToFirst()) {
-
-            do {
-                int id = cursor.getInt(0);
-                String unit_height = cursor.getString(1);
-
-                StringModel model = new StringModel(id, unit_height);
-                list.add(model);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-
-        return list;
+        return result;
     }
 
 
     public boolean insertAppearanceBlock(AppearanceBlockModel appearanceBlockModel) {
 
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
+        try (SQLiteDatabase db = getWritableDatabase()) {
 
-        values.put(APPEARANCE_ICON, appearanceBlockModel.getIcon());
-        values.put(APPEARANCE_IMAGE, appearanceBlockModel.getImage());
-        values.put(APPEARANCE_NAME, appearanceBlockModel.getName());
-        values.put(APPEARANCE_ACTION, appearanceBlockModel.getAction());
-        values.put(APPEARANCE_DESCRIPTION, appearanceBlockModel.getDescription());
-        values.put(APPEARANCE_TAG, appearanceBlockModel.getTag());
+            ContentValues values = new ContentValues();
+            values.put(APPEARANCE_ICON, appearanceBlockModel.getIcon());
+            values.put(APPEARANCE_IMAGE, appearanceBlockModel.getImage());
+            values.put(APPEARANCE_NAME, appearanceBlockModel.getName());
+            values.put(APPEARANCE_ACTION, appearanceBlockModel.getAction());
+            values.put(APPEARANCE_DESCRIPTION, appearanceBlockModel.getDescription());
+            values.put(APPEARANCE_TAG, appearanceBlockModel.getTag());
 
-        long insert = db.insert(APPEARANCE_TAB, null, values);
-
-        return insert != -1;
+            return db.insert(APPEARANCE_TAB, null, values) != -1;
+        }
     }
 
-    public List<AppearanceBlockModel> showAppearanceBlock(int param) {
+    public List<AppearanceBlockModel> getAppearanceBlock(int id) {
 
-        List<AppearanceBlockModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + APPEARANCE_TAB + " WHERE " + ID + " = " + param;
-        Cursor cursor = db.rawQuery(search, null);
+        List<AppearanceBlockModel> result = new ArrayList<>();
+        String search = "SELECT * FROM " + APPEARANCE_TAB +
+                " WHERE " + ID + " == ?";
+        String[] args = {String.valueOf(id)};
 
-        if (cursor.moveToFirst()) {
-
-            int id = cursor.getInt(0);
-            int icon = cursor.getInt(1);
-            String image = cursor.getString(2);
-            String name = cursor.getString(3);
-            int action = cursor.getInt(4);
-            String description = cursor.getString(5);
-            String tag = cursor.getString(6);
-
-
-            AppearanceBlockModel model = new AppearanceBlockModel(
-                    id, icon, image, name, action, description, tag);
-            list.add(model);
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, args)) {
+            if (cursor.moveToFirst()) {
+                AppearanceBlockModel appearanceBlockModel = new AppearanceBlockModel(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(APPEARANCE_ICON)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(APPEARANCE_IMAGE)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(APPEARANCE_NAME)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(APPEARANCE_ACTION)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(APPEARANCE_DESCRIPTION)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(APPEARANCE_TAG)));
+                result.add(appearanceBlockModel);
+            }
         }
-
-        cursor.close();
-        db.close();
-
-        return list;
+        return result;
     }
 
 
     public boolean insertLevelTab(IntegerModel integerModel) {
 
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
+        try (SQLiteDatabase db = getWritableDatabase()) {
 
-        values.put(LEVEL_BEGINNER, integerModel.getFirstValue());
-        values.put(LEVEL_INTERMEDIATE, integerModel.getSecondValue());
-        values.put(LEVEL_ADVANCED, integerModel.getThirdValue());
+            ContentValues values = new ContentValues();
+            values.put(LEVEL_BEGINNER, integerModel.getFirstValue());
+            values.put(LEVEL_INTERMEDIATE, integerModel.getSecondValue());
+            values.put(LEVEL_ADVANCED, integerModel.getThirdValue());
 
-        long insert = db.insert(LEVEL_TAB, null, values);
+            return db.insert(LEVEL_TAB, null, values) != -1;
+        }
+    }
 
-        return insert != -1;
+    public List<IntegerModel> getLevel(int param) {
+
+        List<IntegerModel> result = new ArrayList<>();
+        String search = "SELECT * FROM " + LEVEL_TAB +
+                " WHERE " + ID + " == ?";
+        String[] args = {String.valueOf(param)};
+
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, args)) {
+            if (cursor.moveToFirst()) {
+                IntegerModel integerModel = new IntegerModel(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(LEVEL_BEGINNER)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(LEVEL_INTERMEDIATE)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(LEVEL_ADVANCED)));
+                result.add(integerModel);
+            }
+        }
+        return result;
     }
 
     public boolean switchLevel(int oldPos, int newPos) {
 
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues addVal = new ContentValues();
-        ContentValues removeVal = new ContentValues();
-        addVal.put(INT_VAL, 1);
-        removeVal.put(INT_VAL, 0);
-        int updateOld = db.update(MIDDLE_TAB, removeVal, ID + " = " + oldPos , null);
-        int updateNew = db.update(MIDDLE_TAB, addVal, ID + " = " + newPos, null);
+        String cause = ID + " = ?";
+        String[] oldArgs = {String.valueOf(oldPos)};
+        String[] newArgs = {String.valueOf(newPos)};
 
-        return (updateOld != -1 && updateNew != -1);
-    }
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            db.beginTransaction();
+            try {
+                ContentValues addVal = new ContentValues();
+                ContentValues removeVal = new ContentValues();
+                addVal.put(INT_VAL, 1);
+                removeVal.put(INT_VAL, 0);
+                int updateOld = db.update(MIDDLE_TAB, removeVal, cause, oldArgs);
+                int updateNew = db.update(MIDDLE_TAB, addVal, cause, newArgs);
 
-    public boolean updateHeight(int id, int secondId, int firstValue, int secondValue) {
-
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues numberVal = new ContentValues();
-        ContentValues unitVal = new ContentValues();
-        numberVal.put(INT_VAL, firstValue);
-        unitVal.put(USER_UNIT_HEIGHT, secondValue);
-        int updateNumber = db.update(MIDDLE_TAB, numberVal, ID + " = " + secondId, null);
-        int updateUnit = db.update(USER_UNITS_TAB, unitVal, ID + " = " + id, null);
-
-        return (updateNumber != -1 && updateUnit != -1);
-    }
-
-    public boolean updateWeight(int id, int secondId, int firstValue, int secondValue) {
-
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues numberVal = new ContentValues();
-        ContentValues unitVal = new ContentValues();
-        numberVal.put(INT_VAL, firstValue);
-        unitVal.put(USER_UNIT_WEIGHT, secondValue);
-        int updateNumber = db.update(MIDDLE_TAB, numberVal, ID + " = " + secondId, null);
-        int updateUnit = db.update(USER_UNITS_TAB, unitVal, ID + " = " + id, null);
-
-        return (updateNumber != -1 && updateUnit != -1);
-    }
-    public boolean updatePerformance(int id, int firstValue) {
-
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues numberVal = new ContentValues();
-        numberVal.put(INT_VAL, firstValue);
-        int updateNumber = db.update(MIDDLE_TAB, numberVal, ID + " = " + id, null);
-
-        return (updateNumber != -1);
-    }
-
-    public boolean updateGoals(int id, int firstValue) {
-
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues numberVal = new ContentValues();
-        numberVal.put(INT_VAL, firstValue);
-        int updateNumber = db.update(MIDDLE_TAB, numberVal, ID + " = " + id, null);
-
-        return (updateNumber != -1);
-    }
-
-
-    public boolean switchGender(int oldPos, int newPos) {
-
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues addVal = new ContentValues();
-        ContentValues removeVal = new ContentValues();
-        addVal.put(INT_VAL, 1);
-        removeVal.put(INT_VAL, 0);
-        int updateOld = db.update(MIDDLE_TAB, removeVal, ID + " = " + oldPos, null);
-        int updateNew = db.update(MIDDLE_TAB, addVal, ID + " = " + newPos, null);
-
-        return (updateOld != -1 && updateNew != -1);
-    }
-
-
-
-    public List<IntegerModel> showLastLevel() {
-
-        List<IntegerModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + LEVEL_TAB;
-        Cursor cursor = db.rawQuery(search, null);
-
-        if (cursor.moveToFirst()) {
-
-            int id = cursor.getInt(0);
-            int beginner = cursor.getInt(1);
-            int intermediate = cursor.getInt(2);
-            int advanced = cursor.getInt(3);
-
-            if (cursor.isLast()) {
-                IntegerModel model = new IntegerModel(id, beginner, intermediate, advanced);
-                list.add(model);
+                db.setTransactionSuccessful();
+                return (updateOld != -1 && updateNew != -1);
+            } finally {
+                db.endTransaction();
             }
         }
-
-        cursor.close();
-        db.close();
-
-        return list;
     }
 
-    public boolean updateUser(RowNames rowName, int id, String value){
 
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues updateVal = new ContentValues();
-        updateVal.put(String.valueOf(rowName), value);
-        int updateNew = db.update(USER_INFORMATION_TAB, updateVal, ID + " = " + id, null);
-
-        return updateNew != -1;
-    }
     public boolean insertUserInformation(UserInformationModel userInformationModel) {
 
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
+        try (SQLiteDatabase db = getWritableDatabase()) {
 
-        values.put(USER_NAME, userInformationModel.getName());
-        values.put(USER_EMAIL, userInformationModel.getEmail());
-        values.put(USER_PASSWORD, userInformationModel.getPassword());
-        values.put(USER_GENDER_ID, userInformationModel.getGender());
-        values.put(USER_UNITS_ID, userInformationModel.getUnits());
-        values.put(USER_PERFORMANCE_ID, userInformationModel.getPerformance());
-        values.put(USER_GOALS_ID, userInformationModel.getGoals());
-        values.put(USER_LEVEL_ID, userInformationModel.getLevel());
-        values.put(USER_NOTIFICATION_ID, userInformationModel.getNotification());
+            ContentValues values = new ContentValues();
+            values.put(USER_NAME, userInformationModel.getName());
+            values.put(USER_EMAIL, userInformationModel.getEmail());
+            values.put(USER_PASSWORD, userInformationModel.getPassword());
+            values.put(USER_GENDER_ID, userInformationModel.getGender());
+            values.put(USER_UNITS_ID, userInformationModel.getUnits());
+            values.put(USER_PERFORMANCE_ID, userInformationModel.getPerformance());
+            values.put(USER_GOALS_ID, userInformationModel.getGoals());
+            values.put(USER_LEVEL_ID, userInformationModel.getLevel());
+            values.put(USER_NOTIFICATION_ID, userInformationModel.getNotification());
 
-        long insert = db.insert(USER_INFORMATION_TAB, null, values);
-
-        return insert != -1;
+            return db.insert(USER_INFORMATION_TAB, null, values) != -1;
+        }
     }
 
-    public List<UserInformationModel> showInformationUser(int param) {
+    public List<UserInformationModel> getInformationUser(int id) {
 
-        List<UserInformationModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + USER_INFORMATION_TAB + " WHERE " + ID + " = " + param;
-        Cursor cursor = db.rawQuery(search, null);
+        List<UserInformationModel> result = new ArrayList<>();
+        String search = "SELECT * FROM " + USER_INFORMATION_TAB +
+                " WHERE " + ID + " == ?";
+        String[] args = {String.valueOf(id)};
 
-        if (cursor.moveToFirst()) {
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, args)) {
 
-            int id = cursor.getInt(0);
-            String name = cursor.getString(1);
-            String email = cursor.getString(2);
-            String password = cursor.getString(3);
-            int gender = cursor.getInt(4);
-            int units = cursor.getInt(5);
-            int performance = cursor.getInt(6);
-            int goals = cursor.getInt(7);
-            int level = cursor.getInt(8);
-            int notification = cursor.getInt(9);
-
-            UserInformationModel model = new UserInformationModel(
-                    id, name, email, password, gender, units, performance, goals, level, notification);
-            list.add(model);
+            if (cursor.moveToFirst()) {
+                UserInformationModel userInformationModel = new UserInformationModel(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(USER_NAME)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(USER_EMAIL)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(USER_PASSWORD)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_GENDER_ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_UNITS_ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_PERFORMANCE_ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_GOALS_ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_LEVEL_ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_NOTIFICATION_ID)));
+                result.add(userInformationModel);
+            }
         }
+        return result;
+    }
 
-        cursor.close();
-        db.close();
+    public boolean updateUser(RowNames rowName, int id, String value) {
 
-        return list;
+        String cause = ID + " == ?";
+        String[] args = {String.valueOf(id)};
+
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            ContentValues updateVal = new ContentValues();
+            updateVal.put(String.valueOf(rowName), value);
+            return db.update(USER_INFORMATION_TAB, updateVal, cause, args) != -1;
+        }
     }
 
 
     public boolean insertGoalsTab(IntegerModel integerModel) {
 
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
 
-        values.put(USER_GOAL_STRENGTH, integerModel.getFirstValue());
-        values.put(USER_GOAL_MUSCLE, integerModel.getSecondValue());
-        values.put(USER_GOAL_FAT_LOSE, integerModel.getThirdValue());
-        values.put(USER_GOAL_TECHNIQUE, integerModel.getForthValue());
+            ContentValues values = new ContentValues();
+            values.put(USER_GOAL_STRENGTH, integerModel.getFirstValue());
+            values.put(USER_GOAL_MUSCLE, integerModel.getSecondValue());
+            values.put(USER_GOAL_FAT_LOSE, integerModel.getThirdValue());
+            values.put(USER_GOAL_TECHNIQUE, integerModel.getForthValue());
 
-        long insert = db.insert(USER_GOALS_TAB, null, values);
-
-        return insert != -1;
+            return db.insert(USER_GOALS_TAB, null, values) != -1;
+        }
     }
 
-    public List<IntegerModel> showLevel(int param) {
+    public List<IntegerModel> getGoals(int id) {
+
+        List<IntegerModel> result = new ArrayList<>();
+        String search = "SELECT * FROM " + USER_GOALS_TAB +
+                " WHERE " + ID + " == ?";
+        String[] args = {String.valueOf(id)};
+
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, args)) {
+            if (cursor.moveToFirst()) {
+                IntegerModel integerModel = new IntegerModel(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_GOAL_STRENGTH)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_GOAL_MUSCLE)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_GOAL_FAT_LOSE)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_GOAL_TECHNIQUE)));
+                result.add(integerModel);
+            }
+        }
+        return result;
+    }
+
+    public boolean updateGoals(int id, int value) {
+
+        String cause = ID + " == ?";
+        String[] args = {String.valueOf(id)};
+
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            ContentValues numberVal = new ContentValues();
+            numberVal.put(INT_VAL, value);
+            return db.update(MIDDLE_TAB, numberVal, cause, args) != -1;
+        }
+    }
+
+
+    public boolean insertNotifications(IntegerModel integerModel) {
+
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+
+            ContentValues values = new ContentValues();
+            values.put(NOTIFICATIONS_STATUS, integerModel.getFirstValue());
+            values.put(NOTIFICATION_DAYS, integerModel.getSecondValue());
+            values.put(NOTIFICATION_HOURS, integerModel.getThirdValue());
+            values.put(NOTIFICATION_WORKOUT_ID, integerModel.getForthValue());
+
+            return db.insert(NOTIFICATIONS_TAB, null, values) != -1;
+        }
+    }
+
+    public List<IntegerModel> getNotifications(int id) {
+
+        List<IntegerModel> result = new ArrayList<>();
+        String search = "SELECT * FROM " + NOTIFICATIONS_TAB +
+                " WHERE " + ID + " == ?";
+        String[] args = {String.valueOf(id)};
+
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, args)) {
+            if (cursor.moveToFirst()) {
+                IntegerModel integerModel = new IntegerModel(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(NOTIFICATIONS_STATUS)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(NOTIFICATION_DAYS)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(NOTIFICATION_HOURS)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(NOTIFICATION_WORKOUT_ID)));
+                result.add(integerModel);
+            }
+        }
+        return result;
+    }
+
+
+    public boolean insertPerformance(IntegerModel integerModel) {
+
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+
+            ContentValues values = new ContentValues();
+            values.put(PERFORMANCE_PUSH, integerModel.getFirstValue());
+            values.put(PERFORMANCE_PULL, integerModel.getSecondValue());
+            values.put(PERFORMANCE_SQUAD, integerModel.getThirdValue());
+            values.put(PERFORMANCE_DIP, integerModel.getForthValue());
+
+            return db.insert(USER_PERFORMANCE_TAB, null, values) != -1;
+        }
+    }
+
+    public List<IntegerModel> getPerformance(int id) {
 
         List<IntegerModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + LEVEL_TAB + " WHERE " + ID + " = " + param;
-        Cursor cursor = db.rawQuery(search, null);
+        String search = "SELECT * FROM " + USER_PERFORMANCE_TAB +
+                " WHERE " + ID + " == ?";
+        String[] args = {String.valueOf(id)};
 
-        if (cursor.moveToFirst()) {
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, args)) {
 
-            do {
-                int id = cursor.getInt(0);
-                int beginner = cursor.getInt(1);
-                int intermediate = cursor.getInt(2);
-                int advanced = cursor.getInt(3);
-
-                IntegerModel model = new IntegerModel(id, beginner, intermediate, advanced);
-                list.add(model);
-            } while (cursor.moveToNext());
+            if (cursor.moveToFirst()) {
+                IntegerModel integerModel = new IntegerModel(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(PERFORMANCE_PUSH)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(PERFORMANCE_PULL)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(PERFORMANCE_SQUAD)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(PERFORMANCE_DIP)));
+                list.add(integerModel);
+            }
         }
-
-        cursor.close();
-        db.close();
-
         return list;
     }
 
-    public List<IntegerModel> showUserGoals(int value) {
+    public boolean updatePerformance(int id, int value) {
 
-        List<IntegerModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + USER_GOALS_TAB + " WHERE ID = " + value;
-        Cursor cursor = db.rawQuery(search, null);
+        String cause = ID + " == ?";
+        String[] args = {String.valueOf(id)};
 
-        if (cursor.moveToFirst()) {
-
-            do {
-                int id = cursor.getInt(0);
-                int strength = cursor.getInt(1);
-                int muscle = cursor.getInt(2);
-                int fatLose = cursor.getInt(3);
-                int technique = cursor.getInt(4);
-
-                IntegerModel model = new IntegerModel(id, strength, muscle, fatLose, technique);
-                list.add(model);
-            } while (cursor.moveToNext());
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            ContentValues numberVal = new ContentValues();
+            numberVal.put(INT_VAL, value);
+            return db.update(MIDDLE_TAB, numberVal, cause, args) != -1;
         }
-
-        cursor.close();
-        db.close();
-
-        return list;
-    }
-
-    public List<IntegerModel> showLastUserGoals() {
-
-        List<IntegerModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + USER_GOALS_TAB;
-        Cursor cursor = db.rawQuery(search, null);
-
-        if (cursor.moveToFirst()) {
-
-            do {
-                int id = cursor.getInt(0);
-                int strength = cursor.getInt(1);
-                int muscle = cursor.getInt(2);
-                int fatLose = cursor.getInt(3);
-                int technique = cursor.getInt(4);
-
-                if (cursor.isLast()) {
-                    IntegerModel model = new IntegerModel(id, strength, muscle, fatLose, technique);
-                    list.add(model);
-                }
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-
-        return list;
-    }
-
-    public boolean insertUserNotifications(IntegerModel integerModel) {
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put(NOTIFICATIONS_STATUS, integerModel.getFirstValue());
-        values.put(NOTIFICATION_DAYS, integerModel.getSecondValue());
-        values.put(NOTIFICATION_HOURS, integerModel.getThirdValue());
-        values.put(NOTIFICATION_WORKOUT_ID, integerModel.getForthValue());
-
-        long insert = db.insert(NOTIFICATIONS_TAB, null, values);
-
-        return insert != -1;
-    }
-
-    public List<IntegerModel> showUserNotifications(int value) {
-
-        List<IntegerModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + NOTIFICATIONS_TAB + " WHERE ID = " + value;
-        Cursor cursor = db.rawQuery(search, null);
-
-        if (cursor.moveToFirst()) {
-
-            do {
-                int id = cursor.getInt(0);
-                int status = cursor.getInt(1);
-                int days = cursor.getInt(2);
-                int hour = cursor.getInt(3);
-                int workoutID = cursor.getInt(4);
-
-                IntegerModel model = new IntegerModel(id, status, days, hour, workoutID);
-                list.add(model);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-
-        return list;
-    }
-
-    public List<IntegerModel> showLastUserNotification() {
-
-        List<IntegerModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + NOTIFICATIONS_TAB;
-        Cursor cursor = db.rawQuery(search, null);
-
-        if (cursor.moveToFirst()) {
-
-            do {
-                int id = cursor.getInt(0);
-                int status = cursor.getInt(1);
-                int days = cursor.getInt(2);
-                int hour = cursor.getInt(3);
-                int workoutID = cursor.getInt(4);
-
-                if (cursor.isLast()) {
-                    IntegerModel model = new IntegerModel(id, status, days, hour, workoutID);
-                    list.add(model);
-                }
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-
-        return list;
-    }
-
-
-    public boolean insertUserPerformance(IntegerModel integerModel) {
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put(PERFORMANCE_PUSH, integerModel.getFirstValue());
-        values.put(PERFORMANCE_PULL, integerModel.getSecondValue());
-        values.put(PERFORMANCE_SQUAD, integerModel.getThirdValue());
-        values.put(PERFORMANCE_DIP, integerModel.getForthValue());
-
-        long insert = db.insert(USER_PERFORMANCE_TAB, null, values);
-
-        return insert != -1;
-    }
-
-    public List<IntegerModel> showPerformance(int param) {
-
-        List<IntegerModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + USER_PERFORMANCE_TAB + " WHERE " + ID + " = " + param;
-        Cursor cursor = db.rawQuery(search, null);
-
-        if (cursor.moveToFirst()) {
-
-            do {
-                int id = cursor.getInt(0);
-                int push = cursor.getInt(1);
-                int pull = cursor.getInt(2);
-                int squad = cursor.getInt(3);
-                int dip = cursor.getInt(4);
-
-                IntegerModel model = new IntegerModel(id, push, pull, squad, dip);
-                list.add(model);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-
-        return list;
-    }
-
-    public List<IntegerModel> showGender(int param) {
-
-        List<IntegerModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + GENDER_TAB + " WHERE " + ID + " = " + param;
-        Cursor cursor = db.rawQuery(search, null);
-
-        if (cursor.moveToFirst()) {
-
-            do {
-                int id = cursor.getInt(0);
-                int male = cursor.getInt(1);
-                int female = cursor.getInt(2);
-                int other = cursor.getInt(3);
-
-                IntegerModel model = new IntegerModel(id, male, female, other);
-                list.add(model);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-
-        return list;
-    }
-    public List<IntegerModel> showUserPerformance(int value) {
-
-        List<IntegerModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + USER_PERFORMANCE_TAB + " WHERE ID = " + value;
-        Cursor cursor = db.rawQuery(search, null);
-
-        if (cursor.moveToFirst()) {
-
-            do {
-                int id = cursor.getInt(0);
-                int push = cursor.getInt(0);
-                int pull = cursor.getInt(0);
-                int squad = cursor.getInt(0);
-                int dip = cursor.getInt(0);
-
-                IntegerModel model = new IntegerModel(id, push, pull, squad, dip);
-                list.add(model);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-
-        return list;
-    }
-
-    public List<IntegerModel> showLastUserPerformance() {
-
-        List<IntegerModel> list = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        String search = "SELECT * FROM " + USER_PERFORMANCE_TAB;
-        Cursor cursor = db.rawQuery(search, null);
-
-        if (cursor.moveToFirst()) {
-
-            do {
-                int id = cursor.getInt(0);
-                int push = cursor.getInt(0);
-                int pull = cursor.getInt(0);
-                int squad = cursor.getInt(0);
-                int dip = cursor.getInt(0);
-
-                if (cursor.isLast()) {
-                    IntegerModel model = new IntegerModel(id, push, pull, squad, dip);
-                    list.add(model);
-                }
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-
-        return list;
     }
 
 
     public boolean insertLanguage(LanguageModel languageModel) {
 
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues cv = new ContentValues();
+        try (SQLiteDatabase db = getWritableDatabase()) {
 
-        cv.put(STRING_VAL, languageModel.getName());
-        cv.put(INT_VAL, languageModel.getStatus() ? 1 : 0);
-        cv.put(LANGUAGE_PREFIX, languageModel.getPrefix());
-        cv.put(IMG_PATH, languageModel.getImage());
+            ContentValues values = new ContentValues();
+            values.put(STRING_VAL, languageModel.getName());
+            values.put(INT_VAL, languageModel.getStatus() ? 1 : 0);
+            values.put(LANGUAGE_PREFIX, languageModel.getPrefix());
+            values.put(IMG_PATH, languageModel.getImage());
 
-        long insert = db.insert(LANGUAGE_TAB, null, cv);
-
-        return insert != -1;
+            return db.insert(LANGUAGE_TAB, null, values) != -1;
+        }
     }
 
     public List<LanguageModel> showLanguage() {
 
-        SQLiteDatabase db = getReadableDatabase();
-        List<LanguageModel> list = new ArrayList<>();
+        List<LanguageModel> result = new ArrayList<>();
         String search = "SELECT * FROM " + LANGUAGE_TAB;
-        Cursor cursor = db.rawQuery(search, null);
 
-        if (cursor.moveToFirst()) {
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, null)) {
 
-            do {
-                int id = cursor.getInt(0);
-                String name = cursor.getString(1);
-                boolean status = cursor.getInt(2) == 1;
-                String prefix = cursor.getString(3);
-                String image = cursor.getString(4);
-
-                LanguageModel languageModel = new LanguageModel(id, name, status, prefix, image);
-                list.add(languageModel);
-            } while (cursor.moveToNext());
+            if (cursor.moveToFirst()) {
+                LanguageModel languageModel = new LanguageModel(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(STRING_VAL)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(INT_VAL)) == 1,
+                        cursor.getString(cursor.getColumnIndexOrThrow(LANGUAGE_PREFIX)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(IMG_PATH)));
+                result.add(languageModel);
+            }
         }
-
-        cursor.close();
-        db.close();
-
-        return list;
+        return result;
     }
 
     public boolean switchLanguage(int oldPos, int newPos) {
 
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues addVal = new ContentValues();
-        ContentValues removeVal = new ContentValues();
-        addVal.put(INT_VAL, 1);
-        removeVal.put(INT_VAL, 0);
-        int updateOld = db.update(LANGUAGE_TAB, removeVal, ID + " = " + (oldPos), null);
-        int updateNew = db.update(LANGUAGE_TAB, addVal, ID + " = " + (newPos), null);
+        String cause = ID + " == ?";
+        String[] oldArgs = {String.valueOf(oldPos)};
+        String[] newArgs = {String.valueOf(newPos)};
 
-        return (updateOld != -1 && updateNew != -1);
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            db.beginTransaction();
+            try {
+                ContentValues addVal = new ContentValues();
+                ContentValues removeVal = new ContentValues();
+                addVal.put(INT_VAL, 1);
+                removeVal.put(INT_VAL, 0);
+                int updateOld = db.update(LANGUAGE_TAB, removeVal, cause, oldArgs);
+                int updateNew = db.update(LANGUAGE_TAB, addVal, cause, newArgs);
+
+                db.setTransactionSuccessful();
+                return (updateOld != -1 && updateNew != -1);
+            } finally {
+                db.endTransaction();
+            }
+        }
     }
 
-    public Integer searchByKey(String table, String column) {
 
-        int value = -1;
-        SQLiteDatabase db = getWritableDatabase();
-        String search = "SELECT " + column + " FROM " + table;
-        Cursor cursor = db.rawQuery(search, null);
-
-        if (cursor.moveToFirst()) {
-
-            do {
-                value = cursor.getInt(0);
-            } while (cursor.moveToNext());
+    public int getLastID(String tableName) {
+        int lastID = -1;
+        String search = "SELECT * FROM " + tableName;
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, null)) {
+            if (cursor.moveToLast()) {
+                lastID = cursor.getInt(cursor.getColumnIndexOrThrow(ID));
+            }
         }
-
-        cursor.close();
-        ;
-        db.close();
-        return value;
+        return lastID;
     }
 
     public long getCount(String table) {
-
-        SQLiteDatabase db = getReadableDatabase();
-        long count = DatabaseUtils.queryNumEntries(db, table);
-        db.close();
-        return count;
-    }
-
-    private String setStringRow(int id) {
-
-        String value = "";
-//        SQLiteDatabase db = getReadableDatabase();
-//        String search = "SELECT l." + STRING_VAL
-//                + " FROM " + LANGUAGE_TAB + " l, " + USER_UNITS_TAB + " u"
-//                + " WHERE l." + id + " = u." + STRING_VAL;
-//        Cursor cursor = db.rawQuery(search, null);
-//        value = cursor.getString(0);
-//        cursor.close();
-//        ;
-//        db.close();
-        return value;
+        try (SQLiteDatabase db = getReadableDatabase()) {
+            return DatabaseUtils.queryNumEntries(db, table);
+        }
     }
 }
