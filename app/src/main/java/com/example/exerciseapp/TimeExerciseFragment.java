@@ -99,17 +99,13 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
             sumSetView.setText(String.valueOf(sumSet));
             currentSetView.setText(String.valueOf(currentSet));
             clockClass = new ClockClass(requireActivity(), true,
-//                    extension.get(POSITION).getForthValue()
-                    15
+                    extension.get(POSITION).getForthValue()
                     ).setBar(progressBar).setTextView(timeView);
 
             clockClass.setFragmentSupportListener(param -> {
                 if (updateIntegersDB != null) {
-                    Log.e(TAG, " clockClass -(TimeExe{not-null})- interface");
                     updateIntegersDB.values("TimeExerciseFragment",
                             rest, 2, 2);
-                } else {
-                    Log.e(TAG, " clockClass -(TimeExe{null})- interface");
                 }
             });
             clockClass.runClock();
@@ -120,8 +116,6 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
         }
     }
 
-
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -129,13 +123,13 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
         try {
             fragmentSupportListener = (FragmentSupportListener) context;
         } catch (RuntimeException e) {
-            throw new RuntimeException(context.toString() +
+            throw new RuntimeException(context +
                     " must implement FragmentSupportListener");
         }
         try {
             updateIntegersDB = (UpdateIntegersDB) context;
         } catch (RuntimeException e) {
-            throw new RuntimeException(context.toString() +
+            throw new RuntimeException(context +
                     " must implement UpdateIntegersDB");
         }
     }

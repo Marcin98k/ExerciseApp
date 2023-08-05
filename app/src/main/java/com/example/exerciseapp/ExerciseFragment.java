@@ -30,7 +30,7 @@ public class ExerciseFragment extends Fragment {
     }
 
     private void initView(View v) {
-        image = v.findViewById(R.id.fExercise_image);
-        container = v.findViewById(R.id.fExercise_container);
+        image = v.findViewById(R.id.frag_exercise_image);
+        container = v.findViewById(R.id.frag_exercise_container);
     }
 }

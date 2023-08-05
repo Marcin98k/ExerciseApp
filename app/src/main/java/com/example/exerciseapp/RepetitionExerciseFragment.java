@@ -23,22 +23,11 @@ import java.util.List;
 
 public class RepetitionExerciseFragment extends Fragment implements FragmentRespond {
 
-    private ImageView imageView;
-    private TextView nameView;
-    private TextView countView;
-    private TextView currentSetView;
-    private TextView sumSetView;
-
-    private List<ExerciseModel> exercise;
-    private List<IntegerModel> extension;
-
+    private long id;
     private byte currentSet;
     private int rest;
-    private final byte POSITION = 0;
 
-    private int sumSet;
-
-    private long id;
+    private static final String FRAGMENT_TAG = "RepetitionExerciseFragment";
 
     private ContentBD contentBD;
 
@@ -64,57 +53,56 @@ public class RepetitionExerciseFragment extends Fragment implements FragmentResp
         View mView = inflater.inflate(R.layout.fragment_repetition_exercise, container, false);
         currentSet = (byte) (currentSet + 1);
         intiView(mView);
-
         return mView;
     }
 
     private void intiView(View v) {
 
-        imageView = v.findViewById(R.id.frag_repetition_exercise_image);
-        nameView = v.findViewById(R.id.frag_repetition_exercise_name);
-        countView = v.findViewById(R.id.frag_repetition_exercise_count);
-        currentSetView = v.findViewById(R.id.frag_repetition_exercise_current_set);
-        sumSetView = v.findViewById(R.id.frag_repetition_exercise_sum_set);
+        ImageView imageView = v.findViewById(R.id.frag_repetition_exercise_image);
+        TextView nameView = v.findViewById(R.id.frag_repetition_exercise_name);
+        TextView countView = v.findViewById(R.id.frag_repetition_exercise_count);
+        TextView currentSetView = v.findViewById(R.id.frag_repetition_exercise_current_set);
+        TextView sumSetView = v.findViewById(R.id.frag_repetition_exercise_sum_set);
 
         contentBD = new ContentBD(requireActivity());
-        exercise = contentBD.showExerciseById(id);
+        List<ExerciseModel> exercise = contentBD.showExerciseById(id);
 
         if (exercise.isEmpty()) {
-            throw new NullPointerException(getContext().toString() + " list is empty");
+            throw new NullPointerException(getContext() + " list is empty");
         } else {
-            extension = contentBD.showExerciseExtensionId(exercise.get(POSITION).getExtension());
-            sumSet = extension.get(POSITION).getSecondValue();
+            final byte POSITION = 0;
+            ExerciseModel exerciseModel = exercise.get(POSITION);
+            List<IntegerModel> extension = contentBD.showExerciseExtensionId(exercise.get(POSITION).getExtension());
+            IntegerModel integerModel = extension.get(POSITION);
+            int sumSet = integerModel.getSecondValue();
+
 //            imageView.setImageResource(exercise.get(POSITION).getImage());
-            nameView.setText(exercise.get(POSITION).getName());
-            countView.setText(String.valueOf(extension.get(POSITION).getThirdValue()));
+            nameView.setText(exerciseModel.getName());
+            countView.setText(String.valueOf(integerModel.getThirdValue()));
             sumSetView.setText(String.valueOf(sumSet));
             currentSetView.setText(String.valueOf(currentSet));
-            rest = extension.get(POSITION).getSixthValue();
-        }
+            rest = integerModel.getSixthValue();
 
-        if (currentSet == sumSet) {
-            fragmentSupportListener.checkCondition(true);
+            if (currentSet == sumSet) {
+                fragmentSupportListener.checkCondition(true);
+            }
         }
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-
         try {
             fragmentSupportListener = (FragmentSupportListener) context;
-        } catch (RuntimeException e) {
-            throw new RuntimeException(context.toString() + " must implement FragmentSupportListener");
-        }
-        try {
             updateIntegersDB = (UpdateIntegersDB) context;
         } catch (RuntimeException e) {
-            throw new RuntimeException(context.toString() + " must implement UpdateIntegersDB");
+            throw new RuntimeException(context +
+                    " must implement FragmentSupportListener and/or UpdateIntegersDB");
         }
     }
 
     @Override
     public void fragmentMessage() {
-        updateIntegersDB.values("RepetitionExerciseFragment", rest, 1, 1);
+        updateIntegersDB.values(FRAGMENT_TAG, rest, 1, 1);
     }
 }

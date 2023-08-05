@@ -74,5 +74,11 @@
     <string name="enter_your_exercise_name">Enter your exercise name</string>
     <string name="home">Home</string>
     <string name="Enter_a_name_for_the_exercise">Enter a name for the exercise</string>
+    <string name="current_set_d">Current set:</string>
+    <string name="last_set_d">Last set:</string>
+    <string name="x">x</string>
+    <string name="then_d">Then:</string>
+    <string name="skip">Skip</string>
+    <string name="add_15s">Add 15s</string>
 
 </resources>
