@@ -14,21 +14,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exerciseapp.mInterfaces.INewExercise;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
+import com.example.exerciseapp.mModels.ExerciseModel;
 import com.example.exerciseapp.mModels.FourElementsModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> implements Filterable {
+public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> implements
+        Filterable {
 
     private Context mContext;
     private List<FourElementsModel> resultList;
     private List<FourElementsModel> resultListFull;
     private String listName;
 
+    private List<ExerciseModel> exerciseList = new ArrayList<>();
     private UpdateIntegersDB updateIntegersDB;
-
-    private INewExercise iNewExercise;
 
 
     public SearchAdapter(Context mContext, List<FourElementsModel> resultList, String listName,
@@ -48,7 +49,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         ViewHolder viewHolder = new ViewHolder(mView);
         mView.setOnClickListener(v -> {
             updateIntegersDB.values(listName,
-                    resultList.get(viewHolder.getAdapterPosition()).getId(), 0,  resultList.get(0).getId());
+                    resultList.get(viewHolder.getAdapterPosition()).getId(), 0, resultList.get(0).getId());
 //        iNewExercise.createExercise(listName, resultList.get(0).getId());
         });
         return viewHolder;
@@ -56,9 +57,24 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.icon.setImageResource(resultList.get(position).getIcon());
-        holder.name.setText(resultList.get(position).getName());
-        holder.type.setText(resultList.get(position).getType());
+//        holder.iconIMG.setImageResource(resultList.get(position).getIcon());
+        holder.nameTV.setText(resultList.get(position).getName());
+        holder.typeTV.setText(resultList.get(position).getType());
+//        if (resultList.get(position).getType() == 1) {
+//            holder.typeTV.setText("Repetition");
+//        } else if (resultList.get(position).getType() == 2) {
+//            holder.typeTV.setText("Time");
+//        } else {
+//            holder.typeTV.setText("");
+//        }
+
+//        holder.imageTV.setImageBitmap(exerciseList.get(position).getImage());
+//        holder.nameTV.setText(exerciseList.get(position).getName());
+//        holder.bodyPartTV.setText(exerciseList.get(position).getBodyParts());
+//        holder.kcalTV.setText(exerciseList.get(position).getKcal());
+//        holder.levelTV.setText(exerciseList.get(position).getLevel());
+//        holder.equipmentTV.setText(exerciseList.get(position).getEquipment());
+//        holder.typeTV.setText(exerciseList.get(position).getType());
     }
 
     @Override
@@ -82,9 +98,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             } else {
 
                 String filterPattern = charSequence.toString().trim();
-
                 for (FourElementsModel model : resultListFull) {
-
                     if (model.getName().contains(filterPattern)) {
                         filterList.add(model);
                     }
@@ -93,7 +107,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
             FilterResults results = new FilterResults();
             results.values = filterList;
-//                results.count = filterList.size();
             return results;
         }
 
@@ -107,17 +120,21 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView image;
-        ImageView icon;
-        TextView name;
-        TextView type;
+        ImageView imageTV;
+        ImageView levelIMG;
+        TextView nameTV;
+        TextView bodyPartTV;
+        TextView levelTV;
+        TextView typeTV;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.asseta_four_elements_block_image);
-            icon = itemView.findViewById(R.id.asseta_four_elements_block_icon);
-            name = itemView.findViewById(R.id.asseta_four_elements_block_name);
-            type = itemView.findViewById(R.id.asseta_four_elements_block_type);
+            imageTV = itemView.findViewById(R.id.asset_four_elements_block_image);
+            levelIMG = itemView.findViewById(R.id.asset_four_elements_block_lvl_image);
+            nameTV = itemView.findViewById(R.id.asset_four_elements_block_name);
+            bodyPartTV = itemView.findViewById(R.id.asset_four_elements_block_body);
+            levelTV = itemView.findViewById(R.id.asset_four_elements_block_lvl);
+            typeTV = itemView.findViewById(R.id.asset_four_elements_block_type);
         }
     }
 }

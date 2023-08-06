@@ -1,7 +1,5 @@
 package com.example.exerciseapp;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,7 +35,8 @@ public class ExerciseActivity extends AppCompatActivity implements
     private int rest;
     private int currentExercise;
     private long idMain;
-    private byte genusSummary;
+    private double duration;
+    private String name;
     private List<WorkoutModel> workoutPattern;
     private long startTime;
 
@@ -80,7 +79,6 @@ public class ExerciseActivity extends AppCompatActivity implements
                 emptyFragment.fragmentMessage();
             } else if (summaryFragment != null && summaryFragment.isVisible()) {
                 summaryFragment.fragmentMessage();
-                elapsed();
             } else {
                 throw new NullPointerException("(ExerciseActivity)nextBtn -> not work");
             }
@@ -111,9 +109,9 @@ public class ExerciseActivity extends AppCompatActivity implements
                         contentBD.showExerciseById(id).get(0).getName());
                 workoutPattern.add(singleExercise);
                 sumExercise++;
-                genusSummary = 1;
+                name = contentBD.showExerciseById(id).get(0).getName();
             } else {
-                genusSummary = 2;
+                name = contentBD.showWorkoutById(id).get(0).getName();
                 String exerciseIds = contentBD.showExercisesFromWorkout(id);
                 String[] exerciseList = exerciseIds.split(",");
                 long[] exercisesId = new long[exerciseList.length];
@@ -144,7 +142,8 @@ public class ExerciseActivity extends AppCompatActivity implements
 
     private void elapsed() {
         long endTime = SystemClock.elapsedRealtime() - startTime;
-        Log.i(TAG, "elapsed: " + endTime);
+        duration = endTime/1000.0;
+
     }
 
     private void addFragment(long id, int type) {
@@ -189,8 +188,11 @@ public class ExerciseActivity extends AppCompatActivity implements
             if (workoutPattern == null) {
                 summaryFragment = new SummaryFragment();
                 Bundle bundle = new Bundle();
+                elapsed();
+                Log.i(TAG, "checkCondition: " + duration);
                 bundle.putLong("id", idMain);
-                bundle.putByte("genusSummary", genusSummary);
+                bundle.putDouble("duration", duration);
+                bundle.putString("name", name);
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 summaryFragment.setArguments(bundle);
                 ft.replace(R.id.act_exercise_container, summaryFragment, "summaryTag");
@@ -203,8 +205,10 @@ public class ExerciseActivity extends AppCompatActivity implements
             if (workoutPattern.get(workoutPattern.get(currentExercise).getId()).getExerciseId() == MINUS_ONE) {
                 summaryFragment = new SummaryFragment();
                 Bundle bundle = new Bundle();
+                elapsed();
                 bundle.putLong("id", idMain);
-                bundle.putByte("genusSummary", genusSummary);
+                bundle.putDouble("duration", duration);
+                bundle.putString("name", name);
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 summaryFragment.setArguments(bundle);
                 ft.replace(R.id.act_exercise_container, summaryFragment, "summaryTag");
@@ -216,13 +220,6 @@ public class ExerciseActivity extends AppCompatActivity implements
             addFragment(workoutPattern.get(
                     workoutPattern.get(currentExercise).getId()).getExerciseId(), typeExercise);
         }
-    }
-
-    private void replaceFragment(Fragment fragment, String tag) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.act_exercise_container, fragment, tag);
-        ft.setReorderingAllowed(true);
-        ft.commit();
     }
 
     private void swapFragments() {
@@ -274,8 +271,10 @@ public class ExerciseActivity extends AppCompatActivity implements
         if (name.equals("EmptyFragment") && conditionVal) {
             summaryFragment = new SummaryFragment();
             Bundle bundle = new Bundle();
+            elapsed();
             bundle.putLong("id", idMain);
-            bundle.putByte("genusSummary", genusSummary);
+            bundle.putDouble("duration", duration);
+            bundle.putString("name", name);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             summaryFragment.setArguments(bundle);
             ft.replace(R.id.act_exercise_container, summaryFragment, "summaryTag");

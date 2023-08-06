@@ -71,6 +71,26 @@
     <string name="sets_d">Set:</string>
     <string name="volume_d">Objętość:</string>
     <string name="rest_d">Przerwa:</string>
-    <string name="enter_your_exercise_name">Wpisz nazwę swojego ćwiczenia</string>
     <string name="home">Home</string>
+
+    <string name="Enter_a_name_for_the_exercise">Wpisz nazwę swojego ćwiczenia</string>
+    <string name="current_set_d">Obecny set:</string>
+    <string name="last_set_d">Ostatni set:</string>
+    <string name="x" translatable="false">x</string>
+    <string name="then_d">Następnie:</string>
+    <string name="skip">Pomiń</string>
+    <string name="add_15s">Dodaj 15s</string>
+    <string name="completed">Ukończono</string>
+    <string name="time_d">Czas:</string>
+
+    <string name="name_d">Nazwa:</string>
+    <string name="level_d">Poziom:</string>
+    <string name="body_parts_d">Część ciała:</string>
+    <string name="kcal_d">Kalorie:</string>
+    <string name="equipment_d">Sprzęt:</string>
+    <string name="duration_d">Czas trwania:</string>
+    <string name="description_d">Opis:</string>
+    <string name="start">Rozpocznij!</string>
+
+    <string name="selected_exercise_d">Wybrane ćwiczenie:</string>
 </resources>

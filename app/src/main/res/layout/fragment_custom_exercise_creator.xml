@@ -3,15 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".CustomExerciseCreatorFragment">
-
     <ToggleButton
         android:id="@+id/frag_custom_exercise_creator_btn_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textOff="@string/select_exercise"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        android:textOff="@string/select_exercise" />
 
     <FrameLayout
         android:id="@+id/frag_custom_exercise_creator_select_container"
@@ -22,101 +22,189 @@
         android:id="@+id/frag_custom_exercise_creator_btn_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textOff="@string/select_details"
-        android:textAllCaps="false"/>
+        android:textAllCaps="false"
+        android:textOff="@string/select_details" />
 
     <FrameLayout
         android:id="@+id/frag_custom_exercise_creator_volume_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <TextView
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/selected_exercise_name_d" />
+        android:stretchColumns="*">
 
-    <TextView
-        android:id="@+id/frag_custom_exercise_creator_exercise_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TableRow
+            android:layout_marginTop="10dp"
+            android:background="@drawable/top_topic_style"
+            android:padding="10dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/type_d" />
-
-    <TextView
-        android:id="@+id/frag_custom_exercise_creator_exercise_type"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="1">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:orientation="vertical">
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:contentDescription="TODO"
+                android:src="@drawable/ic_text" />
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                                android:gravity="center_horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/selected_exercise_d"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+        </TableRow>
+
+        <TableRow
+            android:background="@drawable/top_expand_topic_style"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/frag_custom_exercise_creator_exist_exercise_name"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="14sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/left_topic_style"
+                android:contentDescription="TODO"
+                android:padding="10dp"
+                android:src="@drawable/ic_type" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/light_grey"
+                android:gravity="center_vertical|start"
+
+                android:text="@string/type_d"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/frag_custom_exercise_creator_exercise_type"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/left_expand_topic_style"
+                android:gravity="center"
+                android:textSize="14sp" />
+        </TableRow>
+
+
+        <TableRow
+            android:layout_marginTop="10dp"
+            android:background="@drawable/top_topic_style"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
                 android:text="@string/sets_d" />
 
             <TextView
-                android:id="@+id/frag_custom_exercise_creator_exercise_sets"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal"/>
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="0.5">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:text="@string/volume_d" />
+        </TableRow>
+
+        <TableRow
+            android:background="@drawable/top_expand_topic_style"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/frag_custom_exercise_creator_exercise_sets"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/frag_custom_exercise_creator_exercise_volume"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal"/>
-        </LinearLayout>
-    </LinearLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/rest_d" />
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="14sp" />
+        </TableRow>
 
-    <TextView
-        android:id="@+id/frag_custom_exercise_creator_exercise_rest"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TableRow
+            android:layout_marginTop="10dp">
 
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/left_topic_style"
+                android:contentDescription="TODO"
+                android:padding="10dp"
+                android:src="@drawable/ic_time" />
 
-    <EditText
-        android:id="@+id/frag_custom_exercise_creator_custom_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/Enter_a_name_for_the_exercise"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/light_grey"
+                android:gravity="center_vertical|start"
+                android:text="@string/rest_d"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/frag_custom_exercise_creator_exercise_rest"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/left_expand_topic_style"
+                android:gravity="center"
+                android:textSize="14sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_marginTop="10dp"
+            android:background="@drawable/settings_list_block_style"
+            android:padding="10dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/frag_custom_exercise_creator_container"
+                style="@style/myMainContainerInputText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/frag_custom_exercise_creator_new_exercise_name"
+                    style="@style/myMainInputText"
+                    android:drawableEnd="@drawable/ic_text"
+                    android:hint="@string/Enter_a_name_for_the_exercise"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </TableRow>
+    </TableLayout>
 
     <android.widget.Button
         android:id="@+id/frag_custom_exercise_creator_btn_create"
         style="@style/MyStandardButtonGuidelines"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create"/>
+        android:text="@string/create" />
 </LinearLayout>
