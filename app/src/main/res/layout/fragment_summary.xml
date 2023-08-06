@@ -1,15 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SummaryFragment">
 
-    <ImageView
+    <TextView
+        android:id="@+id/id_summary_text_complete"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/frag_summary_name"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/completed"
+        android:textSize="42sp"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:id="@+id/frag_summary_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/frag_summary_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/nan"
+        android:textSize="24sp"
+        android:padding="15dp"
+        android:textAlignment="center"/>
+
+    <ImageView
+        android:id="@+id/frag_summary_icon"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
         android:layout_marginHorizontal="50dp"
         android:layout_marginVertical="200dp"
-        android:background="@drawable/check_circle_outline"/>
+        android:background="@drawable/check_circle_outline"
+        android:contentDescription="TODO"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/frag_summary_text_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frag_summary_icon"
+        android:padding="15dp"
+        android:text="@string/time_d"
+        android:textSize="24sp"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:id="@+id/frag_summary_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frag_summary_text_time"
+        android:text="@string/nan"
+        android:textSize="24sp"
+        android:textAlignment="center"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

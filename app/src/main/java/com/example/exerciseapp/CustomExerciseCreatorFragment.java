@@ -215,13 +215,13 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
         selectExercise = v.findViewById(R.id.frag_custom_exercise_creator_btn_select);
         selectDetails = v.findViewById(R.id.frag_custom_exercise_creator_btn_details);
 
-        exerciseName = v.findViewById(R.id.frag_custom_exercise_creator_exercise_name);
+        exerciseName = v.findViewById(R.id.frag_custom_exercise_creator_exist_exercise_name);
         exerciseType = v.findViewById(R.id.frag_custom_exercise_creator_exercise_type);
         exerciseSets = v.findViewById(R.id.frag_custom_exercise_creator_exercise_sets);
         exerciseVolume = v.findViewById(R.id.frag_custom_exercise_creator_exercise_volume);
         exerciseRest = v.findViewById(R.id.frag_custom_exercise_creator_exercise_rest);
 
-        customExerciseName = v.findViewById(R.id.frag_custom_exercise_creator_custom_name);
+        customExerciseName = v.findViewById(R.id.frag_custom_exercise_creator_new_exercise_name);
 
         btnCreate = v.findViewById(R.id.frag_custom_exercise_creator_btn_create);
     }

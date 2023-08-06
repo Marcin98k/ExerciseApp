@@ -1,96 +1,299 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".DetailsFragment">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/frag_details_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:contentDescription="TODO"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+    <TableLayout
+        android:id="@+id/frag_details_table_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="*"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frag_details_image">
 
-        <TextView
-            android:id="@+id/frag_details_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frag_details_image" />
+        <TableRow
+            android:layout_marginTop="10dp">
 
-        <TextView
-            android:id="@+id/frag_details_level"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frag_details_name" />
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_text"
+                android:contentDescription="TODO"
+                android:background="@drawable/left_topic_style"
+                android:padding="10dp"/>
 
-        <TextView
-            android:id="@+id/frag_details_body_parts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frag_details_level" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/name_d"
+                android:gravity="center_vertical|start"
+                android:textSize="16sp"
+                android:background="@color/light_grey"/>
 
-        <TextView
-            android:id="@+id/frag_details_equipment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frag_details_body_parts" />
+            <TextView
+                android:id="@+id/frag_details_name"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:text="@string/nan"
+                android:background="@drawable/left_expand_topic_style" />
+        </TableRow>
 
-        <TextView
-            android:id="@+id/frag_details_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frag_details_equipment" />
+        <TableRow
+            android:layout_marginTop="10dp">
 
-        <TextView
-            android:id="@+id/frag_details_kcal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frag_details_type" />
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_level"
+                android:contentDescription="TODO"
+                android:background="@drawable/left_topic_style"
+                android:padding="10dp"/>
 
-        <TextView
-            android:id="@+id/frag_details_duration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frag_details_kcal" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:gravity="center_vertical|start"
+                android:text="@string/level_d"
+                android:background="@color/light_grey"/>
 
-        <TextView
-            android:id="@+id/frag_details_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frag_details_duration" />
+            <TextView
+                android:id="@+id/frag_details_level"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:text="@string/nan"
+                android:background="@drawable/left_expand_topic_style"/>
+        </TableRow>
 
-        <Button
-            android:id="@+id/frag_details_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="NaN"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/frag_details_description" />
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TableRow
+            android:background="@drawable/top_topic_style"
+            android:layout_marginTop="10dp"
+            android:padding="10dp">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_arm"
+                android:contentDescription="TODO" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:text="@string/body_parts_d"
+                android:textSize="16sp"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+        </TableRow>
+
+        <TableRow
+            android:background="@drawable/top_expand_topic_style">
+
+            <ImageView
+                android:id="@+id/frag_details_body_parts_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contentDescription="TODO" />
+        </TableRow>
+
+        <TableRow
+            android:background="@drawable/top_topic_style"
+            android:layout_marginTop="10dp"
+            android:padding="10dp">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_type"
+                android:contentDescription="TODO" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/type_d"
+                android:textSize="16sp"
+                android:gravity="center_vertical|start"/>
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_kcal"
+                android:contentDescription="TODO" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/kcal_d"
+                android:textSize="14sp"
+                android:gravity="center_vertical|start" />
+        </TableRow>
+
+        <TableRow
+            android:background="@drawable/top_expand_topic_style"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/frag_details_type"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:text="@string/nan" />
+
+            <TextView
+                android:id="@+id/frag_details_kcal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:text="@string/nan" />
+        </TableRow>
+
+        <TableRow
+            android:background="@drawable/top_topic_style"
+            android:layout_marginTop="10dp"
+            android:padding="10dp">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_dumbbell"
+                android:contentDescription="TODO" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/equipment_d"
+                android:textSize="16sp"
+                android:gravity="center_vertical|start" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_time"
+                android:contentDescription="TODO" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:gravity="center_vertical|start"
+                android:text="@string/duration_d" />
+        </TableRow>
+
+        <TableRow
+            android:background="@drawable/top_expand_topic_style"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/frag_details_equipment"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/nan"
+                android:textSize="14sp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/frag_details_duration"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/nan"
+                android:textSize="14sp"
+                android:gravity="center"/>
+        </TableRow>
+
+        <TableRow
+            android:background="@drawable/top_topic_style"
+            android:layout_marginTop="10dp"
+            android:padding="10dp">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_list"
+                android:contentDescription="TODO" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:text="@string/description_d"
+                android:textSize="16sp"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+        </TableRow>
+
+        <TableRow
+            android:background="@drawable/top_expand_topic_style"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/frag_details_description"
+                android:layout_width="0dp"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </TableRow>
+    </TableLayout>
+
+    <android.widget.Button
+        android:id="@+id/frag_details_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/nan"
+        style="@style/MyStandardButtonGuidelines"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frag_details_table_container" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

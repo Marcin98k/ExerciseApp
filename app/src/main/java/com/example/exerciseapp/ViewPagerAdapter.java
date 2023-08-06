@@ -28,8 +28,6 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         this.firstList = firstList;
         this.secondList = secondList;
         pagerType = ViewPagerType.List;
-        Log.i(TAG, "onCreate: 0 + " + firstList);
-        Log.i(TAG, "onCreate: 0 + " + secondList);
     }
 
     public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, int tableLength) {

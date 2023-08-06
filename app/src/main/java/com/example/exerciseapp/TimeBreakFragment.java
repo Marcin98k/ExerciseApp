@@ -25,13 +25,17 @@ public class TimeBreakFragment extends Fragment{
 
     private ProgressBar progressBar;
     private TextView showTime;
+    private TextView showNext;
     private Button skipBtn;
     private Button addBtn;
 
-    int rest;
-    private ClockClass clockClass;
 
-    private FragmentSupportListener fragmentSupportListener;
+    private int rest;
+    private String exerciseName;
+
+    private static final String FRAGMENT_TAG = "TimeBreakFragment";
+
+    private ClockClass clockClass;
     private UpdateIntegersDB updateIntegersDB;
 
     public TimeBreakFragment() {
@@ -43,7 +47,7 @@ public class TimeBreakFragment extends Fragment{
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             rest = getArguments().getInt("rest");
-            Log.i(TAG, "onCreate(TimeBreak): " + rest);
+            exerciseName = getArguments().getString("exerciseName");
         }
     }
 
@@ -60,39 +64,31 @@ public class TimeBreakFragment extends Fragment{
                 .setTextView(showTime);
         clockClass.setFragmentSupportListener(param -> {
             if (updateIntegersDB != null) {
-                Log.e(TAG, " clockClass -(TimeBreak) - {not-null}");
-                updateIntegersDB.values("TimeBreakFragment",
+                updateIntegersDB.values(FRAGMENT_TAG,
                         0, 3, 0);
-            } else {
-                Log.e(TAG, " clockClass -(TimeBreak) - {null}");
             }
         });
+        showNext.setText(exerciseName);
         clockClass.runClock();
         return mView;
     }
 
     private void initView(View v) {
-        progressBar = v.findViewById(R.id.fTimeBreak_progress_bar);
-        showTime = v.findViewById(R.id.fTimeBreak_tv_show_time);
-        addBtn = v.findViewById(R.id.fTimeBreak_btn_add);
-        skipBtn = v.findViewById(R.id.fTimeBreak_btn_skip);
+        progressBar = v.findViewById(R.id.frag_time_break_progress_bar);
+        showTime = v.findViewById(R.id.frag_time_break_tv_show_time);
+        showNext = v.findViewById(R.id.frag_time_break_tv_next);
+        addBtn = v.findViewById(R.id.frag_time_break_btn_add);
+        skipBtn = v.findViewById(R.id.frag_time_break_btn_skip);
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-
-        try {
-            fragmentSupportListener = (FragmentSupportListener) context;
-        } catch (RuntimeException e) {
-            throw new RuntimeException(context.toString() +
-                    " must implement FragmentSupportListener");
-        }
         try {
             updateIntegersDB = (UpdateIntegersDB) context;
         } catch (RuntimeException e) {
-            throw new RuntimeException(context.toString() +
-                    " must implement UpdateIntegersDB");
+            throw new RuntimeException(context +
+                    " must implement FragmentSupportListener and/or UpdateIntegersDB");
         }
     }
 

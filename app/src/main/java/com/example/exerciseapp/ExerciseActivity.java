@@ -1,7 +1,5 @@
 package com.example.exerciseapp;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,16 +29,19 @@ public class ExerciseActivity extends AppCompatActivity implements
 
     private byte typeExercise = 0;
     private long id = 0;
+    private String exerciseName = "";
     private byte scenario;
     private byte currentFragment;
     private int rest;
     private int currentExercise;
     private long idMain;
-    private byte genusSummary;
+    private double duration;
+    private String name;
     private List<WorkoutModel> workoutPattern;
     private long startTime;
 
 
+    private static final String TAG = "ExerciseActivity";
     private static final String REPETITION_EXE_TAG = "tagRepetitionExerciseFragment";
     private static final String TIME_EXE_TAG = "tagTimeExerciseFragment";
     private static final String TIME_BREAK_TAG = "tagBreakExerciseFragment";
@@ -78,7 +79,6 @@ public class ExerciseActivity extends AppCompatActivity implements
                 emptyFragment.fragmentMessage();
             } else if (summaryFragment != null && summaryFragment.isVisible()) {
                 summaryFragment.fragmentMessage();
-                elapsed();
             } else {
                 throw new NullPointerException("(ExerciseActivity)nextBtn -> not work");
             }
@@ -105,12 +105,13 @@ public class ExerciseActivity extends AppCompatActivity implements
             int sumExercise = 0;
             currentExercise = 0;
             if (typeExercise > 0) {
-                WorkoutModel singleExercise = new WorkoutModel(0, id, typeExercise);
+                WorkoutModel singleExercise = new WorkoutModel(0, id, typeExercise,
+                        contentBD.showExerciseById(id).get(0).getName());
                 workoutPattern.add(singleExercise);
                 sumExercise++;
-                genusSummary = 1;
+                name = contentBD.showExerciseById(id).get(0).getName();
             } else {
-                genusSummary = 2;
+                name = contentBD.showWorkoutById(id).get(0).getName();
                 String exerciseIds = contentBD.showExercisesFromWorkout(id);
                 String[] exerciseList = exerciseIds.split(",");
                 long[] exercisesId = new long[exerciseList.length];
@@ -121,11 +122,17 @@ public class ExerciseActivity extends AppCompatActivity implements
                 }
                 for (int i = 0; i < exercisesIdLength; i++) {
                     WorkoutModel model = new WorkoutModel(i, exercisesId[i],
-                            (byte) contentBD.showExerciseByIdFromWorkout(exercisesId[i]).get(0).getType());
+                            (byte) contentBD.showExerciseByIdFromWorkout(exercisesId[i]).get(0).getType(),
+                            contentBD.showExerciseById(exercisesId[i]).get(0).getName());
+
+
+                    Log.i(TAG, "intView: exerciseName" +
+                            contentBD.showExerciseById(exercisesId[i]).get(0).getName());
                     workoutPattern.add(model);
                 }
             }
             typeExercise = workoutPattern.get(currentExercise).getType();
+            exerciseName = workoutPattern.get(0).getName();
             addFragment(workoutPattern.get(0).getExerciseId(), typeExercise);
 
             WorkoutModel lastExercise = new WorkoutModel(sumExercise, MINUS_ONE, (byte) 0);
@@ -135,7 +142,8 @@ public class ExerciseActivity extends AppCompatActivity implements
 
     private void elapsed() {
         long endTime = SystemClock.elapsedRealtime() - startTime;
-        Log.i(TAG, "elapsed: " + endTime);
+        duration = endTime/1000.0;
+
     }
 
     private void addFragment(long id, int type) {
@@ -143,6 +151,7 @@ public class ExerciseActivity extends AppCompatActivity implements
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Bundle sendToFragment = new Bundle();
         sendToFragment.putLong("id", id);
+        sendToFragment.putString("exerciseName", exerciseName);
         if (type == 1) {
             repetitionExerciseFragment = new RepetitionExerciseFragment();
             repetitionExerciseFragment.setArguments(sendToFragment);
@@ -179,8 +188,11 @@ public class ExerciseActivity extends AppCompatActivity implements
             if (workoutPattern == null) {
                 summaryFragment = new SummaryFragment();
                 Bundle bundle = new Bundle();
+                elapsed();
+                Log.i(TAG, "checkCondition: " + duration);
                 bundle.putLong("id", idMain);
-                bundle.putByte("genusSummary", genusSummary);
+                bundle.putDouble("duration", duration);
+                bundle.putString("name", name);
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 summaryFragment.setArguments(bundle);
                 ft.replace(R.id.act_exercise_container, summaryFragment, "summaryTag");
@@ -193,8 +205,10 @@ public class ExerciseActivity extends AppCompatActivity implements
             if (workoutPattern.get(workoutPattern.get(currentExercise).getId()).getExerciseId() == MINUS_ONE) {
                 summaryFragment = new SummaryFragment();
                 Bundle bundle = new Bundle();
+                elapsed();
                 bundle.putLong("id", idMain);
-                bundle.putByte("genusSummary", genusSummary);
+                bundle.putDouble("duration", duration);
+                bundle.putString("name", name);
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 summaryFragment.setArguments(bundle);
                 ft.replace(R.id.act_exercise_container, summaryFragment, "summaryTag");
@@ -202,16 +216,10 @@ public class ExerciseActivity extends AppCompatActivity implements
                 ft.commit();
                 return;
             }
+            exerciseName = workoutPattern.get(currentExercise).getName();
             addFragment(workoutPattern.get(
                     workoutPattern.get(currentExercise).getId()).getExerciseId(), typeExercise);
         }
-    }
-
-    private void replaceFragment(Fragment fragment, String tag) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.act_exercise_container, fragment, tag);
-        ft.setReorderingAllowed(true);
-        ft.commit();
     }
 
     private void swapFragments() {
@@ -219,7 +227,8 @@ public class ExerciseActivity extends AppCompatActivity implements
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Bundle sendRestValue = new Bundle();
         sendRestValue.putInt("rest", rest);
-
+        sendRestValue.putString("exerciseName", exerciseName);
+        Log.i(TAG, "swapFragments: " + exerciseName);
         switch (currentFragment) {
             case 1:
             case 2:
@@ -262,8 +271,10 @@ public class ExerciseActivity extends AppCompatActivity implements
         if (name.equals("EmptyFragment") && conditionVal) {
             summaryFragment = new SummaryFragment();
             Bundle bundle = new Bundle();
+            elapsed();
             bundle.putLong("id", idMain);
-            bundle.putByte("genusSummary", genusSummary);
+            bundle.putDouble("duration", duration);
+            bundle.putString("name", name);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             summaryFragment.setArguments(bundle);
             ft.replace(R.id.act_exercise_container, summaryFragment, "summaryTag");
