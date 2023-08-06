@@ -93,4 +93,6 @@
     <string name="start">Rozpocznij!</string>
 
     <string name="selected_exercise_d">Wybrane ćwiczenie:</string>
+    <string name="details">Szczegóły</string>
+    <string name="plans">Plany</string>
 </resources>

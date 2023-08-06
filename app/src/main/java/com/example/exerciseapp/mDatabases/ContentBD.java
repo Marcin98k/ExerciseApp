@@ -86,10 +86,6 @@ public class ContentBD extends SQLiteOpenHelper {
     private static final String USER_EXERCISE_EXTENSIONS_ID = "EXERCISE_EXTENSION";
 
 
-    private static final String MIDDLE_TAB = "MIDDLE_TAB";
-    private static final String APPEARANCE_ID = "APPEARANCE";
-
-
     private static final String DATE_TAB = "DATE_TAB";
     private static final String DATE_USER_ID = "USER_ID";
     private static final String DATE_NUMBER = "DATE";
@@ -104,7 +100,8 @@ public class ContentBD extends SQLiteOpenHelper {
     private static final String USER_BIO_ID = "USER_BIO_ID";
 
     public ContentBD(@Nullable Context context) {
-        super(context, "ContentDatabase.db", null, 1);
+        super(context, "ContentDatabase.db",
+                null, 1);
     }
 
     @Override
@@ -175,11 +172,6 @@ public class ContentBD extends SQLiteOpenHelper {
                 + INT_VAL + " INTEGER, " + OBJ_DESCRIPTION + " TEXT, "
                 + TAG + " TEXT)";
         sqLiteDatabase.execSQL(createAppearanceTab);
-
-        String createMiddleTab = "CREATE TABLE " + MIDDLE_TAB + " ("
-                + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + INT_VAL + " INTEGER, " + APPEARANCE_ID + " INTEGER)";
-        sqLiteDatabase.execSQL(createMiddleTab);
 
         String createDateTab = "CREATE TABLE " + DATE_TAB + " ("
                 + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -434,18 +426,6 @@ public class ContentBD extends SQLiteOpenHelper {
             values.put(WORKOUT_EXERCISES_ID, exerciseModel.getExerciseId());
 
             return db.insert(WORKOUT_TAB, null, values) != -1;
-        }
-    }
-
-    public boolean insertMiddle(IntegerModel integerModel) {
-
-        try (SQLiteDatabase db = getWritableDatabase()) {
-
-            ContentValues values = new ContentValues();
-            values.put(INT_VAL, integerModel.getFirstValue());
-            values.put(APPEARANCE_ID, integerModel.getSecondValue());
-
-            return db.insert(MIDDLE_TAB, null, values) != -1;
         }
     }
 

@@ -90,5 +90,11 @@
     <string name="description_d">Description:</string>
     <string name="start">Start!</string>
     <string name="selected_exercise_d">Selected exercise:</string>
+    <string name="details">Details</string>
+    <string name="plans">Plans</string>
+    <string name="enter_number">Enter number</string>
+    <string name="enter_text">Enter text</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
 
 </resources>

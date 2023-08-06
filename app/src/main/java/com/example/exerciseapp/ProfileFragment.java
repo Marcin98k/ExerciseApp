@@ -2,6 +2,7 @@ package com.example.exerciseapp;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exerciseapp.mAdapters.FourElementLinearListAdapter;
 import com.example.exerciseapp.mAdapters.RadioButtonListAdapter;
-
-
 import com.example.exerciseapp.mEnums.ListType;
 import com.example.exerciseapp.mEnums.NumberOfItem;
 import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
@@ -24,7 +23,9 @@ import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ProfileFragment extends Fragment {
@@ -55,7 +56,6 @@ public class ProfileFragment extends Fragment {
     private List<ThreeElementLinearListModel> emptyRadioList;
     private FourElementLinearListAdapter adapter;
     private RadioButtonListAdapter radioAdapter;
-
 
 
     private final String INFORMATION = "userInformation";
@@ -119,11 +119,14 @@ public class ProfileFragment extends Fragment {
             } else {
                 userInformationList = getArguments().getParcelableArrayList("userInformation");
             }
+            String TAG = "TgA";
             if (getArguments().getParcelableArrayList("userGoals") == null ||
                     getArguments().getParcelableArrayList("userGoals").isEmpty()) {
                 userGoalsList = fillList("userGoals");
+                Log.i(TAG, "onCreate: userGoals === Null");
             } else {
                 userGoalsList = getArguments().getParcelableArrayList("userGoals");
+                Log.i(TAG, "onCreate: userGoals Not Null" + userGoalsList.get(0).getName());
             }
             if (getArguments().getParcelableArrayList("userPerformance").isEmpty() ||
                     getArguments().getParcelableArrayList("userPerformance") == null) {
@@ -131,17 +134,17 @@ public class ProfileFragment extends Fragment {
             } else {
                 userPerformanceList = getArguments().getParcelableArrayList("userPerformance");
             }
-            if (getArguments().getParcelableArrayList("userLevel").isEmpty() ||
-                    getArguments().getParcelableArrayList("userLevel") == null) {
-                userLevelList = fillRadioList("userLevel");
-            } else {
-            userLevelList = getArguments().getParcelableArrayList("userLevel");
-            }
             if (getArguments().getParcelableArrayList("userGender").isEmpty() ||
                     getArguments().getParcelableArrayList("userGender") == null) {
                 userGenderList = fillRadioList("userGender");
             } else {
-            userGenderList = getArguments().getParcelableArrayList("userGender");
+                userGenderList = getArguments().getParcelableArrayList("userGender");
+            }
+            if (getArguments().getParcelableArrayList("userLevel").isEmpty() ||
+                    getArguments().getParcelableArrayList("userLevel") == null) {
+                userLevelList = fillRadioList("userLevel");
+            } else {
+                userLevelList = getArguments().getParcelableArrayList("userLevel");
             }
         }
     }
@@ -153,11 +156,8 @@ public class ProfileFragment extends Fragment {
         initView(mView);
 
 
-        initRecyclerView(informationList, userInformationList, INFORMATION,
-                ListType.SELECTABLE_BUTTONS, NumberOfItem.ONE);
-        initRadioButtonList(genderList, userGenderList, GENDER);
-
-
+//        initRecyclerView(informationList, userInformationList, INFORMATION,
+//                ListType.SELECTABLE_BUTTONS, NumberOfItem.ONE);
         initRadioButtonList(genderList, userGenderList, GENDER);
         initRecyclerView(informationList, userInformationList, INFORMATION,
                 ListType.SELECTABLE_BUTTONS, NumberOfItem.TWO);
@@ -209,6 +209,7 @@ public class ProfileFragment extends Fragment {
         emptyList.add(model);
         return emptyList;
     }
+
     private List<ThreeElementLinearListModel> fillRadioList(String name) {
         emptyRadioList = new ArrayList<>();
         ThreeElementLinearListModel model = new ThreeElementLinearListModel(

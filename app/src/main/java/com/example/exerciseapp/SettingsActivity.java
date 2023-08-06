@@ -25,7 +25,6 @@ import com.example.exerciseapp.mEnums.RowNames;
 import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mInterfaces.UpdateStringsDB;
-import com.example.exerciseapp.mModels.AppearanceBlockModel;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
@@ -44,7 +43,6 @@ public class SettingsActivity extends AppCompatActivity implements
 
 
     private int unitsID;
-    private int numbersID;
     private List<Integer> tab;
     private final int USER_ID = 1;
 
@@ -53,7 +51,6 @@ public class SettingsActivity extends AppCompatActivity implements
     private final String tagHeight = "tagHeight";
     private final String tagWeight = "tagWeight";
     private static final int PERMISSION_REQUEST_CODE = 1;
-
 
 
     //    LinearListFragment == TELL
@@ -85,12 +82,13 @@ public class SettingsActivity extends AppCompatActivity implements
 
         if (selectHeightFragment != null) {
             selectHeightFragment.fragmentMessage();
-            dbHelper.updateHeight(unitsID, numbersID, tab.get(0), tab.get(1));
+            Log.i(TAG, "onBackPressed: " + unitsID + " " + tab.get(0) + " " + tab.get(1));
+            dbHelper.updateHeight(USER_ID, tab.get(0), tab.get(1));
             tab.clear();
             selectHeightFragment = null;
         } else if (selectWeightFragment != null) {
             selectWeightFragment.fragmentMessage();
-            dbHelper.updateWeight(unitsID, numbersID, tab.get(0), tab.get(1));
+            dbHelper.updateWeight(USER_ID, tab.get(0), tab.get(1));
             tab.clear();
             selectWeightFragment = null;
         } else {
@@ -165,7 +163,6 @@ public class SettingsActivity extends AppCompatActivity implements
     }
 
 
-
     private void FragmentOperation(Fragment fragment, FragmentAction action, boolean addToBackStack,
                                    String tag, List<?> list, String fragmentName, ListType listType,
                                    NumberOfItem numberOfItem) {
@@ -221,7 +218,6 @@ public class SettingsActivity extends AppCompatActivity implements
         }
         ft.commit();
     }
-
 
 
     private ThreeElementLinearListModel fillList(int icon,
@@ -281,107 +277,39 @@ public class SettingsActivity extends AppCompatActivity implements
     }
 
     private List<FourElementLinearListModel> userUnit() {
-        List<FourElementLinearListModel> show = new ArrayList<>();
-        int units = userInformationList().get(0).getUnits();
-
-        int height = dbHelper.getUserUnit(units).get(0).getFirstValue();
-        int weight = dbHelper.getUserUnit(units).get(0).getSecondValue();
-
-        int unitHeight = dbHelper.getUserUnit(units).get(0).getThirdValue();
-        int unitWeight = dbHelper.getUserUnit(units).get(0).getForthValue();
-
-        int mHeight1 = dbHelper.getMiddleIndex(height).get(0).getFirstValue();
-        int mHeight11 = dbHelper.getMiddleIndex(height).get(0).getSecondValue();
-
-        int mWeight1 = dbHelper.getMiddleIndex(weight).get(0).getFirstValue();
-        int mWeight11 = dbHelper.getMiddleIndex(weight).get(0).getSecondValue();
-
-        List<AppearanceBlockModel> appearanceBlockModelList = dbHelper.getAppearanceBlock(mHeight11);
-        List<AppearanceBlockModel> appearanceBlockModelList1 = dbHelper.getAppearanceBlock(mWeight11);
-
-        FourElementLinearListModel modelHeight = new FourElementLinearListModel(
-                units,
-                appearanceBlockModelList.get(0).getIcon(),
-                appearanceBlockModelList.get(0).getName(),
-                String.valueOf(mHeight1),
-                dbHelper.getUnitHeight(unitHeight),
-                height);
-
-        FourElementLinearListModel modelWeight = new FourElementLinearListModel(
-                units,
-                appearanceBlockModelList1.get(0).getIcon(),
-                appearanceBlockModelList1.get(0).getName(),
-                String.valueOf(mWeight1),
-                dbHelper.getUnitWeight(unitWeight),
-                weight);
-        show.add(modelHeight);
-        show.add(modelWeight);
-
-        return show;
+        return dbHelper.getUserUnit(userInformationList().get(0).getUnits());
     }
 
     private List<FourElementLinearListModel> userPerformance() {
+        return dbHelper.getPerformance(userInformationList().get(0).getPerformance());
+    }
 
-        List<FourElementLinearListModel> show = new ArrayList<>();
+    private List<FourElementLinearListModel> userGoals() {
+        return dbHelper.getGoals(userInformationList().get(0).getGoals());
+    }
 
-        int performance = userInformationList().get(0).getPerformance();
+    private List<ThreeElementLinearListModel> userLevel() {
+        int value = dbHelper.getInformationUser(USER_ID).get(0).getLevel();
+        List<ThreeElementLinearListModel> result = new ArrayList<>();
+        String[] names = {getString(R.string.beginner),
+                getString(R.string.intermediate), getString(R.string.advanced)};
+        for (int i = 0; i < names.length; i++) {
+            result.add(new ThreeElementLinearListModel(i, "",
+                    names[i], value == i ? 1 : 0));
+        }
+        return result;
+    }
 
-        int per1 = dbHelper.getPerformance(performance).get(0).getFirstValue();
-        int per2 = dbHelper.getPerformance(performance).get(0).getSecondValue();
-        int per3 = dbHelper.getPerformance(performance).get(0).getThirdValue();
-        int per4 = dbHelper.getPerformance(performance).get(0).getForthValue();
-
-        int mPer1 = dbHelper.getMiddleIndex(per1).get(0).getFirstValue();
-        int mPer11 = dbHelper.getMiddleIndex(per1).get(0).getSecondValue();
-
-        int mPer2 = dbHelper.getMiddleIndex(per2).get(0).getFirstValue();
-        int mPer22 = dbHelper.getMiddleIndex(per2).get(0).getSecondValue();
-
-        int mPer3 = dbHelper.getMiddleIndex(per3).get(0).getFirstValue();
-        int mPer33 = dbHelper.getMiddleIndex(per3).get(0).getSecondValue();
-
-        int mPer4 = dbHelper.getMiddleIndex(per4).get(0).getFirstValue();
-        int mPer44 = dbHelper.getMiddleIndex(per4).get(0).getSecondValue();
-
-        List<AppearanceBlockModel> appearanceBlockList1 = dbHelper.getAppearanceBlock(mPer11);
-        List<AppearanceBlockModel> appearanceBlockList2 = dbHelper.getAppearanceBlock(mPer22);
-        List<AppearanceBlockModel> appearanceBlockList3 = dbHelper.getAppearanceBlock(mPer33);
-        List<AppearanceBlockModel> appearanceBlockList4 = dbHelper.getAppearanceBlock(mPer44);
-
-        FourElementLinearListModel model1 = new FourElementLinearListModel(
-                dbHelper.getMiddleIndex(per1).get(0).getId(),
-                appearanceBlockList1.get(0).getIcon(),
-                appearanceBlockList1.get(0).getName(),
-                String.valueOf(mPer1),
-                "");
-
-        FourElementLinearListModel model2 = new FourElementLinearListModel(
-                dbHelper.getMiddleIndex(per2).get(0).getId(),
-                appearanceBlockList2.get(0).getIcon(),
-                appearanceBlockList2.get(0).getName(),
-                String.valueOf(mPer2),
-                "");
-
-        FourElementLinearListModel model3 = new FourElementLinearListModel(
-                dbHelper.getMiddleIndex(per3).get(0).getId(),
-                appearanceBlockList3.get(0).getIcon(),
-                appearanceBlockList3.get(0).getName(),
-                String.valueOf(mPer3),
-                "");
-
-        FourElementLinearListModel model4 = new FourElementLinearListModel(
-                dbHelper.getMiddleIndex(per4).get(0).getId(),
-                appearanceBlockList4.get(0).getIcon(),
-                appearanceBlockList4.get(0).getName(),
-                String.valueOf(mPer4),
-                "");
-
-        show.add(model1);
-        show.add(model2);
-        show.add(model3);
-        show.add(model4);
-
-        return show;
+    private List<ThreeElementLinearListModel> userGender() {
+        int value = dbHelper.getInformationUser(USER_ID).get(0).getGender();
+        List<ThreeElementLinearListModel> result = new ArrayList<>();
+        String[] gender = {getString(R.string.male),
+                getString(R.string.female), getString(R.string.other)};
+        for (int i = 0; i < gender.length; i++) {
+            result.add(new ThreeElementLinearListModel(i, "",
+                    gender[i], value == i ? 1 : 0));
+        }
+        return result;
     }
 
     private List<IntegerModel> notificationList() {
@@ -401,181 +329,22 @@ public class SettingsActivity extends AppCompatActivity implements
         return list;
     }
 
-    private List<FourElementLinearListModel> userGoals() {
-
-        List<FourElementLinearListModel> show = new ArrayList<>();
-
-        int goals = userInformationList().get(0).getGoals();
-
-        int goal1 = dbHelper.getGoals(goals).get(0).getFirstValue();
-        int goal2 = dbHelper.getGoals(goals).get(0).getSecondValue();
-        int goal3 = dbHelper.getGoals(goals).get(0).getThirdValue();
-        int goal4 = dbHelper.getGoals(goals).get(0).getForthValue();
-
-        int mGoal1 = dbHelper.getMiddleIndex(goal1).get(0).getFirstValue();
-        int mGoal11 = dbHelper.getMiddleIndex(goal1).get(0).getSecondValue();
-
-        int mGoal2 = dbHelper.getMiddleIndex(goal2).get(0).getFirstValue();
-        int mGoal22 = dbHelper.getMiddleIndex(goal2).get(0).getSecondValue();
-
-        int mGoal3 = dbHelper.getMiddleIndex(goal3).get(0).getFirstValue();
-        int mGoal33 = dbHelper.getMiddleIndex(goal3).get(0).getSecondValue();
-
-        int mGoal4 = dbHelper.getMiddleIndex(goal4).get(0).getFirstValue();
-        int mGoal44 = dbHelper.getMiddleIndex(goal4).get(0).getSecondValue();
-
-
-        List<AppearanceBlockModel> appearanceBlockList1 = dbHelper.getAppearanceBlock(mGoal11);
-        List<AppearanceBlockModel> appearanceBlockList2 = dbHelper.getAppearanceBlock(mGoal22);
-        List<AppearanceBlockModel> appearanceBlockList3 = dbHelper.getAppearanceBlock(mGoal33);
-        List<AppearanceBlockModel> appearanceBlockList4 = dbHelper.getAppearanceBlock(mGoal44);
-
-        FourElementLinearListModel model1 = new FourElementLinearListModel(
-                dbHelper.getMiddleIndex(goal1).get(0).getId(),
-                appearanceBlockList1.get(0).getIcon(),
-                appearanceBlockList1.get(0).getName(),
-                String.valueOf(mGoal1),
-                "");
-
-        FourElementLinearListModel model2 = new FourElementLinearListModel(
-                dbHelper.getMiddleIndex(goal2).get(0).getId(),
-                appearanceBlockList2.get(0).getIcon(),
-                appearanceBlockList2.get(0).getName(),
-                String.valueOf(mGoal2),
-                "");
-
-        FourElementLinearListModel model3 = new FourElementLinearListModel(
-                dbHelper.getMiddleIndex(goal3).get(0).getId(),
-                appearanceBlockList3.get(0).getIcon(),
-                appearanceBlockList3.get(0).getName(),
-                String.valueOf(mGoal3),
-                "");
-
-        FourElementLinearListModel model4 = new FourElementLinearListModel(
-                dbHelper.getMiddleIndex(goal4).get(0).getId(),
-                appearanceBlockList4.get(0).getIcon(),
-                appearanceBlockList4.get(0).getName(),
-                String.valueOf(mGoal4),
-                "");
-
-        show.add(model1);
-        show.add(model2);
-        show.add(model3);
-        show.add(model4);
-
-        return show;
-    }
-
-    private List<ThreeElementLinearListModel> userLevel() {
-
-        List<ThreeElementLinearListModel> showLvl = new ArrayList<>();
-
-        int level = userInformationList().get(0).getLevel();
-
-        int lvl1 = dbHelper.getLevel(level).get(0).getFirstValue();
-        int lvl2 = dbHelper.getLevel(level).get(0).getSecondValue();
-        int lvl3 = dbHelper.getLevel(level).get(0).getThirdValue();
-
-        int mLvl1 = dbHelper.getMiddleIndex(lvl1).get(0).getFirstValue();
-        int mLvl2 = dbHelper.getMiddleIndex(lvl1).get(0).getSecondValue();
-
-        int mLvl11 = dbHelper.getMiddleIndex(lvl2).get(0).getFirstValue();
-        int mLvl22 = dbHelper.getMiddleIndex(lvl2).get(0).getSecondValue();
-
-        int mLvl111 = dbHelper.getMiddleIndex(lvl3).get(0).getFirstValue();
-        int mLvl222 = dbHelper.getMiddleIndex(lvl3).get(0).getSecondValue();
-
-        List<AppearanceBlockModel> appearanceBlockList1 = dbHelper.getAppearanceBlock(mLvl2);
-        List<AppearanceBlockModel> appearanceBlockList2 = dbHelper.getAppearanceBlock(mLvl22);
-        List<AppearanceBlockModel> appearanceBlockList3 = dbHelper.getAppearanceBlock(mLvl222);
-
-        ThreeElementLinearListModel model1 = new ThreeElementLinearListModel(
-                dbHelper.getMiddleIndex(lvl1).get(0).getId(),
-                appearanceBlockList1.get(0).getIcon(),
-                appearanceBlockList1.get(0).getName(),
-                mLvl1);
-
-        ThreeElementLinearListModel model2 = new ThreeElementLinearListModel(
-                dbHelper.getMiddleIndex(lvl2).get(0).getId(),
-                appearanceBlockList2.get(0).getIcon(),
-                appearanceBlockList2.get(0).getName(),
-                mLvl11);
-
-        ThreeElementLinearListModel model3 = new ThreeElementLinearListModel(
-                dbHelper.getMiddleIndex(lvl3).get(0).getId(),
-                appearanceBlockList3.get(0).getIcon(),
-                appearanceBlockList3.get(0).getName(),
-                mLvl111);
-
-        showLvl.add(model1);
-        showLvl.add(model2);
-        showLvl.add(model3);
-
-        return showLvl;
-    }
-
-    private List<ThreeElementLinearListModel> userGender() {
-
-        List<ThreeElementLinearListModel> show = new ArrayList<>();
-
-        int gender = userInformationList().get(0).getGender();
-
-        int male = dbHelper.getGender(gender).get(0).getFirstValue();
-        int female = dbHelper.getGender(gender).get(0).getSecondValue();
-        int other = dbHelper.getGender(gender).get(0).getThirdValue();
-
-        int male1 = dbHelper.getMiddleIndex(male).get(0).getFirstValue();
-        int male2 = dbHelper.getMiddleIndex(male).get(0).getSecondValue();
-
-        int female1 = dbHelper.getMiddleIndex(female).get(0).getFirstValue();
-        int female2 = dbHelper.getMiddleIndex(female).get(0).getSecondValue();
-
-        int other1 = dbHelper.getMiddleIndex(other).get(0).getFirstValue();
-        int other2 = dbHelper.getMiddleIndex(other).get(0).getSecondValue();
-
-
-        List<AppearanceBlockModel> maleModel = dbHelper.getAppearanceBlock(male2);
-        List<AppearanceBlockModel> femaleModel = dbHelper.getAppearanceBlock(female2);
-        List<AppearanceBlockModel> otherModel = dbHelper.getAppearanceBlock(other2);
-
-        ThreeElementLinearListModel model1 = new ThreeElementLinearListModel(
-                dbHelper.getMiddleIndex(male).get(0).getId(),
-                maleModel.get(0).getIcon(),
-                maleModel.get(0).getName(),
-                male1);
-
-        ThreeElementLinearListModel model2 = new ThreeElementLinearListModel(
-                dbHelper.getMiddleIndex(female).get(0).getId(),
-                femaleModel.get(0).getIcon(),
-                femaleModel.get(0).getName(),
-                female1);
-
-        ThreeElementLinearListModel model3 = new ThreeElementLinearListModel(
-                dbHelper.getMiddleIndex(other).get(0).getId(),
-                otherModel.get(0).getIcon(),
-                otherModel.get(0).getName(),
-                other1);
-
-        show.add(model1);
-        show.add(model2);
-        show.add(model3);
-
-        return show;
-    }
-
-
-
     @Override
     public void strValues(String listName, int position, int id, String firstVal) {
         if (listName.equals(tagAccountList)) {
-            if (position == 0) {
-                dbHelper.updateUser(RowNames.NAME, id, firstVal);
-            } else if (position == 1) {
-                dbHelper.updateUser(RowNames.EMAIL, id, firstVal);
-            } else if (position == 2) {
-                dbHelper.updateUser(RowNames.PASSWORD, id, firstVal);
-            } else {
-                Log.e(TAG, "strValues:  listName --> default");
+            switch (position) {
+                case 0:
+                    dbHelper.updateUser(RowNames.NAME, id, firstVal);
+                    break;
+                case 1:
+                    dbHelper.updateUser(RowNames.EMAIL, id, firstVal);
+                    break;
+                case 2:
+                    dbHelper.updateUser(RowNames.PASSWORD, id, firstVal);
+                    break;
+                default:
+                    Log.e(TAG, "strValues:  listName --> default");
+                    break;
             }
             Log.e(TAG, "strValues: " + accountList());
         }
@@ -587,7 +356,6 @@ public class SettingsActivity extends AppCompatActivity implements
         switch (listName) {
             case informationName:
                 unitsID = secondValue;
-                numbersID = thirdValue;
                 if (firstValue == 0) {
                     FragmentManager fm = getSupportFragmentManager();
                     FragmentTransaction ft = fm.beginTransaction();
@@ -607,16 +375,18 @@ public class SettingsActivity extends AppCompatActivity implements
                 }
                 break;
             case performanceName:
-                dbHelper.updatePerformance(firstValue, secondValue);
+                dbHelper.updateUserPerformance(USER_ID, firstValue, secondValue);
                 break;
             case goalsName:
-                dbHelper.updateGoals(firstValue, secondValue);
+                dbHelper.updateUserGoals(USER_ID, firstValue, secondValue);
                 break;
             case levelName:
-                dbHelper.switchLevel(firstValue, secondValue);
+                Log.i(TAG, "values: switch Level" + firstValue + " " + secondValue + " " + thirdValue);
+                dbHelper.switchUserLevel(USER_ID, secondValue);
                 break;
             case genderName:
-                dbHelper.switchGender(firstValue, secondValue);
+                Log.i(TAG, "values: switch Gender");
+                dbHelper.switchUserGender(USER_ID, secondValue);
                 break;
             case tagLanguageList:
                 Log.i(TAG, "values: " + firstValue + " sec: " + secondValue);

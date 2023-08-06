@@ -21,6 +21,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.exerciseapp.mDatabases.ContentBD;
+import com.example.exerciseapp.mDatabases.DBHelper;
+import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ExerciseModel;
 
@@ -29,6 +31,7 @@ import java.util.List;
 public class DetailsFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "DetailsFragment";
+    private String fragmentName;
     private Button nextBtnView;
 
 
@@ -40,7 +43,9 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
 
 
     private ContentBD contentBD;
+    private DBHelper dbHelper;
     private UpdateIntegersDB updateIntegersDB;
+    private ITitleChangeListener iTitleChangeListener;
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -51,9 +56,26 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         super.onAttach(context);
         try {
             updateIntegersDB = (UpdateIntegersDB) context;
+            iTitleChangeListener = (ITitleChangeListener) context;
         } catch (NullPointerException e) {
             throw new NullPointerException(context.toString() +
-                    " must implement UpdateIntegerDB");
+                    " must implement UpdateIntegerDB and/or ITitleChangeListener");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (iTitleChangeListener != null) {
+            iTitleChangeListener.title(fragmentName);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (iTitleChangeListener != null) {
+            iTitleChangeListener.title("");
         }
     }
 
@@ -73,6 +95,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_details, container, false);
         contentBD = new ContentBD(requireActivity());
+        dbHelper = new DBHelper(requireActivity());
         initView(mView);
         nextBtnView.setOnClickListener(this);
         return mView;
@@ -92,18 +115,18 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         nextBtnView = v.findViewById(R.id.frag_details_button);
 
         exerciseDetail = contentBD.showExerciseById(id);
+        ExerciseModel exercise = exerciseDetail.get(POSITION);
 
-//        imageIMG.setImageResource(exerciseDetail.get(0).getImage());
-
-        nameTV.setText(exerciseDetail.get(POSITION).getName());
-        levelTV.setText(String.valueOf(exerciseDetail.get(POSITION).getLevel()));
-//        bodyPartsIMG.setImageBitmap(exerciseDetail.get(POSITION).getBodyParts());
-        equipmentTV.setText(exerciseDetail.get(POSITION).getEquipment());
-        typeTV.setText(String.valueOf(exerciseDetail.get(POSITION).getType()));
-        kcalTV.setText(String.valueOf(exerciseDetail.get(POSITION).getKcal()));
-        durationTV.setText(String.valueOf(exerciseDetail.get(POSITION).getDuration()));
-        descriptionTV.setText(String.valueOf(exerciseDetail.get(POSITION).getDescription()));
-
+//        imageIMG.setImageResource(exercise.getImage());
+        nameTV.setText(exercise.getName());
+        levelTV.setText(String.valueOf(exercise.getLevel()));
+//        bodyPartsIMG.setImageBitmap(exercise.getBodyParts());
+        equipmentTV.setText(exercise.getEquipment());
+        typeTV.setText(String.valueOf(exercise.getType()));
+        kcalTV.setText(String.valueOf(exercise.getKcal()));
+        durationTV.setText(String.valueOf(exercise.getDuration()));
+        descriptionTV.setText(String.valueOf(exercise.getDescription()));
+        fragmentName = getString(R.string.details);
         nextBtnView.setText(btnText);
     }
 

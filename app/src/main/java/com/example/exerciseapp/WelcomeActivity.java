@@ -17,7 +17,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.exerciseapp.mClasses.SharedViewModel;
 import com.example.exerciseapp.mDatabases.DBHelper;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
-import com.example.exerciseapp.mInterfaces.INewExercise;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.UserInformationModel;
 
@@ -165,41 +164,7 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
     //    Before use add units and performance table;
     private void sendToDB() {
 
-//        Gender fragment(number of indexes = 1);
-        IntegerModel gender1;
-        IntegerModel gender2;
-        IntegerModel gender3;
-
-            switch (regListInt.get(0)) {
-                case 1:
-                    gender1 = new IntegerModel(-1, 1, 1);
-                    gender2 = new IntegerModel(-1, 0, 2);
-                    gender3 = new IntegerModel(-1, 0, 3);
-                    break;
-                case 2:
-                    gender1 = new IntegerModel(-1, 0, 1);
-                    gender2 = new IntegerModel(-1, 1, 2);
-                    gender3 = new IntegerModel(-1, 0, 3);
-                    break;
-                case 3:
-                    gender1 = new IntegerModel(-1, 0, 1);
-                    gender2 = new IntegerModel(-1, 0, 2);
-                    gender3 = new IntegerModel(-1, 1, 3);
-                    break;
-                default:
-                    gender1 = new IntegerModel(-1, 0, 1);
-                    gender2 = new IntegerModel(-1, 0, 2);
-                    gender3 = new IntegerModel(-1, 0, 3);
-            }
-        dbHelper.insertMiddleTab(gender1);
-        dbHelper.insertMiddleTab(gender2);
-        dbHelper.insertMiddleTab(gender3);
-
-
-//        Height fragment(number of indexes = 2);
-
         IntegerModel userUnits;
-
         int height;
         int weight;
 
@@ -225,178 +190,40 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
         }
         userUnits = new IntegerModel(
                 -1,
-                4,
-                5,
+                regListInt.get(1),
+                regListInt.get(3),
                 height,
                 weight);
 
         dbHelper.insertUnitsTab(userUnits);
 
-        IntegerModel unit1 = new IntegerModel(-1, regListInt.get(1), 4);
-        IntegerModel unit2 = new IntegerModel(-1, regListInt.get(3), 5);
-
-        dbHelper.insertMiddleTab(unit1);
-        dbHelper.insertMiddleTab(unit2);
-
-
-        //        Level fragment(number of indexes = 3);
-
-        IntegerModel level1;
-        IntegerModel level2;
-        IntegerModel level3;
-        switch (regListInt.get(5)) {
-            case 1:
-                level1 = new IntegerModel(-1, 1, 10);
-                level2 = new IntegerModel(-1, 0, 11);
-                level3 = new IntegerModel(-1, 0, 12);
-                break;
-            case 2:
-                level1 = new IntegerModel(-1, 0, 10);
-                level2 = new IntegerModel(-1, 1, 11);
-                level3 = new IntegerModel(-1, 0, 12);
-                break;
-            case 3:
-                level1 = new IntegerModel(-1, 0, 10);
-                level2 = new IntegerModel(-1, 0, 11);
-                level3 = new IntegerModel(-1, 1, 12);
-                break;
-            default:
-                level1 = new IntegerModel(-1, 0, 10);
-                level2 = new IntegerModel(-1, 0, 11);
-                level3 = new IntegerModel(-1, 0, 12);
+        dbHelper.insertGoalsTab(new IntegerModel(-1, regListInt.get(6), regListInt.get(7),
+                regListInt.get(8), regListInt.get(9)));
+        for (int i = 6; i <= 9; i++) {
+            Log.e(TAG, "sendToDB(!): " + i + " : " + regListInt.get(i));
         }
 
-        dbHelper.insertMiddleTab(level1);
-        dbHelper.insertMiddleTab(level2);
-        dbHelper.insertMiddleTab(level3);
+        dbHelper.insertPerformance(new IntegerModel(-1, regListInt.get(10), regListInt.get(11),
+                regListInt.get(12), regListInt.get(13)));
 
-        //        Goals fragment(number of indexes = 4);
-        IntegerModel goals1;
-        IntegerModel goals2;
-        IntegerModel goals3;
-        IntegerModel goals4;
-
-        try {
-            goals1 = new IntegerModel(-1, regListInt.get(6), 6);
-        } catch (Exception e) {
-            goals1 = new IntegerModel(-1, 2, 0);
+        for (int i = 10; i <= 13; i++) {
+            Log.e(TAG, "sendToDB: " + i + " : " + regListInt.get(i));
         }
-
-        try {
-            goals2 = new IntegerModel(-1, regListInt.get(7), 7);
-        } catch (Exception e) {
-            goals2 = new IntegerModel(-1, 2, 0);
-        }
-
-        try {
-            goals3 = new IntegerModel(-1, regListInt.get(8), 8);
-        } catch (Exception e) {
-            goals3 = new IntegerModel(-1, 2, 0);
-        }
-
-        try {
-            goals4 = new IntegerModel(-1, regListInt.get(9), 9);
-        } catch (Exception e) {
-            goals4 = new IntegerModel(-1, 2, 0);
-        }
-        dbHelper.insertMiddleTab(goals1);
-        dbHelper.insertMiddleTab(goals2);
-        dbHelper.insertMiddleTab(goals3);
-        dbHelper.insertMiddleTab(goals4);
-
-
-
-//        Pefrormance fragment(number of indexes = 4);
-        IntegerModel performance1;
-        IntegerModel performance2;
-        IntegerModel performance3;
-        IntegerModel performance4;
-
-        try {
-            performance1 = new IntegerModel(-1, regListInt.get(10), 13);
-        } catch (Exception e) {
-            performance1 = new IntegerModel(-1, 0, 0);
-        }
-
-        try {
-            performance2 = new IntegerModel(-1, regListInt.get(11), 14);
-        } catch (Exception e) {
-            performance2 = new IntegerModel(-1, 0, 0);
-        }
-
-        try {
-            performance3 = new IntegerModel(-1, regListInt.get(12), 15);
-        } catch (Exception e) {
-            performance3 = new IntegerModel(-1, 0, 0);
-        }
-
-        try {
-            performance4 = new IntegerModel(-1, regListInt.get(13), 16);
-        } catch (Exception e) {
-            performance4 = new IntegerModel(-1, 0, 0);
-        }
-        dbHelper.insertMiddleTab(performance1);
-        dbHelper.insertMiddleTab(performance2);
-        dbHelper.insertMiddleTab(performance3);
-        dbHelper.insertMiddleTab(performance4);
-
-
-        Log.e(TAG, "sendToDB: " +  dbHelper.showMiddleTab().toString());
-        int length = dbHelper.showMiddleTab().size() - 16;
-
-        Log.e(TAG, "sendToDB: " +  dbHelper.showMiddleTab().get(length).getId());
-        IntegerModel genderModel = new IntegerModel(-1,
-                dbHelper.showMiddleTab().get(length).getId(),
-                dbHelper.showMiddleTab().get(length + 1).getId(),
-                dbHelper.showMiddleTab().get(length + 2).getId());
-        dbHelper.insertGenderTab(genderModel);
-
-        IntegerModel unitsModel = new IntegerModel(-1,
-                dbHelper.showMiddleTab().get(length + 3).getId());
-        dbHelper.insertUnitsTab(unitsModel);
-
-        IntegerModel levelModel = new IntegerModel(-1,
-                dbHelper.showMiddleTab().get(length + 5).getId(),
-                dbHelper.showMiddleTab().get(length + 6).getId(),
-                dbHelper.showMiddleTab().get(length + 7).getId());
-        dbHelper.insertLevelTab(levelModel);
-
-        IntegerModel goalsModel = new IntegerModel(-1,
-                dbHelper.showMiddleTab().get(length + 8).getId(),
-                dbHelper.showMiddleTab().get(length + 9).getId(),
-                dbHelper.showMiddleTab().get(length + 10).getId(),
-                dbHelper.showMiddleTab().get(length + 11).getId());
-        dbHelper.insertGoalsTab(goalsModel);
-
-        IntegerModel performanceModel = new IntegerModel(-1,
-                dbHelper.showMiddleTab().get(length + 12).getId(),
-                dbHelper.showMiddleTab().get(length + 13).getId(),
-                dbHelper.showMiddleTab().get(length + 14).getId(),
-                dbHelper.showMiddleTab().get(length + 15).getId());
-        dbHelper.insertPerformance(performanceModel);
-
         IntegerModel notificationModel = new IntegerModel(-1,
-                1,3, 4, 2);
+                1, 3, 4, 2);
         dbHelper.insertNotifications(notificationModel);
 
         UserInformationModel userInformation = new UserInformationModel(
                 -1, "name", "email", "password",
-                dbHelper.getLastID("GENDER"),
+                regListInt.get(0),
                 dbHelper.getLastID("USER_UNITS"),
                 dbHelper.getLastID("USER_PERFORMANCE"),
                 dbHelper.getLastID("GOALS"),
-                dbHelper.getLastID("LEVEL"),
+                regListInt.get(5),
                 dbHelper.getLastID("NOTIFICATIONS"));
         dbHelper.insertUserInformation(userInformation);
 
     }
-
-    /*
-
-    Appperance + 1 (units)
-
-    FirebaseConnect.class
-     */
 
     private void fragmentObserver() {
         sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);

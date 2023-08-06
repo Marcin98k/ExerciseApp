@@ -52,7 +52,7 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
 
 
     private List<FourElementsModel> fourElementsModelList;
-    private static final String[] CUSTOM_EXERCISE_TITLES = new String[]{"Repetition", "Time"};
+    private static final String[] CUSTOM_EXERCISE_TITLES = {"Repetition", "Time"};
     private String nameOfCustomExercise;
     private Integer numberOfExerciseID;
     private Integer numberOfExerciseType;
@@ -119,13 +119,7 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
         clockClassVolumeTime = new ClockClass(requireContext());
         clockClassRestTime = new ClockClass(requireContext());
         fm = getChildFragmentManager();
-        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
 
-//            FourElementsModel model = new FourElementsModel(
-//                    showExercise.get(i).getId(), showExercise.get(i).getImage(), showExercise.get(i).getName(),
-//                    String.valueOf(showExercise.get(i).getType()), R.drawable.ic_hexagon);
-//            fourElementsModelList.add(model);
-//        }
 
         selectExercise.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
             if (isChecked) {
@@ -149,33 +143,30 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
                             }
                     );
                 } else {
-                    ft.attach(searchList);
-                    ft.commit();
+                    fm.beginTransaction().attach(searchList).commit();
                 }
             } else {
-                ft.detach(searchList);
-                ft.commit();
+                fm.beginTransaction().detach(searchList).commit();
             }
         }));
 
         selectDetails.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             if (isChecked) {
                 if (viewPagerFragment == null) {
+                    FragmentTransaction fragmentTransaction = fm.beginTransaction();
                     viewPagerFragment = new ViewPagerFragment();
                     Bundle bundle = new Bundle();
                     bundle.putStringArray("titles", CUSTOM_EXERCISE_TITLES);
                     viewPagerFragment.setArguments(bundle);
-                    ft.add(R.id.frag_custom_exercise_creator_volume_container,
+                    fragmentTransaction.add(R.id.frag_custom_exercise_creator_volume_container,
                             viewPagerFragment, "CustomExerciseCounterTag");
-                    ft.commit();
+                    fragmentTransaction.commit();
                 } else {
-                    ft.attach(viewPagerFragment);
-                    ft.commit();
+                    fm.beginTransaction().attach(viewPagerFragment).commit();
                 }
             } else {
                 if (viewPagerFragment != null) {
-                    ft.detach(viewPagerFragment);
-                    ft.commit();
+                    fm.beginTransaction().detach(viewPagerFragment).commit();
                 }
             }
         });
@@ -194,10 +185,12 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
             IntegerModel integerModel;
             if (numberOfExerciseType == 0) {
                 integerModel = new IntegerModel(
-                        -1, numberOfExerciseSets, numberOfExerciseVolume,0, numberOfExerciseRest);
+                        -1, numberOfExerciseSets, numberOfExerciseVolume,
+                        0, numberOfExerciseRest);
             } else {
                 integerModel = new IntegerModel(
-                        -1, numberOfExerciseSets, 0, numberOfExerciseVolume, numberOfExerciseRest);
+                        -1, numberOfExerciseSets, 0, numberOfExerciseVolume,
+                        numberOfExerciseRest);
             }
 
             InsertResult exerciseExtensionResult = contentBD.insertExerciseExtension(integerModel);

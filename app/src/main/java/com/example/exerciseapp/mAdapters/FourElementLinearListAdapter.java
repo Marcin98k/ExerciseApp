@@ -4,7 +4,6 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,17 +107,16 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
                     final View customLayout = LayoutInflater.from(mContext).inflate(
                             R.layout.alert_window, parent, false);
                     EditText editText = customLayout.findViewById(R.id.sAlertWindow_editText);
-                    editText.setHint("text");
+                    editText.setHint(R.string.enter_text);
                     alert.setView(customLayout);
-                    alert.setPositiveButton("OK", (dialogInterface, i) -> {
+                    alert.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
                         String value = editText.getText().toString();
-                        Log.i(TAG, "onClick(account): " + value);
 
                         updateStringsDB.strValues(listName, viewHolder.getBindingAdapterPosition(),
                                 list.get(viewHolder.getBindingAdapterPosition()).getId(),
                                 value);
                     });
-                    alert.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
+                    alert.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss());
                     AlertDialog dialog = alert.create();
                     dialog.show();
                     break;
@@ -129,16 +127,16 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
                     final View customLayout = LayoutInflater.from(mContext).inflate(
                             R.layout.alert_window, parent, false);
                     EditText editText = customLayout.findViewById(R.id.sAlertWindow_editText);
-                    editText.setHint("number");
+                    editText.setHint(R.string.enter_number);
                     alert.setView(customLayout);
-                    alert.setPositiveButton("Update", (dialogInterface, i) -> {
+                    alert.setPositiveButton(R.string.update, (dialogInterface, i) -> {
                         if (!editText.getText().toString().equals("")) {
                             int value = Integer.parseInt(editText.getText().toString());
                             valueDB.values(listName, list.get(viewHolder.getBindingAdapterPosition()).getId(),
                                     value, 0);
                         }
                     });
-                    alert.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
+                    alert.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss());
                     AlertDialog dialog = alert.create();
                     dialog.show();
                     break;
@@ -173,7 +171,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
             holder.secondValue.setText(list.get(position).getSecondValue());
         } else if (numberOfItem.equals(NumberOfItem.NULL)) {
             Log.i(TAG, "onBindViewHolder: NULL not show TextView's");
-        }else {
+        } else {
             holder.firstValue.setText(list.get(position).getFirstValue());
         }
 

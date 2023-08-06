@@ -50,6 +50,13 @@ public class FourElementLinearListModel implements Parcelable{
         this.secondId = secondId;
     }
 
+    public FourElementLinearListModel(int id, String name, String firstValue, int secondId) {
+        this.id = id;
+        this.name = name;
+        this.firstValue = firstValue;
+        this.secondId = secondId;
+    }
+
     protected FourElementLinearListModel(Parcel in) {
         id = in.readInt();
         icon = in.readInt();
