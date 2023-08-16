@@ -1,6 +1,7 @@
 package com.example.exerciseapp;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.exerciseapp.mClasses.ClockClass;
 import com.example.exerciseapp.mInterfaces.INewExercise;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ExerciseModel;
@@ -27,8 +29,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     private List<FourElementsModel> resultList;
     private List<FourElementsModel> resultListFull;
     private String listName;
-
-    private List<ExerciseModel> exerciseList = new ArrayList<>();
+    private int fromWhere;
     private UpdateIntegersDB updateIntegersDB;
 
 
@@ -49,32 +50,37 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         ViewHolder viewHolder = new ViewHolder(mView);
         mView.setOnClickListener(v -> {
             updateIntegersDB.values(listName,
-                    resultList.get(viewHolder.getAdapterPosition()).getId(), 0, resultList.get(0).getId());
-//        iNewExercise.createExercise(listName, resultList.get(0).getId());
+                    resultList.get(viewHolder.getAdapterPosition()).getId(),
+                    resultList.get(viewHolder.getBindingAdapterPosition()).getFromWhere(),
+                    resultList.get(0).getId());
         });
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-//        holder.iconIMG.setImageResource(resultList.get(position).getIcon());
-        holder.nameTV.setText(resultList.get(position).getName());
-        holder.typeTV.setText(resultList.get(position).getType());
-//        if (resultList.get(position).getType() == 1) {
-//            holder.typeTV.setText("Repetition");
-//        } else if (resultList.get(position).getType() == 2) {
-//            holder.typeTV.setText("Time");
-//        } else {
-//            holder.typeTV.setText("");
-//        }
 
-//        holder.imageTV.setImageBitmap(exerciseList.get(position).getImage());
-//        holder.nameTV.setText(exerciseList.get(position).getName());
-//        holder.bodyPartTV.setText(exerciseList.get(position).getBodyParts());
-//        holder.kcalTV.setText(exerciseList.get(position).getKcal());
-//        holder.levelTV.setText(exerciseList.get(position).getLevel());
-//        holder.equipmentTV.setText(exerciseList.get(position).getEquipment());
-//        holder.typeTV.setText(exerciseList.get(position).getType());
+        holder.nameTV.setText(resultList.get(position).getName());
+
+        switch (listName) {
+            case "secondList":
+            case "workoutList":
+                holder.typeTV.setText("---");
+                break;
+            default:
+                holder.typeTV.setText(resultList.get(position).getType().equals("1") ?
+                        "Repetition" : "Time");
+        }
+        new ClockClass(mContext).setSecond(resultList.get(position).
+                getDuration()).dynamicIncreaseTime(holder.durationTV);
+
+        String[] names = {mContext.getString(R.string.beginner),
+                mContext.getString(R.string.intermediate), mContext.getString(R.string.advanced)};
+        if (resultList.get(position).getLevel() == 0) {
+            holder.levelTV.setText(mContext.getString(R.string.nan));
+        } else {
+            holder.levelTV.setText(names[resultList.get(position).getLevel() - 1]);
+        }
     }
 
     @Override
@@ -123,18 +129,22 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         ImageView imageTV;
         ImageView levelIMG;
         TextView nameTV;
-        TextView bodyPartTV;
         TextView levelTV;
         TextView typeTV;
+        TextView durationTV;
+        ImageView typeIMG;
+        ImageView durationIMG;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageTV = itemView.findViewById(R.id.asset_four_elements_block_image);
             levelIMG = itemView.findViewById(R.id.asset_four_elements_block_lvl_image);
             nameTV = itemView.findViewById(R.id.asset_four_elements_block_name);
-            bodyPartTV = itemView.findViewById(R.id.asset_four_elements_block_body);
             levelTV = itemView.findViewById(R.id.asset_four_elements_block_lvl);
             typeTV = itemView.findViewById(R.id.asset_four_elements_block_type);
+            durationTV = itemView.findViewById(R.id.asset_four_elements_block_duration);
+            typeIMG = itemView.findViewById(R.id.asset_four_elements_block_type_image);
+            durationIMG = itemView.findViewById(R.id.asset_four_elements_block_duration_image);
         }
     }
 }

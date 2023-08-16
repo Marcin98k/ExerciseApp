@@ -1,6 +1,7 @@
 package com.example.exerciseapp.mAdapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,7 +64,8 @@ public class ThreeElementLinearListAdapter extends ArrayAdapter<ThreeElementLine
         }
 
         if (icon <= 0) {
-            viewHolder.icon.setImageBitmap(new StorageClass(mContext, image, ".png").setInternalBitmapFile());
+            Log.i("TAG", "getView: ViewHolder.equals(0)");
+//            viewHolder.icon.setImageBitmap(new StorageClass(mContext, image, ".png").setInternalBitmapFile());
         } else {
             viewHolder.icon.setImageResource(icon);
         }

@@ -47,13 +47,36 @@ public class IntegerModel implements Parcelable {
         this.forthValue = forthValue;
     }
 
-    public IntegerModel(int id, int firstValue, int secondValue, int thirdValue, int forthValue, int fifthValue) {
+    public IntegerModel(int id, int firstValue, int secondValue, int thirdValue, int forthValue,
+                        int fifthValue) {
         this.id = id;
         this.firstValue = firstValue;
         this.secondValue = secondValue;
         this.thirdValue = thirdValue;
         this.forthValue = forthValue;
         this.fifthValue = fifthValue;
+    }
+
+    public IntegerModel(int id, int firstValue, int secondValue, int thirdValue, int forthValue,
+                        int fifthValue, int sixthValue) {
+        this.id = id;
+        this.firstValue = firstValue;
+        this.secondValue = secondValue;
+        this.thirdValue = thirdValue;
+        this.forthValue = forthValue;
+        this.fifthValue = fifthValue;
+        this.sixthValue = sixthValue;
+    }
+    public IntegerModel(int id, int firstValue, int secondValue, int thirdValue,
+                        int forthValue, int fifthValue, int sixthValue, int seventhValue) {
+        this.id = id;
+        this.firstValue = firstValue;
+        this.secondValue = secondValue;
+        this.thirdValue = thirdValue;
+        this.forthValue = forthValue;
+        this.fifthValue = fifthValue;
+        this.sixthValue = sixthValue;
+        this.seventhValue = seventhValue;
     }
 
     public IntegerModel(int id, int firstValue, int secondValue, int thirdValue,

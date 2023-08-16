@@ -16,11 +16,14 @@ public class UserInformationModel implements Parcelable {
     private int performance;
     private int goals;
     private int level;
-
     private int notification;
+    private int status;
+
+    private String authorizationToken;
+    private String newsToken;
 
     public UserInformationModel() {
-//        Empty constructor;
+
     }
 
     public UserInformationModel(int id, String name) {
@@ -29,8 +32,8 @@ public class UserInformationModel implements Parcelable {
     }
 
     public UserInformationModel(int id, String name, String email, String password, int gender,
-                                int units, int performance,
-                                int goals, int level, int notification) {
+                                int units, int performance, int goals, int level, int notification,
+                                int status) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -41,6 +44,24 @@ public class UserInformationModel implements Parcelable {
         this.goals = goals;
         this.level = level;
         this.notification = notification;
+        this.status = status;
+    }
+
+    public UserInformationModel(int id, String name, String email, String password,
+                                String authorizationToken, String newsToken, int gender,
+                                int units, int performance, int goals, int level, int notification) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.gender = gender;
+        this.units = units;
+        this.performance = performance;
+        this.goals = goals;
+        this.level = level;
+        this.notification = notification;
+        this.authorizationToken = authorizationToken;
+        this.newsToken = newsToken;
     }
 
     protected UserInformationModel(Parcel in) {
@@ -54,6 +75,9 @@ public class UserInformationModel implements Parcelable {
         goals = in.readInt();
         level = in.readInt();
         notification = in.readInt();
+        status = in.readInt();
+        authorizationToken = in.readString();
+        newsToken = in.readString();
     }
 
     public static final Creator<UserInformationModel> CREATOR = new Creator<UserInformationModel>() {
@@ -78,6 +102,9 @@ public class UserInformationModel implements Parcelable {
                 ", performance=" + performance +
                 ", goals=" + goals +
                 ", level=" + level +
+                ", notification=" + notification +
+                ", authorizationToken'=" + authorizationToken + '\'' +
+                ", newsToken='" + newsToken + '\'' +
                 '}';
     }
 
@@ -162,6 +189,30 @@ public class UserInformationModel implements Parcelable {
         this.notification = notification;
     }
 
+    public String getAuthorizationToken() {
+        return authorizationToken;
+    }
+
+    public void setAuthorizationToken(String authorizationToken) {
+        this.authorizationToken = authorizationToken;
+    }
+
+    public String getNewsToken() {
+        return newsToken;
+    }
+
+    public void setNewsToken(String newsToken) {
+        this.newsToken = newsToken;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -179,5 +230,8 @@ public class UserInformationModel implements Parcelable {
         parcel.writeInt(goals);
         parcel.writeInt(level);
         parcel.writeInt(notification);
+        parcel.writeInt(status);
+        parcel.writeString(authorizationToken);
+        parcel.writeString(newsToken);
     }
 }

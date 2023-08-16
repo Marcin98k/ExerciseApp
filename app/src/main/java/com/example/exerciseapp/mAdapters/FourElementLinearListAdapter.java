@@ -4,6 +4,7 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +19,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.exerciseapp.R;
 import com.example.exerciseapp.mEnums.ListType;
 import com.example.exerciseapp.mEnums.NumberOfItem;
+import com.example.exerciseapp.mEnums.RowNames;
+import com.example.exerciseapp.mInterfaces.ISendUserData;
+import com.example.exerciseapp.mInterfaces.IUserData;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mInterfaces.UpdateStringsDB;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Objects;
 
 public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourElementLinearListAdapter.ViewHolder> {
 
@@ -34,12 +41,15 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
     private static final String ZERO = "0";
     private static final String ONE = "1";
     private int oldPosition = 0;
+    private char[] password;
     private ListType listType;
     private NumberOfItem numberOfItem;
 
 
     private UpdateIntegersDB valueDB;
     private UpdateStringsDB updateStringsDB;
+
+    private ISendUserData iSendUserData;
 
     public FourElementLinearListAdapter(Context context, List<FourElementLinearListModel> list,
                                         String listName, UpdateIntegersDB valueDB,
@@ -71,6 +81,16 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
         this.numberOfItem = numberOfItem;
     }
 
+    public FourElementLinearListAdapter(Context context, List<FourElementLinearListModel> list,
+                                        String listName, ISendUserData iSendUserData,
+                                        ListType listType, NumberOfItem numberOfItem) {
+        this.mContext = context;
+        this.list = list;
+        this.listName = listName;
+        this.iSendUserData = iSendUserData;
+        this.listType = listType;
+        this.numberOfItem = numberOfItem;
+    }
 
     @NonNull
     @Override
@@ -110,11 +130,43 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
                     editText.setHint(R.string.enter_text);
                     alert.setView(customLayout);
                     alert.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-                        String value = editText.getText().toString();
 
-                        updateStringsDB.strValues(listName, viewHolder.getBindingAdapterPosition(),
-                                list.get(viewHolder.getBindingAdapterPosition()).getId(),
-                                value);
+                        if (listName.equals("tagTELL_account")) {
+                            if (viewHolder.name.getText().equals(
+                                    mContext.getString(R.string.password))) {
+                                Editable editable = editText.getText();
+                                password = new char[editable.length()];
+                                for (int j = 0; j < editable.length(); j++) {
+                                    password[j] = editable.charAt(j);
+                                }
+                                byte[] hash = hashPassword(password);
+
+                                StringBuilder builder = new StringBuilder();
+                                for (byte b : hash) {
+                                    builder.append(String.format("%02x", b));
+                                }
+                                iSendUserData.sendData(listName,
+                                        list.get(viewHolder.getBindingAdapterPosition()).getId(),
+                                        RowNames.PASSWORD, builder.toString());
+                            } else if (viewHolder.name.getText().equals(
+                                    mContext.getString(R.string.username))) {
+                                String value = editText.getText().toString();
+                                iSendUserData.sendData(listName,
+                                        list.get(viewHolder.getBindingAdapterPosition()).getId(),
+                                        RowNames.NAME, value);
+                            } else if (viewHolder.name.getText().equals(
+                                    mContext.getString(R.string.e_mail))){
+                                String value = editText.getText().toString();
+                                iSendUserData.sendData(listName,
+                                        list.get(viewHolder.getBindingAdapterPosition()).getId(),
+                                        RowNames.EMAIL, value);
+                            }
+                        } else {
+                            String value = editText.getText().toString();
+                            updateStringsDB.strValues(listName, viewHolder.getBindingAdapterPosition(),
+                                    list.get(viewHolder.getBindingAdapterPosition()).getId(),
+                                    value);
+                        }
                     });
                     alert.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss());
                     AlertDialog dialog = alert.create();
@@ -201,6 +253,18 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
             firstValue = itemView.findViewById(R.id.sFourElementLinearBlock_firstValue);
             secondValue = itemView.findViewById(R.id.sFourElementLinearBlock_secondValue);
             underline = itemView.findViewById(R.id.asset_four_elements_linear_block_underline);
+        }
+    }
+
+    private static byte[] hashPassword(char[] password) {
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            for (char c : password) {
+                messageDigest.update((byte) c);
+            }
+            return messageDigest.digest();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
     }
 }

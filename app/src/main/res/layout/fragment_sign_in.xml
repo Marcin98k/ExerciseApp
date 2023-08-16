@@ -37,7 +37,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/fSignIn_ET_password"
             style="@style/myMainInputText"
-            android:drawableEnd="@drawable/ic_person"
+            android:drawableEnd="@drawable/ic_lock"
             android:hint="@string/password"
             android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
@@ -59,9 +60,9 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
     private Integer numberOfExerciseSets;
     private Integer numberOfExerciseVolume;
     private Integer numberOfExerciseRest;
+    private long userId = 0;
 
     private FragmentManager fm;
-
 
     private ViewPagerFragment viewPagerFragment;
     private SearchList searchList;
@@ -105,6 +106,9 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            userId = getArguments().getLong("userId");
+        }
     }
 
     @Override
@@ -131,7 +135,7 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
                                             .map(exerciseModel -> new FourElementsModel(
                                                     exerciseModel.getId(), exerciseModel.getImage(),
                                                     exerciseModel.getName(), String.valueOf(exerciseModel.getType()),
-                                                    R.drawable.ic_hexagon
+                                                    exerciseModel.getLevel()
                                             )).collect(Collectors.toList());
                             },
                             () -> fm.beginTransaction().replace(R.id.frag_custom_exercise_creator_select_container,
@@ -173,30 +177,30 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
 
         btnCreate.setOnClickListener(v -> {
             nameOfCustomExercise = String.valueOf(customExerciseName.getText()).trim();
-            if (numberOfExerciseID == null || numberOfExerciseID == 0) {
-                return;
-            }
-            if (numberOfExerciseType == null) {
-                return;
-            }
+
             if (nameOfCustomExercise.equals("")) {
+                Toast.makeText(requireActivity(), "Enter the name", Toast.LENGTH_SHORT).show();
                 return;
+            }
+            if (contentBD.searchByName("CUSTOM_USER_EXERCISE_TAB", 
+                    "CUSTOM_USER_EXERCISE_NAME", nameOfCustomExercise) ||
+                    contentBD.searchByName("EXERCISE_TAB", "NAME", nameOfCustomExercise)) {
+                Toast.makeText(requireActivity(), "An exercise with that name exist",
+                        Toast.LENGTH_SHORT).show();
             }
             IntegerModel integerModel;
             if (numberOfExerciseType == 0) {
-                integerModel = new IntegerModel(
-                        -1, numberOfExerciseSets, numberOfExerciseVolume,
-                        0, numberOfExerciseRest);
+                integerModel = new IntegerModel(-1, (int) userId, numberOfExerciseSets,
+                        numberOfExerciseVolume, 0, numberOfExerciseRest);
             } else {
-                integerModel = new IntegerModel(
-                        -1, numberOfExerciseSets, 0, numberOfExerciseVolume,
-                        numberOfExerciseRest);
+                integerModel = new IntegerModel(-1, (int) userId, numberOfExerciseSets, 0,
+                        numberOfExerciseVolume, numberOfExerciseRest);
             }
 
             InsertResult exerciseExtensionResult = contentBD.insertExerciseExtension(integerModel);
-
+            
             CustomUserExerciseModel customUserExerciseModel = new CustomUserExerciseModel(
-                    -1, nameOfCustomExercise,numberOfExerciseID,
+                    -1, userId, nameOfCustomExercise, numberOfExerciseType, numberOfExerciseID,
                     (int) exerciseExtensionResult.getIndex());
             contentBD.insertCustomUserExercise(customUserExerciseModel);
         });

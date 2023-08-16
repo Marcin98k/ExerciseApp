@@ -40,13 +40,12 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
     private List<ExerciseModel> exercise = new ArrayList<>();
 
     private byte currentSet;
-    private byte sumSet;
     private int rest;
     private final byte POSITION = 0;
 
-    UpdateIntegersDB updateIntegersDB;
-    FragmentSupportListener fragmentSupportListener;
-    ContentBD contentBD;
+    private UpdateIntegersDB updateIntegersDB;
+    private FragmentSupportListener fragmentSupportListener;
+    private ContentBD contentBD;
     private ClockClass clockClass;
 
     private long exerciseId;
@@ -86,17 +85,18 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
 
         exercise = contentBD.showExerciseById(exerciseId);
 
+        byte getSet;
         if (exercise.isEmpty()) {
             throw new NullPointerException(getContext().toString() + " list is empty");
         } else {
             List<IntegerModel> extension = contentBD.
                     showExerciseExtensionId(exercise.get(POSITION).getExtension());
 //            imageView.setImageResource(exercise.get(POSITION).getImage());
-            sumSet = (byte) extension.get(POSITION).getSecondValue();
+            getSet = (byte) extension.get(POSITION).getSecondValue();
             nameView.setText(exercise.get(POSITION).getName());
             rest = extension.get(POSITION).getFifthValue();
             Log.i(TAG, "initView: (Exercise) " + rest);
-            sumSetView.setText(String.valueOf(sumSet));
+            sumSetView.setText(String.valueOf(getSet));
             currentSetView.setText(String.valueOf(currentSet));
             clockClass = new ClockClass(requireActivity(), true,
                     extension.get(POSITION).getForthValue()
@@ -110,7 +110,7 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
             });
             clockClass.runClock();
         }
-
+        int sumSet = getSet + 1;
         if (currentSet == sumSet) {
             fragmentSupportListener.checkCondition(true);
         }

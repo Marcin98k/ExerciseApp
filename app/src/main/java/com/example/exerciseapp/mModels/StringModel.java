@@ -4,7 +4,7 @@ public class StringModel {
 
     private int id;
     private String name;
-    private int status;
+    private int intValue;
 
     public StringModel() {
     }
@@ -14,10 +14,10 @@ public class StringModel {
         this.name = name;
     }
 
-    public StringModel(int id, String name, int status) {
+    public StringModel(int id, String name, int intValue) {
         this.id = id;
         this.name = name;
-        this.status = status;
+        this.intValue = intValue;
     }
 
     public int getId() {
@@ -36,11 +36,11 @@ public class StringModel {
         this.name = name;
     }
 
-    public int getStatus() {
-        return status;
+    public int getIntValue() {
+        return intValue;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setIntValue(int intValue) {
+        this.intValue = intValue;
     }
 }

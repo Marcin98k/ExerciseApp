@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,7 +49,6 @@ public class SearchList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_search_list, container, false);
-
         updateIntegersDB = (listName, firstValue, secondValue, thirdValue) ->
                 updateIntegersDB1.values(listName, firstValue, secondValue, thirdValue);
         initView(mView);
@@ -63,6 +63,7 @@ public class SearchList extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(searchAdapter);
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

@@ -6,13 +6,16 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.example.exerciseapp.mClasses.InsertResult;
 import com.example.exerciseapp.mEnums.RowNames;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.LanguageModel;
+import com.example.exerciseapp.mModels.StringModel;
 import com.example.exerciseapp.mModels.UserInformationModel;
 
 import java.util.ArrayList;
@@ -30,12 +33,15 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String USER_NAME = "NAME";
     private static final String USER_EMAIL = "EMAIL";
     private static final String USER_PASSWORD = "PASSWORD";
+    private static final String USER_AUTHORIZATION_TOKEN = "AUTHORIZATION_TOKEN";
+    private static final String USER_NEWS_TOKEN = "ACCOUNT_TOKEN";
     private static final String USER_GENDER = "GENDER";
     private static final String USER_UNITS_ID = "USER_UNITS";
     private static final String USER_PERFORMANCE_ID = "PERFORMANCE";
     private static final String USER_GOALS_ID = "GOALS";
     private static final String USER_LEVEL = "LEVEL";
     private static final String USER_NOTIFICATION_ID = "NOTIFICATION";
+    private static final String USER_ACCOUNT_STATUS = "STATUS";
 
 
     private static final String USER_GOALS_TAB = "GOALS";
@@ -85,7 +91,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public DBHelper(@Nullable Context context) {
-        super(context, "ExerciseApp.db", null, 1);
+        super(context, "ExerciseApp.db",
+                null, 1);
     }
 
     @Override
@@ -94,9 +101,11 @@ public class DBHelper extends SQLiteOpenHelper {
         String createUserInformationTab = "CREATE TABLE " + USER_INFORMATION_TAB
                 + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + USER_NAME + " TEXT, " + USER_EMAIL + " TEXT, " + USER_PASSWORD + " TEXT, "
+                + USER_AUTHORIZATION_TOKEN + " TEXT, " + USER_NEWS_TOKEN + " TEXT, "
                 + USER_GENDER + " INTEGER, " + USER_UNITS_ID + " INTEGER, "
                 + USER_PERFORMANCE_ID + " INTEGER, " + USER_GOALS_ID + " INTEGER, "
                 + USER_LEVEL + " INTEGER, " + USER_NOTIFICATION_ID + " INTEGER, "
+                + USER_ACCOUNT_STATUS + " INTEGER, "
                 + " FOREIGN KEY (" + USER_UNITS_ID + ") REFERENCES "
                 + USER_UNITS_TAB + " (" + ID + "), "
                 + " FOREIGN KEY (" + USER_GOALS_ID + ") REFERENCES "
@@ -202,9 +211,20 @@ public class DBHelper extends SQLiteOpenHelper {
         List<FourElementLinearListModel> units = new ArrayList<>();
         String[] unitsName = {"Height", "Weight"};
         int[] valuesTab = {integerModel.getFirstValue(), integerModel.getSecondValue()};
-        String[] unitsTab = {getUnitHeight(integerModel.getThirdValue()),
-                getUnitWeight(integerModel.getForthValue())};
+        String[] unitsTab = {this.getUnitHeight(integerModel.getThirdValue()),
+                this.getUnitWeight(integerModel.getForthValue())};
 
+//        Log.i("TAG", "getUserUnit: " + this.getUnitHeight(integerModel.getThirdValue()) +
+//                " :) " + integerModel.getForthValue());
+//
+//        FourElementLinearListModel model1 = new FourElementLinearListModel(1, 0, unitsName[0],
+//                String.valueOf(integerModel.getFirstValue()), getUnitHeight(integerModel.getThirdValue()),
+//                0);
+//        units.add(model1);
+//        FourElementLinearListModel model2 = new FourElementLinearListModel(2, 0, unitsName[1],
+//                String.valueOf(integerModel.getSecondValue()), getUnitWeight(integerModel.getForthValue()),
+//                0);
+//        units.add(model2);
         for (int i = 0; i < unitsName.length; i++) {
             FourElementLinearListModel model = new FourElementLinearListModel(i, 0, unitsName[i],
                     String.valueOf(valuesTab[i]), unitsTab[i], 0);
@@ -214,6 +234,15 @@ public class DBHelper extends SQLiteOpenHelper {
         return units;
     }
 
+    public boolean insertUnitHeight(StringModel stringModel) {
+
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put(UNIT, stringModel.getName());
+
+            return db.insert(UNIT_HEIGHT_TAB, null, values) != -1;
+        }
+    }
 
     public String getUnitHeight(int id) {
 
@@ -231,7 +260,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public boolean updateHeight(int userID, int numberValue, int unitValue) {
+    public boolean updateHeight(long userID, int numberValue, int unitValue) {
 
         int units = getInformationUser(userID).get(0).getUnits();
         String cause = ID + " == " + units;
@@ -242,6 +271,16 @@ public class DBHelper extends SQLiteOpenHelper {
             values.put(USER_UNIT_HEIGHT, unitValue);
             int update = db.update(USER_UNITS_TAB, values, cause, null);
             return update != -1;
+        }
+    }
+
+    public boolean insertUnitWeight(StringModel stringModel) {
+
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put(UNIT, stringModel.getName());
+
+            return db.insert(UNIT_WEIGHT_TAB, null, values) != -1;
         }
     }
 
@@ -262,7 +301,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public boolean updateWeight(int unitID, int numberValue, int unitValue) {
+    public boolean updateWeight(long unitID, int numberValue, int unitValue) {
 
         String cause = ID + " == ?";
         String[] args = {String.valueOf(unitID)};
@@ -276,8 +315,48 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
+    public InsertResult logIn(String email, byte[] password) {
 
-    public boolean insertUserInformation(UserInformationModel userInformationModel) {
+        String search = "SELECT " + ID + " FROM " + USER_INFORMATION_TAB +
+                " WHERE " + USER_EMAIL + " == ? AND " + USER_PASSWORD + " == ?";
+
+        StringBuilder builder = new StringBuilder();
+
+        for (byte b : password) {
+            builder.append(String.format("%02x", b));
+        }
+        String hexPassword = builder.toString();
+        String[] args = {email, hexPassword};
+        int userId;
+        boolean success;
+        try (SQLiteDatabase db = getWritableDatabase();
+             Cursor cursor = db.rawQuery(search, args)) {
+            if (cursor.moveToFirst()) {
+                userId = cursor.getInt(cursor.getColumnIndexOrThrow(ID));
+                success = true;
+            } else {
+                userId = -1;
+                success = false;
+            }
+        }
+        Log.i("TAG", "logIn(userId): " + userId);
+        return new InsertResult(userId, success);
+    }
+
+    public boolean accountStatus(long id, boolean status) {
+
+        String search = ID + " == ?";
+        String[] args = {String.valueOf(id)};
+
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put(USER_ACCOUNT_STATUS, status ? 1 : 0);
+            int update = db.update(USER_INFORMATION_TAB, values, search, args);
+            return update != -1;
+        }
+    }
+
+    public InsertResult insertUserInformation(UserInformationModel userInformationModel) {
 
         try (SQLiteDatabase db = getWritableDatabase()) {
 
@@ -285,18 +364,23 @@ public class DBHelper extends SQLiteOpenHelper {
             values.put(USER_NAME, userInformationModel.getName());
             values.put(USER_EMAIL, userInformationModel.getEmail());
             values.put(USER_PASSWORD, userInformationModel.getPassword());
+            values.put(USER_AUTHORIZATION_TOKEN, userInformationModel.getPassword());
+            values.put(USER_NEWS_TOKEN, userInformationModel.getPassword());
             values.put(USER_GENDER, userInformationModel.getGender());
             values.put(USER_UNITS_ID, userInformationModel.getUnits());
             values.put(USER_PERFORMANCE_ID, userInformationModel.getPerformance());
             values.put(USER_GOALS_ID, userInformationModel.getGoals());
             values.put(USER_LEVEL, userInformationModel.getLevel());
             values.put(USER_NOTIFICATION_ID, userInformationModel.getNotification());
+            values.put(USER_ACCOUNT_STATUS, userInformationModel.getStatus());
 
-            return db.insert(USER_INFORMATION_TAB, null, values) != -1;
+            long insert = db.insert(USER_INFORMATION_TAB, null, values);
+            boolean success = insert != -1;
+            return new InsertResult(insert, success);
         }
     }
 
-    public List<UserInformationModel> getInformationUser(int id) {
+    public List<UserInformationModel> getInformationUser(long id) {
 
         List<UserInformationModel> result = new ArrayList<>();
         String search = "SELECT * FROM " + USER_INFORMATION_TAB +
@@ -318,14 +402,15 @@ public class DBHelper extends SQLiteOpenHelper {
                         cursor.getInt(cursor.getColumnIndexOrThrow(USER_PERFORMANCE_ID)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(USER_GOALS_ID)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(USER_LEVEL)),
-                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_NOTIFICATION_ID)));
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_NOTIFICATION_ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_ACCOUNT_STATUS)));
                 result.add(userInformationModel);
             }
         }
         return result;
     }
 
-    public boolean switchUserGender(int userID, int param) {
+    public boolean switchUserGender(long userID, int param) {
         String cause = ID + " == ?";
         String[] args = {String.valueOf(userID)};
         try (SQLiteDatabase db = getWritableDatabase()) {
@@ -336,7 +421,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean switchUserLevel(int userID, int param) {
+    public boolean switchUserLevel(long userID, int param) {
         String cause = ID + " == ?";
         String[] args = {String.valueOf(userID)};
         try (SQLiteDatabase db = getWritableDatabase()) {
@@ -347,7 +432,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean updateUser(RowNames rowName, int id, String value) {
+    public boolean updateUser(RowNames rowName, long id, String value) {
 
         String cause = ID + " == ?";
         String[] args = {String.valueOf(id)};
@@ -374,7 +459,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<FourElementLinearListModel> getGoals(int id) {
+    public List<FourElementLinearListModel> getGoals(long id) {
 
         String search = "SELECT * FROM " + USER_GOALS_TAB +
                 " WHERE " + ID + " == ?";
@@ -395,8 +480,8 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         List<FourElementLinearListModel> goals = new ArrayList<>();
         String[] goalsName = {"Strength", "Muscle", "Fat lose", "Technique"};
-        int[] ints = {integerModel.getFirstValue(), integerModel.getFirstValue(),
-                integerModel.getFirstValue(), integerModel.getFirstValue()};
+        int[] ints = {integerModel.getFirstValue(), integerModel.getSecondValue(),
+                integerModel.getThirdValue(), integerModel.getForthValue()};
         for (int i = 0; i < goalsName.length; i++) {
             FourElementLinearListModel model = new FourElementLinearListModel(i, goalsName[i],
                     String.valueOf(ints[i]), 0);
@@ -406,7 +491,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return goals;
     }
 
-    public boolean updateUserGoals(int userID, int column, int param) {
+    public boolean updateUserGoals(long userID, int column, int param) {
         int goals = getInformationUser(userID).get(0).getGoals();
         String cause = ID + " == " + goals;
         try (SQLiteDatabase db = getWritableDatabase()) {
@@ -515,7 +600,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return performance;
     }
 
-    public boolean updateUserPerformance(int userID, int column, int param) {
+    public boolean updateUserPerformance(long userID, int column, int param) {
         int performance = getInformationUser(userID).get(0).getPerformance();
         String cause = ID + " == " + performance;
         try (SQLiteDatabase db = getWritableDatabase()) {

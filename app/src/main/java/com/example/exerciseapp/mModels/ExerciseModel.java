@@ -11,20 +11,25 @@ public class ExerciseModel implements Parcelable {
     private String name;
     private String image;
     private int level;
-    private String bodyParts;
+    private int bodyParts;
     private String equipment;
     private int type;
     private int kcal;
     private int duration;
     private String description;
     private int extension;
+    private int fromWhere;
 
 
     private String exerciseId;
 
-    public ExerciseModel(int id, String name, String image, int level,
-                         String bodyParts, String equipment, int type,
-                         int kcal, int duration, String description, int extension) {
+    public ExerciseModel() {
+
+    }
+
+    public ExerciseModel(int id, String name, String image, int level, int bodyParts,
+                         String equipment, int type, int kcal, int duration, String description,
+                         int extension, int fromWhere) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -36,11 +41,12 @@ public class ExerciseModel implements Parcelable {
         this.duration = duration;
         this.description = description;
         this.extension = extension;
+        this.fromWhere = fromWhere;
     }
 
-    public ExerciseModel(int id, String name, String image, int level,
-                         String bodyParts, String equipment, int kcal,
-                         int duration, String description, String exerciseId) {
+    public ExerciseModel(int id, String name, String image, int level, int bodyParts,
+                         String equipment, int kcal, int duration, String description,
+                         String exerciseId, int fromWhere) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -51,15 +57,35 @@ public class ExerciseModel implements Parcelable {
         this.duration = duration;
         this.description = description;
         this.exerciseId = exerciseId;
+        this.fromWhere = fromWhere;
     }
 
+
+    @Override
+    public String toString() {
+        return "ExerciseModel{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", image='" + image + '\'' +
+                ", level=" + level +
+                ", bodyParts=" + bodyParts +
+                ", equipment='" + equipment + '\'' +
+                ", type=" + type +
+                ", kcal=" + kcal +
+                ", duration=" + duration +
+                ", description='" + description + '\'' +
+                ", extension=" + extension +
+                ", fromWhere=" + fromWhere +
+                ", exerciseId='" + exerciseId + '\'' +
+                '}';
+    }
 
     protected ExerciseModel(Parcel in) {
         id = in.readInt();
         name = in.readString();
         image = in.readString();
         level = in.readInt();
-        bodyParts = in.readString();
+        bodyParts = in.readInt();
         equipment = in.readString();
         type = in.readInt();
         kcal = in.readInt();
@@ -67,6 +93,7 @@ public class ExerciseModel implements Parcelable {
         description = in.readString();
         exerciseId = in.readString();
         extension = in.readInt();
+        fromWhere = in.readInt();
     }
 
     public static final Creator<ExerciseModel> CREATOR = new Creator<ExerciseModel>() {
@@ -118,11 +145,11 @@ public class ExerciseModel implements Parcelable {
         this.level = level;
     }
 
-    public String getBodyParts() {
+    public int getBodyParts() {
         return bodyParts;
     }
 
-    public void setBodyParts(String bodyParts) {
+    public void setBodyParts(int bodyParts) {
         this.bodyParts = bodyParts;
     }
 
@@ -183,6 +210,14 @@ public class ExerciseModel implements Parcelable {
         this.extension = extension;
     }
 
+    public int getFromWhere() {
+        return fromWhere;
+    }
+
+    public void setFromWhere(int fromWhere) {
+        this.fromWhere = fromWhere;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -194,7 +229,7 @@ public class ExerciseModel implements Parcelable {
         parcel.writeString(name);
         parcel.writeString(image);
         parcel.writeInt(level);
-        parcel.writeString(bodyParts);
+        parcel.writeInt(bodyParts);
         parcel.writeString(equipment);
         parcel.writeInt(type);
         parcel.writeInt(kcal);
@@ -202,5 +237,6 @@ public class ExerciseModel implements Parcelable {
         parcel.writeString(description);
         parcel.writeString(exerciseId);
         parcel.writeInt(extension);
+        parcel.writeInt(fromWhere);
     }
 }

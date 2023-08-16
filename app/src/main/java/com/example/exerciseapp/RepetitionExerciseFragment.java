@@ -2,6 +2,7 @@ package com.example.exerciseapp;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,14 +75,15 @@ public class RepetitionExerciseFragment extends Fragment implements FragmentResp
             ExerciseModel exerciseModel = exercise.get(POSITION);
             List<IntegerModel> extension = contentBD.showExerciseExtensionId(exercise.get(POSITION).getExtension());
             IntegerModel integerModel = extension.get(POSITION);
-            int sumSet = integerModel.getSecondValue();
+            int getSet = integerModel.getSecondValue();
+            int sumSet = getSet + 1;
 
 //            imageView.setImageResource(exercise.get(POSITION).getImage());
             nameView.setText(exerciseModel.getName());
             countView.setText(String.valueOf(integerModel.getThirdValue()));
-            sumSetView.setText(String.valueOf(sumSet));
+            sumSetView.setText(String.valueOf(getSet));
             currentSetView.setText(String.valueOf(currentSet));
-            rest = integerModel.getSixthValue();
+            rest = integerModel.getFifthValue();
 
             if (currentSet == sumSet) {
                 fragmentSupportListener.checkCondition(true);

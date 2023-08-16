@@ -12,22 +12,27 @@ public class FourElementsModel implements Parcelable {
     private int intImage;
     private String name;
     private String type;
-    private int icon;
+    private int level;
+    private int duration;
+    private int fromWhere;
 
-    public FourElementsModel(int id, String strImage, String name, String type, int icon) {
+    public FourElementsModel(int id, String strImage, String name, String type, int level) {
         this.id = id;
         this.strImage = strImage;
         this.name = name;
         this.type = type;
-        this.icon = icon;
+        this.level = level;
     }
 
-    public FourElementsModel(int id, int intImage, String name, String type, int icon) {
+    public FourElementsModel(int id, String strImage, String name, String type, int level,
+                             int duration , int fromWhere) {
         this.id = id;
-        this.intImage = intImage;
+        this.strImage = strImage;
         this.name = name;
         this.type = type;
-        this.icon = icon;
+        this.level = level;
+        this.duration = duration;
+        this.fromWhere = fromWhere;
     }
 
     protected FourElementsModel(Parcel in) {
@@ -36,7 +41,23 @@ public class FourElementsModel implements Parcelable {
         intImage = in.readInt();
         name = in.readString();
         type = in.readString();
-        icon = in.readInt();
+        level = in.readInt();
+        duration = in.readInt();
+        fromWhere = in.readInt();
+    }
+
+    @Override
+    public String toString() {
+        return "FourElementsModel{" +
+                "id=" + id +
+                ", strImage='" + strImage + '\'' +
+                ", intImage=" + intImage +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", level=" + level +
+                ", duration=" + duration +
+                ", fromWhere=" + fromWhere +
+                '}';
     }
 
     public static final Creator<FourElementsModel> CREATOR = new Creator<FourElementsModel>() {
@@ -91,12 +112,28 @@ public class FourElementsModel implements Parcelable {
         this.type = type;
     }
 
-    public int getIcon() {
-        return icon;
+    public int getLevel() {
+        return level;
     }
 
-    public void setIcon(int icon) {
-        this.icon = icon;
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getFromWhere() {
+        return fromWhere;
+    }
+
+    public void setFromWhere(int fromWhere) {
+        this.fromWhere = fromWhere;
     }
 
     @Override
@@ -111,6 +148,8 @@ public class FourElementsModel implements Parcelable {
         parcel.writeInt(intImage);
         parcel.writeString(name);
         parcel.writeString(type);
-        parcel.writeInt(icon);
+        parcel.writeInt(level);
+        parcel.writeInt(duration);
+        parcel.writeInt(fromWhere);
     }
 }

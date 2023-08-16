@@ -13,7 +13,6 @@ public class BackgroundTask {
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             task.run();
-
             onPostExecute.run();
         });
     }

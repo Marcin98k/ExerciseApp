@@ -6,9 +6,20 @@
     tools:context=".NotificationFragment"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/fNotification_tv"
+    <ToggleButton
+        android:id="@+id/frag_notification_exercise_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <TimePicker
+        android:id="@+id/frag_notification_exercise_time_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <android.widget.Button
+        android:id="@+id/frag_notification_confirm_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm"
+        style="@style/MyStandardButtonGuidelines"/>
 </LinearLayout>

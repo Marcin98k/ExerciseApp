@@ -1,73 +1,292 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".WorkoutList"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".WorkoutList">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <TableRow>
 
         <ImageView
             android:id="@+id/frag_workout_list_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:contentDescription="TODO"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
+    </TableRow>
+
+    <TableRow>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/light_grey"
+            android:contentDescription="TODO"
+            android:gravity="center"
+            android:padding="10dp"
+            android:src="@drawable/ic_text" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/light_grey"
+            android:padding="10dp"
+            android:text="@string/name_d" />
 
         <TextView
             android:id="@+id/frag_workout_list_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="@string/nan"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frag_workout_list_image"/>
+            app:layout_constraintTop_toBottomOf="@id/frag_workout_list_image" />
+    </TableRow>
+
+    <TableRow>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/light_grey"
+            android:contentDescription="TODO"
+            android:gravity="center"
+            android:padding="10dp"
+            android:src="@drawable/ic_level" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/light_grey"
+            android:padding="10dp"
+            android:text="@string/level_d" />
+
         <TextView
             android:id="@+id/frag_workout_list_level"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="@string/nan"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frag_workout_list_name"/>
-        <TextView
-            android:id="@+id/frag_workout_list_body_parts"
-            android:layout_width="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/frag_workout_list_name" />
+    </TableRow>
+
+    <TableRow>
+
+        <TableLayout
+            android:id="@+id/frag_workout_list_second_part_layout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frag_workout_list_level"/>
-        <TextView
-            android:id="@+id/frag_workout_list_equipment"
-            android:layout_width="match_parent"
+            android:layout_weight="1">
+
+            <TableRow>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/light_grey"
+                    android:contentDescription="TODO"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_arm" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/light_grey"
+                    android:padding="10dp"
+                    android:text="@string/body_parts_d" />
+
+                <TextView
+                    android:id="@+id/frag_workout_list_body_parts"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="@string/nan"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/frag_workout_list_level" />
+            </TableRow>
+
+            <TableRow>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/light_grey"
+                    android:contentDescription="TODO"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_dumbbell" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/light_grey"
+                    android:padding="10dp"
+                    android:text="@string/equipment_d" />
+
+                <TextView
+                    android:id="@+id/frag_workout_list_equipment"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="@string/nan"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/frag_workout_list_body_parts" />
+            </TableRow>
+
+            <TableRow>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/light_grey"
+                    android:contentDescription="TODO"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_kcal" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/light_grey"
+                    android:padding="10dp"
+                    android:text="@string/kcal_d" />
+
+                <TextView
+                    android:id="@+id/frag_workout_list_kcal"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="@string/nan"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/frag_workout_list_equipment" />
+            </TableRow>
+
+            <TableRow>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/light_grey"
+                    android:contentDescription="TODO"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_time" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/light_grey"
+                    android:padding="10dp"
+                    android:text="@string/duration_d" />
+
+                <TextView
+                    android:id="@+id/frag_workout_list_duration"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="@string/nan"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/frag_workout_list_kcal" />
+            </TableRow>
+
+            <TableRow>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/light_grey"
+                    android:contentDescription="TODO"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_text" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/light_grey"
+                    android:padding="10dp"
+                    android:text="@string/description_d" />
+
+                <TextView
+                    android:id="@+id/frag_workout_list_description"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="@string/nan"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/frag_workout_list_duration" />
+            </TableRow>
+        </TableLayout>
+    </TableRow>
+
+    <TableRow>
+
+        <ToggleButton
+            android:id="@+id/frag_workout_list_show_hide_btn"
+            style="@style/MyStandardButtonGuidelines"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textOff="@string/show_more"
+            android:textOn="@string/hide" />
+    </TableRow>
+
+    <TableRow>
+
+        <android.widget.Button
+            android:id="@+id/frag_workout_list_start_btn"
+            style="@style/MyStandardButtonGuidelines"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frag_workout_list_body_parts"/>
+            android:layout_weight="1"
+            android:text="@string/start_workout" />
+    </TableRow>
+
+    <TableRow>
 
         <TextView
-            android:id="@+id/frag_workout_list_kcal"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/dark_grey"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/exercise_list" />
+    </TableRow>
+
+    <TableRow>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/frag_workout_list_exercise_list"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frag_workout_list_equipment"/>
-
-        <TextView
-            android:id="@+id/frag_workout_list_duration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frag_workout_list_kcal"/>
-        <TextView
-            android:id="@+id/frag_workout_list_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frag_workout_list_duration"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/frag_workout_list_exercise_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-</LinearLayout>
+            android:layout_weight="1"
+            android:layout_marginBottom="50dp"/>
+    </TableRow>
+</TableLayout>

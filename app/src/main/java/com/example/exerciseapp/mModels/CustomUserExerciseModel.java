@@ -2,24 +2,48 @@ package com.example.exerciseapp.mModels;
 
 public class CustomUserExerciseModel {
 
-    private int id;
+    private long id;
+    private long userId;
     private String name;
+    private int type;
     private int exerciseID;
     private int exerciseExtensionID;
 
-    public CustomUserExerciseModel(int id, String name, int exerciseID, int exerciseExtensionID) {
+    public CustomUserExerciseModel(long id, long userId, String name, int type, int exerciseID,
+                                   int exerciseExtensionID) {
         this.id = id;
+        this.userId = userId;
         this.name = name;
+        this.type = type;
         this.exerciseID = exerciseID;
         this.exerciseExtensionID = exerciseExtensionID;
     }
 
-    public int getId() {
+    @Override
+    public String toString() {
+        return "CustomUserExerciseModel{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", name='" + name + '\'' +
+                ", exerciseID=" + exerciseID +
+                ", exerciseExtensionID=" + exerciseExtensionID +
+                '}';
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -44,5 +68,13 @@ public class CustomUserExerciseModel {
 
     public void setExerciseExtensionID(int exerciseExtensionID) {
         this.exerciseExtensionID = exerciseExtensionID;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

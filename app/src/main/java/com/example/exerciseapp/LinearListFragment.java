@@ -58,7 +58,7 @@ public class LinearListFragment extends Fragment {
         void item(String list, int position, int currentlyPosition);
     }
 
-    SelectedItem selectedItem;
+    private SelectedItem selectedItem;
 
     private String listName;
 
@@ -104,12 +104,7 @@ public class LinearListFragment extends Fragment {
             recyclerView.setAdapter(adapter1);
         }
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                selectedItem.item(listName, i, currentlyPosition);
-            }
-        });
+        listView.setOnItemClickListener((adapterView, view, i, l) -> selectedItem.item(listName, i, currentlyPosition));
         return mView;
     }
 

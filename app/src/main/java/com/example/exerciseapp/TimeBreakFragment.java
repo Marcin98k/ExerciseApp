@@ -1,15 +1,7 @@
 package com.example.exerciseapp;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +9,14 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.example.exerciseapp.mClasses.ClockClass;
-import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 
-public class TimeBreakFragment extends Fragment{
+public class TimeBreakFragment extends Fragment {
 
     private ProgressBar progressBar;
     private TextView showTime;
@@ -43,6 +38,12 @@ public class TimeBreakFragment extends Fragment{
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        clockClass.stopThread();
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -58,7 +59,7 @@ public class TimeBreakFragment extends Fragment{
         View mView = inflater.inflate(R.layout.fragment_time_break, container, false);
         initView(mView);
 
-        clockClass = new ClockClass(requireContext(), true, 6,true)
+        clockClass = new ClockClass(requireContext(), true, rest, true)
                 .setBar(progressBar)
                 .setAddBtn(addBtn).setSkipBtn(skipBtn)
                 .setTextView(showTime);
@@ -94,12 +95,5 @@ public class TimeBreakFragment extends Fragment{
 
     public void setUpdateIntegersDB(UpdateIntegersDB updateIntegersDB) {
         this.updateIntegersDB = updateIntegersDB;
-    }
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        clockClass.stopThread();
     }
 }

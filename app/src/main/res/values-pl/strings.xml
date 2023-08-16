@@ -95,4 +95,20 @@
     <string name="selected_exercise_d">Wybrane ćwiczenie:</string>
     <string name="details">Szczegóły</string>
     <string name="plans">Plany</string>
+
+    <string name="enter_number">Wpisz liczbę</string>
+    <string name="enter_text">Wpisz nazwę</string>
+    <string name="cancel">Wyjdź</string>
+    <string name="select">Wybierz</string>
+    <string name="min_d_one">min. 1</string>
+    <string name="channel_description">Opis kanału</string>
+    <string name="log_out">Wyloguj się</string>
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
+
+    <string name="exercise">Ćwiczenie</string>
+    <string name="exercise_list">Lista ćwiczeń</string>
+    <string name="hide">Ukryj</string>
+    <string name="show_more">Pokaż więcej</string>
+    <string name="return_text">Wróć</string>
 </resources>

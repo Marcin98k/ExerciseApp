@@ -95,6 +95,19 @@
     <string name="enter_number">Enter number</string>
     <string name="enter_text">Enter text</string>
     <string name="cancel">Cancel</string>
-    <string name="ok">Ok</string>
+    <string name="ok" translatable="false">Ok</string>
+    <string name="select">Select</string>
+    <string name="min_d_one">min. 1</string>
+    <string name="exercise_reminder" translatable="false">exerciseReminder</string>
+    <string name="channel_description">Channel description</string>
+    <string name="log_out">Log out</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="exercise">Exercise</string>
+    <string name="exercise_list">Exercise list</string>
+    <string name="hide">Hide</string>
+    <string name="show_more">Show more</string>
+    <string name="return_text">Return</string>
+    <string name="start_workout">Start workout</string>
 
 </resources>

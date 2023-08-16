@@ -11,13 +11,19 @@ public class InsertResult {
     public InsertResult(long index, boolean success) {
         this.index = index;
         this.success = success;
-
         alert(success);
     }
     public InsertResult(boolean success) {
         this.success = success;
-
         alert(success);
+    }
+
+    @Override
+    public String toString() {
+        return "InsertResult{" +
+                "index=" + index +
+                ", success=" + success +
+                '}';
     }
 
     private void alert(boolean param) {

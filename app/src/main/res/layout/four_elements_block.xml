@@ -30,12 +30,14 @@
     </TableRow>
     <TableRow>
         <ImageView
+            android:id="@+id/asset_four_elements_block_duration_image"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:padding="10dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_arm"/>
+            android:src="@drawable/ic_time"/>
         <ImageView
+            android:id="@+id/asset_four_elements_block_type_image"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:padding="10dp"
@@ -53,12 +55,12 @@
 
     <TableRow>
         <TextView
-            android:id="@+id/asset_four_elements_block_body"
+            android:id="@+id/asset_four_elements_block_duration"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/nan"
             android:padding="10dp"
+            android:text="@string/nan"
             android:layout_weight="1"
             android:textSize="14sp"/>
         <TextView

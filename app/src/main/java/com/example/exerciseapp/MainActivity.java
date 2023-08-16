@@ -1,12 +1,8 @@
 package com.example.exerciseapp;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,30 +10,21 @@ import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mClasses.StorageClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mDatabases.DBHelper;
+import com.example.exerciseapp.mDatabases.SimulatedExternalDatabase;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
 import com.example.exerciseapp.mModels.ExerciseModel;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.LanguageModel;
+import com.example.exerciseapp.mModels.StringModel;
 import com.example.exerciseapp.mModels.TaskDateModel;
-import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private long currentUserID;
+
     private DBHelper dbHelper;
     private ContentBD contentBD;
-
-    private Button welcomeBtn;
-    private Button settingsBtn;
-    private Button libraryBtn;
-    private Button userBtn;
-    private Button exerciseBtn;
-    private BottomNavigationView bottomNavigationView;
-
-
-    private boolean isLogged = true;
-    private long userID;
-
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -49,44 +36,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (isLogged) {
+        new SimulatedExternalDatabase();
+
+        Intent intent = getIntent();
+        currentUserID = intent.getLongExtra(GlobalClass.userID, 1);
+        initInternalFolders();
+        if (currentUserID != -1) {
             initView();
             initMenu();
-
-            welcomeBtn.setOnClickListener(v -> {
-                Intent intent = new Intent(this, WelcomeActivity.class);
-                startActivity(intent);
-            });
-            settingsBtn.setOnClickListener(v -> {
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-            });
-            libraryBtn.setOnClickListener(v -> {
-                Intent intent = new Intent(this, LibraryActivity.class);
-                startActivity(intent);
-            });
-            userBtn.setOnClickListener(v -> {
-                Intent intent = new Intent(this, UserActivity.class);
-                startActivity(intent);
-            });
-            exerciseBtn.setOnClickListener(v -> {
-                Intent intent = new Intent(this, ExerciseActivity.class);
-                startActivity(intent);
-            });
         } else {
             startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
         }
-
         dbHelper = new DBHelper(MainActivity.this);
         contentBD = new ContentBD(MainActivity.this);
 
         if (dbHelper.getCount("LANGUAGE") <= 0) {
-            insertUnits();
+            insertLanguage();
+        }
+
+        if (dbHelper.getCount("HEIGHT_TAB") <= 0) {
+            insertUnitsHeight();
+        }
+
+        if (dbHelper.getCount("WEIGHT_TAB") <= 0) {
+            insertUnitsWeight();
         }
 
         if (contentBD.getCount("EQUIPMENT_TAB") <= 0) {
             insertEquipment();
         }
+
         if (contentBD.getCount("APPEARANCE_TAB") <= 0) {
             insertContentAppearance();
         }
@@ -106,50 +85,62 @@ public class MainActivity extends AppCompatActivity {
         if (contentBD.getCount("EXERCISE_EXTENSIONS_TAB") <= 0) {
             insertExtensionExercise();
         }
-        initInternalFolders();
+
+        if (contentBD.getCount("BODY_PART_TAB") <= 0) {
+            insertBodyParts();
+        }
+
+        if (contentBD.getCount("EQUIPMENT_TAB") <= 0) {
+            insertEquipment();
+        }
     }
 
     private void initView() {
-        welcomeBtn = findViewById(R.id.aMain_welcome);
-        settingsBtn = findViewById(R.id.aMain_settings);
-        libraryBtn = findViewById(R.id.aMain_library);
-        userBtn = findViewById(R.id.aMain_user);
-        exerciseBtn = findViewById(R.id.aMain_exercise);
-        bottomNavigationView = findViewById(R.id.act_main_bottom_nav_bar);
     }
 
     private void initMenu() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.act_main_bottom_nav_bar);
         bottomNavigationView.setSelectedItemId(R.id.bottom_nav_bar_main);
+
         bottomNavigationView.setOnItemSelectedListener(item -> {
 
-            boolean executeFinally = true;
-            try {
-                switch (item.getItemId()) {
-                    case (R.id.bottom_nav_bar_main):
-                        return true;
-                    case (R.id.bottom_nav_bar_workout):
-                        startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
-                        return true;
-                    case (R.id.bottom_nav_bar_profile):
-                        startActivity(new Intent(getApplicationContext(), UserActivity.class));
-                        return true;
-                    case (R.id.bottom_nav_bar_settings):
-                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                        executeFinally = false;
-                        return true;
-                }
-            } finally {
-                if (executeFinally) {
-                    overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_left);
-                    finish();
-                }
+            switch (item.getItemId()) {
+                case (R.id.bottom_nav_bar_main):
+                    recreate();
+                    return true;
+                case (R.id.bottom_nav_bar_workout):
+                    startNewActivity(LibraryActivity.class);
+                    return true;
+                case (R.id.bottom_nav_bar_profile):
+                    startNewActivity(UserActivity.class);
+                    return true;
+                case (R.id.bottom_nav_bar_settings):
+                    startNewActivity(SettingsActivity.class);
+                    return true;
             }
             return false;
         });
     }
 
+    private void startNewActivity(Class<?> activity) {
+        Intent intent = new Intent(getApplicationContext(), activity);
+        intent.putExtra(GlobalClass.userID, currentUserID);
+        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_left);
+        startActivity(intent);
+        finish();
+    }
+
+    private void initInternalFolders() {
+        new StorageClass(getApplicationContext(), "/Application_images").addFolderToInternalStorage();
+        new StorageClass(getApplicationContext(), "/Muscle_Group_images").addFolderToInternalStorage();
+        new StorageClass(getApplicationContext(), "/Exercise_images").addFolderToInternalStorage();
+        new StorageClass(getApplicationContext(), "/Application_images/flags").addFolderToInternalStorage();
+    }
+
+
     private void insertExtensionExercise() {
 
+//        id, sets, repetition(type = rep), time(type = time), rest
         IntegerModel extend1 = new IntegerModel(-1, 1, 8, 12, 0, 30);
         IntegerModel extend2 = new IntegerModel(-1, 2, 3, 0, 65, 45);
         IntegerModel extend3 = new IntegerModel(-1, 3, 4, 6, 0, 45);
@@ -162,14 +153,14 @@ public class MainActivity extends AppCompatActivity {
     private void insertWorkout() {
 
         ExerciseModel workout1 = new ExerciseModel(-1, "Workout1 YTR", "", 2,
-                "5", "21", 10, 55, "descriptionWorkout1",
-                "2,3,1");
+                1, "0", 10, 55, "descriptionWorkout1",
+                "2,3,1", 0);
         ExerciseModel workout2 = new ExerciseModel(-1, "Workout2 URC", "", 1,
-                "2", "54", 21, 35, "descriptionWorkout2",
-                "1,2,3");
+                2, "0", 21, 35, "descriptionWorkout2",
+                "1,3", 0);
         ExerciseModel workout3 = new ExerciseModel(-1, "Workout3 YTN", "", 3,
-                "4", "71", 17, 15, "descriptionWorkout3",
-                "3,2,1");
+                3, "0", 17, 15, "descriptionWorkout3",
+                "3,2,1", 0);
 
         contentBD.insertWorkout(workout1);
         contentBD.insertWorkout(workout2);
@@ -177,17 +168,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void insertExercise() {
-// ???
+
         ExerciseModel exercise1 = new ExerciseModel(-1, "Exercise1 ABC", "", 2,
-                "5", "21", 1, 5, 20, "description1", 1);
+                2, "3,2", 1, 5, 20, "description1", 1,1);
         ExerciseModel exercise2 = new ExerciseModel(-1, "Exercise2 BGH", "", 1,
-                "2", "54", 2, 10, 25, "description2", 2);
+                2, "1", 2, 10, 25, "description2", 2, 1);
         ExerciseModel exercise3 = new ExerciseModel(-1, "Exercise3 BCI", "", 3,
-                "4", "71", 1, 15, 35, "description3", 3);
+                3, "2,1", 1, 15, 35, "description3", 3, 1);
 
         contentBD.insertExercise(exercise1);
         contentBD.insertExercise(exercise2);
         contentBD.insertExercise(exercise3);
+    }
+
+    private void insertBodyParts() {
+
+        IntegerModel model1 = new IntegerModel(-1, 0, 0, 0, 1, 1, 0, 0);
+        IntegerModel model2 = new IntegerModel(-1, 1, 0, 0, 1, 0, 0, 0);
+        IntegerModel model3 = new IntegerModel(-1, 0, 0, 0, 0, 0, 0, 1);
+
+
+        contentBD.insertBodyParts(model1);
+        contentBD.insertBodyParts(model2);
+        contentBD.insertBodyParts(model3);
     }
 
     private void insertTaskDate() {
@@ -225,32 +228,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void insertEquipment() {
-        ThreeElementLinearListModel dumbbells = new ThreeElementLinearListModel(-1,
-                R.drawable.ic_hexagon, "Dumbbells", 0);
-        ThreeElementLinearListModel resistanceRubber = new ThreeElementLinearListModel(-1,
-                R.drawable.ic_block, "ResistanceRubber", 0);
-        ThreeElementLinearListModel paralletes = new ThreeElementLinearListModel(-1,
-                R.drawable.ic_hexagon, "Paralletes", 0);
-        contentBD.insertEquipment(dumbbells);
-        contentBD.insertEquipment(resistanceRubber);
-        contentBD.insertEquipment(paralletes);
+        StringModel item1 = new StringModel(-1, "Dumbbells", R.drawable.ic_hexagon);
+        StringModel item2 = new StringModel(-1, "ResistanceRubber", R.drawable.ic_hexagon);
+        StringModel item3 = new StringModel(-1, "Paralletes", R.drawable.ic_hexagon);
+        contentBD.insertEquipment(item1);
+        contentBD.insertEquipment(item2);
+        contentBD.insertEquipment(item3);
     }
 
-    private void initInternalFolders() {
-        new StorageClass(getApplicationContext(), "/Application_images").addFolderToInternalStorage();
-        new StorageClass(getApplicationContext(), "/Muscle_Group_images").addFolderToInternalStorage();
-        new StorageClass(getApplicationContext(), "/Exercise_images").addFolderToInternalStorage();
-        new StorageClass(getApplicationContext(), "/Application_images/flags").addFolderToInternalStorage();
-    }
+    private void insertLanguage() {
 
-    private void insertUnits() {
-
-        LanguageModel lan_pl = new LanguageModel(-1,"Polish", false, "pl", "");
+        LanguageModel lan_pl = new LanguageModel(-1, "Polish", false, "pl", "");
         LanguageModel lan_en = new LanguageModel(-1, "English", true, "en", "");
         dbHelper.insertLanguage(lan_pl);
         dbHelper.insertLanguage(lan_en);
 
     }
+
+    private void insertUnitsHeight() {
+
+        StringModel model2 = new StringModel(-1, "cm");
+        StringModel model3 = new StringModel(-1, "in");
+        dbHelper.insertUnitHeight(model2);
+        dbHelper.insertUnitHeight(model3);
+    }
+
+    private void insertUnitsWeight() {
+
+        StringModel model = new StringModel(-1, "kg");
+        StringModel model1 = new StringModel(-1, "lbs");
+        dbHelper.insertUnitWeight(model);
+        dbHelper.insertUnitWeight(model1);
+    }
+
 }
 
 //        if(!checkPermission()) {

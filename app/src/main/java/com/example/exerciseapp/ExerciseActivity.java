@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +31,7 @@ public class ExerciseActivity extends AppCompatActivity implements
     private byte typeExercise = 0;
     private long id = 0;
     private String exerciseName = "";
+    private long extensionId;
     private byte scenario;
     private byte currentFragment;
     private int rest;
@@ -168,6 +170,40 @@ public class ExerciseActivity extends AppCompatActivity implements
         ft.commit();
     }
 
+    private void swapFragments() {
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Bundle sendRestValue = new Bundle();
+        sendRestValue.putInt("rest", rest);
+        sendRestValue.putString("exerciseName", exerciseName);
+        switch (currentFragment) {
+            case 1:
+            case 2:
+                ft.detach(currentFragment == 1 ? repetitionExerciseFragment : timeExerciseFragment);
+                timeBreakFragment.setArguments(sendRestValue);
+                runOnUiThread(() -> nextBtn.setVisibility(View.GONE));
+                ft.replace(R.id.act_exercise_container, timeBreakFragment, TIME_BREAK_TAG);
+                break;
+            case 3:
+                ft.remove(timeBreakFragment);
+                runOnUiThread(() -> nextBtn.setVisibility(View.VISIBLE));
+                if (scenario == REPETITION_EXERCISE_FRAGMENT) {
+                    ft.attach(repetitionExerciseFragment);
+                    ft.replace(R.id.act_exercise_container, repetitionExerciseFragment, REPETITION_EXE_TAG);
+                } else if (scenario == TIME_EXERCISE_FRAGMENT) {
+                    ft.attach(timeExerciseFragment);
+                    ft.replace(R.id.act_exercise_container, timeExerciseFragment, TIME_EXE_TAG);
+                } else {
+                    throw new NullPointerException("scenario != (1 || 2)");
+                }
+                break;
+            default:
+                ft.attach(emptyFragment);
+        }
+        ft.setReorderingAllowed(true);
+        ft.commit();
+    }
+
     @Override
     public void checkCondition(boolean param) {
         if (param) {
@@ -193,6 +229,7 @@ public class ExerciseActivity extends AppCompatActivity implements
                 bundle.putLong("id", idMain);
                 bundle.putDouble("duration", duration);
                 bundle.putString("name", name);
+                bundle.putLong("extensionId", MINUS_ONE);
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 summaryFragment.setArguments(bundle);
                 ft.replace(R.id.act_exercise_container, summaryFragment, "summaryTag");
@@ -209,6 +246,7 @@ public class ExerciseActivity extends AppCompatActivity implements
                 bundle.putLong("id", idMain);
                 bundle.putDouble("duration", duration);
                 bundle.putString("name", name);
+                bundle.putLong("extensionId", extensionId);
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 summaryFragment.setArguments(bundle);
                 ft.replace(R.id.act_exercise_container, summaryFragment, "summaryTag");
@@ -220,39 +258,6 @@ public class ExerciseActivity extends AppCompatActivity implements
             addFragment(workoutPattern.get(
                     workoutPattern.get(currentExercise).getId()).getExerciseId(), typeExercise);
         }
-    }
-
-    private void swapFragments() {
-
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Bundle sendRestValue = new Bundle();
-        sendRestValue.putInt("rest", rest);
-        sendRestValue.putString("exerciseName", exerciseName);
-        Log.i(TAG, "swapFragments: " + exerciseName);
-        switch (currentFragment) {
-            case 1:
-            case 2:
-                ft.detach(currentFragment == 1 ? repetitionExerciseFragment : timeExerciseFragment);
-                timeBreakFragment.setArguments(sendRestValue);
-                ft.replace(R.id.act_exercise_container, timeBreakFragment, TIME_BREAK_TAG);
-                break;
-            case 3:
-                ft.remove(timeBreakFragment);
-                if (scenario == REPETITION_EXERCISE_FRAGMENT) {
-                    ft.attach(repetitionExerciseFragment);
-                    ft.replace(R.id.act_exercise_container, repetitionExerciseFragment, REPETITION_EXE_TAG);
-                } else if (scenario == TIME_EXERCISE_FRAGMENT) {
-                    ft.attach(timeExerciseFragment);
-                    ft.replace(R.id.act_exercise_container, timeExerciseFragment, TIME_EXE_TAG);
-                } else {
-                    throw new NullPointerException("scenario != (1 || 2)");
-                }
-                break;
-            default:
-                ft.attach(emptyFragment);
-        }
-        ft.setReorderingAllowed(true);
-        ft.commit();
     }
 
     @Override

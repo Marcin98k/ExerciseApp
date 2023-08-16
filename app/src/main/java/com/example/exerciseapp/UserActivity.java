@@ -8,19 +8,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
+import com.example.exerciseapp.mEnums.Side;
 import com.example.exerciseapp.mInterfaces.ISummary;
 import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
@@ -33,7 +32,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -55,6 +53,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
     private TextView fragmentTitle;
 
     private final int USER_ID = 1;
+    private static long currentUserID;
     private int currentDate;
     private int selectedDateToDB;
     private String activityName;
@@ -74,28 +73,21 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
-        initView();
+
         contentBD = new ContentBD(this);
         today = LocalDate.now();
 
-        if (findViewById(R.id.act_user_calendar) != null) {
+        initView(savedInstanceState);
+        initMenu();
 
-            if (savedInstanceState != null) {
-                return;
-            }
+        initDatePickerDialog(selectDate);
+        fillDB();
+        fillChart();
+        updateWeightInDB(updateWeightBtn);
+        changeDate();
+    }
 
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.setReorderingAllowed(true);
-            ft.add(R.id.act_user_calendar, new CalendarFragment(), "calendarTag");
-            ft.commit();
-        }
-
-        lineChartWeight = findViewById(R.id.act_line_chart_weight);
-        String current = today.format(LONG_DATE_TIME_FORMATTER);
-        String showDate = today.format(DATE_TIME_FORMATTER);
-        currentDate = Integer.parseInt(current);
-        selectedDateToDB = currentDate;
-        selectDate.setText(String.valueOf(showDate));
+    private void initMenu() {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.act_user_bottom_nav_bar);
         bottomNavigationView.setSelectedItemId(R.id.bottom_nav_bar_profile);
@@ -104,31 +96,19 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
 
             switch (item.getItemId()) {
                 case (R.id.bottom_nav_bar_main):
-                    startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
-                    overridePendingTransition(R.anim.slide_to_right, R.anim.slide_from_right);
-                    finish();
+                    startNewActivity(MainActivity.class, Side.LEFT);
                     return true;
                 case (R.id.bottom_nav_bar_workout):
-                    startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
-                    overridePendingTransition(R.anim.slide_to_right, R.anim.slide_from_right);
-                    finish();
+                    startNewActivity(LibraryActivity.class, Side.LEFT);
                     return true;
                 case (R.id.bottom_nav_bar_profile):
                     return true;
                 case (R.id.bottom_nav_bar_settings):
-                    startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                    overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_left);
-                    finish();
+                    startNewActivity(SettingsActivity.class, Side.RIGHT);
                     return true;
             }
             return false;
         });
-
-        initDatePickerDialog(selectDate);
-        fillDB();
-        fillChart();
-        updateWeightInDB(updateWeightBtn);
-        changeDate();
     }
 
     private void initDatePickerDialog(Button btn) {
@@ -161,6 +141,18 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
     }
 
+    private void startNewActivity(Class<?> activity, Side side) {
+        Intent intent = new Intent(getApplicationContext(), activity);
+        intent.putExtra(GlobalClass.userID, currentUserID);
+        if (side == Side.LEFT) {
+            overridePendingTransition(R.anim.slide_to_right, R.anim.slide_from_right);
+        } else {
+            overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_left);
+        }
+        startActivity(intent);
+        finish();
+    }
+
     private void changeDate() {
         selectDate.setOnClickListener(v -> datePickerDialog.show());
     }
@@ -181,7 +173,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
         });
     }
 
-    private void initView() {
+    private void initView(Bundle savedInstanceState) {
         selectDate = findViewById(R.id.act_user_edit_text_date);
         userWeight = findViewById(R.id.act_user_edit_text_user_weight);
         updateWeightBtn = findViewById(R.id.act_user_btn_update_weight);
@@ -190,6 +182,29 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
 
         activityName = getString(R.string.profile);
         activityTitle.setText(activityName);
+
+        Intent intent = getIntent();
+        currentUserID = intent.getLongExtra(GlobalClass.userID, -1);
+
+        if (findViewById(R.id.act_user_calendar) != null) {
+
+            if (savedInstanceState != null) {
+                return;
+            }
+
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.setReorderingAllowed(true);
+            ft.add(R.id.act_user_calendar, new CalendarFragment(), "calendarTag");
+            ft.commit();
+        }
+
+        lineChartWeight = findViewById(R.id.act_line_chart_weight);
+        String current = today.format(LONG_DATE_TIME_FORMATTER);
+        String showDate = today.format(DATE_TIME_FORMATTER);
+        currentDate = Integer.parseInt(current);
+        selectedDateToDB = currentDate;
+        selectDate.setText(String.valueOf(showDate));
+
     }
 
     private void fillDB() {

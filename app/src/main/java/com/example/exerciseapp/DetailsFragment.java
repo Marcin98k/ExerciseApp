@@ -1,13 +1,8 @@
 package com.example.exerciseapp;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ImageSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,33 +12,38 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.exerciseapp.mClasses.ClockClass;
+import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
-import com.example.exerciseapp.mDatabases.DBHelper;
 import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ExerciseModel;
+import com.example.exerciseapp.mModels.IntegerModel;
+import com.example.exerciseapp.mModels.StringModel;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class DetailsFragment extends Fragment implements View.OnClickListener {
 
-    private static final String TAG = "DetailsFragment";
-    private String fragmentName;
     private Button nextBtnView;
 
 
+    private static final String TAG = "DetailsFragment";
+    private String listName;
+    private String fragmentName;
     private long id;
-    private String btnText;
     private List<ExerciseModel> exerciseDetail;
-
+    private int buttonText;
     private final byte POSITION = 0;
+    private int durationSum;
+    private int fromWhere;
 
 
     private ContentBD contentBD;
-    private DBHelper dbHelper;
     private UpdateIntegersDB updateIntegersDB;
     private ITitleChangeListener iTitleChangeListener;
 
@@ -84,9 +84,9 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             id = getArguments().getLong("id");
-            btnText = getArguments().getString("btnText",
-                    String.valueOf(R.string.next)
-            );
+            listName = getArguments().getString("listName", getString(R.string.nan));
+            buttonText = getArguments().getInt("btnName", R.string.nan);
+            fromWhere = getArguments().getInt("fromWhere", -1);
         }
     }
 
@@ -95,7 +95,6 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_details, container, false);
         contentBD = new ContentBD(requireActivity());
-        dbHelper = new DBHelper(requireActivity());
         initView(mView);
         nextBtnView.setOnClickListener(this);
         return mView;
@@ -106,7 +105,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         ImageView imageIMG = v.findViewById(R.id.frag_details_image);
         TextView nameTV = v.findViewById(R.id.frag_details_name);
         TextView levelTV = v.findViewById(R.id.frag_details_level);
-        ImageView bodyPartsIMG = v.findViewById(R.id.frag_details_body_parts_image);
+        TextView bodyPartsTV = v.findViewById(R.id.frag_details_body_parts);
         TextView equipmentTV = v.findViewById(R.id.frag_details_equipment);
         TextView typeTV = v.findViewById(R.id.frag_details_type);
         TextView kcalTV = v.findViewById(R.id.frag_details_kcal);
@@ -114,26 +113,73 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         TextView descriptionTV = v.findViewById(R.id.frag_details_description);
         nextBtnView = v.findViewById(R.id.frag_details_button);
 
-        exerciseDetail = contentBD.showExerciseById(id);
+
+        Log.i(TAG, "fromWhere: : " + fromWhere);
+        Log.i(TAG, "id: : " + id);
+        if (fromWhere == 0) {
+            exerciseDetail = contentBD.showExerciseById(id);
+        } else {
+            exerciseDetail = contentBD.showUserExerciseById(id);
+        }
         ExerciseModel exercise = exerciseDetail.get(POSITION);
 
 //        imageIMG.setImageResource(exercise.getImage());
         nameTV.setText(exercise.getName());
-        levelTV.setText(String.valueOf(exercise.getLevel()));
-//        bodyPartsIMG.setImageBitmap(exercise.getBodyParts());
-        equipmentTV.setText(exercise.getEquipment());
-        typeTV.setText(String.valueOf(exercise.getType()));
+        typeTV.setText(exercise.getType() == 1 ? getString(R.string.repetition) : getString(R.string.time));
+        String[] names = {getString(R.string.beginner), getString(R.string.intermediate),
+                getString(R.string.advanced)};
+        levelTV.setText(names[exercise.getLevel() - 1]);
+
+//        Equipment:
+        String bodyPartsText = String.join(",\n ",
+                contentBD.showBodyPartsById(exerciseDetail.get(POSITION).getBodyParts()));
+        bodyPartsTV.setText(bodyPartsText);
+
+        List<StringModel> equipmentList = new ArrayList<>();
+        String equipmentIDs = exerciseDetail.get(POSITION).getEquipment();
+        String[] splitEquipment = equipmentIDs.split(",");
+
+        LinkedHashSet<String> equipmentSet = new LinkedHashSet<>();
+        for (String s : splitEquipment) {
+            StringModel equipmentModelDB = contentBD.showEquipment(Long.parseLong(s));
+            equipmentList.add(equipmentModelDB);
+        }
+        for (int i = 0; i < equipmentList.size(); i++) {
+            equipmentSet.add(equipmentList.get(i).getName());
+        }
+        StringBuilder setEquipment = new StringBuilder();
+        for (String equipment : equipmentSet) {
+            setEquipment.append(equipment);
+            if (!equipment.equals(equipmentSet.toArray()[equipmentSet.size() - 1])) {
+                setEquipment.append(",");
+                setEquipment.append("\n");
+            }
+        }
+
+        equipmentTV.setText(setEquipment.toString());
+
+
         kcalTV.setText(String.valueOf(exercise.getKcal()));
-        durationTV.setText(String.valueOf(exercise.getDuration()));
+
+        List<IntegerModel> extensionExe = contentBD.showExerciseExtensionId(
+                exerciseDetail.get(0).getExtension());
+
+//            1 -> type: repetition, 2 -> type = time;
+        if (exerciseDetail.get(0).getType() == 1) {
+            durationSum += (extensionExe.get(0).getSecondValue() * GlobalClass.DEFAULT_EXERCISE_TIME) +
+                    ((extensionExe.get(0).getSecondValue() - 1) * extensionExe.get(0).getFifthValue());
+        } else {
+            durationSum += (extensionExe.get(0).getSecondValue() * extensionExe.get(0).getForthValue()) +
+                    ((extensionExe.get(0).getSecondValue() - 1) * extensionExe.get(0).getFifthValue());
+        }
+        new ClockClass(requireActivity()).setSecond(durationSum).dynamicIncreaseTime(durationTV);
         descriptionTV.setText(String.valueOf(exercise.getDescription()));
         fragmentName = getString(R.string.details);
-        nextBtnView.setText(btnText);
+        nextBtnView.setText(getString(buttonText));
     }
 
     @Override
     public void onClick(View view) {
-        updateIntegersDB.values("detailsFragment", (int) id,
-                exerciseDetail.get(POSITION).getType(),
-                0);
+        updateIntegersDB.values(listName, (int) id, exerciseDetail.get(POSITION).getType(), 0);
     }
 }

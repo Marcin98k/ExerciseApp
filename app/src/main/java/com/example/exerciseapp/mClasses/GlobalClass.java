@@ -1,13 +1,7 @@
 package com.example.exerciseapp.mClasses;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.example.exerciseapp.mDatabases.DBHelper;
 import com.example.exerciseapp.mModels.LanguageModel;
@@ -15,6 +9,11 @@ import com.example.exerciseapp.mModels.LanguageModel;
 import java.util.Locale;
 
 public class GlobalClass {
+
+    public static final int MY_PERMISSIONS_REQUEST_POST_NOTIFICATIONS = 1;
+    public static final int DEFAULT_EXERCISE_TIME = 60;
+    public static String userID = "userID";
+
     public static Context initLanguage(Context context) {
 
         String languagePrefix;

@@ -9,290 +9,291 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <ImageView
-        android:id="@+id/frag_details_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="TODO"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <TableLayout
-        android:id="@+id/frag_details_table_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:stretchColumns="*"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frag_details_image">
+        <ImageView
+            android:id="@+id/frag_details_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="TODO"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TableRow
-            android:layout_marginTop="10dp">
+        <TableLayout
+            android:id="@+id/frag_details_table_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frag_details_image">
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/ic_text"
-                android:contentDescription="TODO"
-                android:background="@drawable/left_topic_style"
-                android:padding="10dp"/>
+            <TableRow android:layout_marginTop="10dp">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/name_d"
-                android:gravity="center_vertical|start"
-                android:textSize="16sp"
-                android:background="@color/light_grey"/>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/left_topic_style"
+                    android:contentDescription="TODO"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_text" />
 
-            <TextView
-                android:id="@+id/frag_details_name"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:textSize="14sp"
-                android:gravity="center"
-                android:text="@string/nan"
-                android:background="@drawable/left_expand_topic_style" />
-        </TableRow>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/light_grey"
+                    android:gravity="center_vertical|start"
+                    android:text="@string/name_d"
+                    android:textSize="16sp" />
 
-        <TableRow
-            android:layout_marginTop="10dp">
+                <TextView
+                    android:id="@+id/frag_details_name"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:background="@drawable/left_expand_topic_style"
+                    android:gravity="center"
+                    android:text="@string/nan"
+                    android:textSize="14sp" />
+            </TableRow>
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/ic_level"
-                android:contentDescription="TODO"
-                android:background="@drawable/left_topic_style"
-                android:padding="10dp"/>
+            <TableRow android:layout_marginTop="10dp">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:textSize="16sp"
-                android:gravity="center_vertical|start"
-                android:text="@string/level_d"
-                android:background="@color/light_grey"/>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/left_topic_style"
+                    android:contentDescription="TODO"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_level" />
 
-            <TextView
-                android:id="@+id/frag_details_level"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:textSize="14sp"
-                android:gravity="center"
-                android:text="@string/nan"
-                android:background="@drawable/left_expand_topic_style"/>
-        </TableRow>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/light_grey"
+                    android:gravity="center_vertical|start"
+                    android:text="@string/level_d"
+                    android:textSize="16sp" />
 
-        <TableRow
-            android:background="@drawable/top_topic_style"
-            android:layout_marginTop="10dp"
-            android:padding="10dp">
+                <TextView
+                    android:id="@+id/frag_details_level"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:background="@drawable/left_expand_topic_style"
+                    android:gravity="center"
+                    android:text="@string/nan"
+                    android:textSize="14sp" />
+            </TableRow>
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/ic_arm"
-                android:contentDescription="TODO" />
+            <TableRow
+                android:layout_marginTop="10dp"
+                android:background="@drawable/top_topic_style"
+                android:padding="10dp">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:text="@string/body_parts_d"
-                android:textSize="16sp"
-                android:gravity="center" />
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/ic_arm" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-        </TableRow>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="@string/body_parts_d"
+                    android:textSize="16sp" />
 
-        <TableRow
-            android:background="@drawable/top_expand_topic_style">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </TableRow>
 
-            <ImageView
-                android:id="@+id/frag_details_body_parts_image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:contentDescription="TODO" />
-        </TableRow>
+            <TableRow android:background="@drawable/top_expand_topic_style">
 
-        <TableRow
-            android:background="@drawable/top_topic_style"
-            android:layout_marginTop="10dp"
-            android:padding="10dp">
+                <TextView
+                    android:id="@+id/frag_details_body_parts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:contentDescription="TODO"
+                    android:gravity="center"
+                    android:padding="10dp" />
+            </TableRow>
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/ic_type"
-                android:contentDescription="TODO" />
+            <TableRow
+                android:layout_marginTop="10dp"
+                android:background="@drawable/top_topic_style"
+                android:padding="10dp">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/type_d"
-                android:textSize="16sp"
-                android:gravity="center_vertical|start"/>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/ic_type" />
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/ic_kcal"
-                android:contentDescription="TODO" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|start"
+                    android:text="@string/type_d"
+                    android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/kcal_d"
-                android:textSize="14sp"
-                android:gravity="center_vertical|start" />
-        </TableRow>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/ic_kcal" />
 
-        <TableRow
-            android:background="@drawable/top_expand_topic_style"
-            android:padding="10dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|start"
+                    android:text="@string/kcal_d"
+                    android:textSize="14sp" />
+            </TableRow>
 
-            <TextView
-                android:id="@+id/frag_details_type"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:text="@string/nan" />
+            <TableRow
+                android:background="@drawable/top_expand_topic_style"
+                android:padding="10dp">
 
-            <TextView
-                android:id="@+id/frag_details_kcal"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:text="@string/nan" />
-        </TableRow>
+                <TextView
+                    android:id="@+id/frag_details_type"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/nan"
+                    android:textSize="16sp" />
 
-        <TableRow
-            android:background="@drawable/top_topic_style"
-            android:layout_marginTop="10dp"
-            android:padding="10dp">
+                <TextView
+                    android:id="@+id/frag_details_kcal"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/nan"
+                    android:textSize="16sp" />
+            </TableRow>
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/ic_dumbbell"
-                android:contentDescription="TODO" />
+            <TableRow
+                android:layout_marginTop="10dp"
+                android:background="@drawable/top_topic_style"
+                android:padding="10dp">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/equipment_d"
-                android:textSize="16sp"
-                android:gravity="center_vertical|start" />
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/ic_dumbbell" />
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/ic_time"
-                android:contentDescription="TODO" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|start"
+                    android:text="@string/equipment_d"
+                    android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:textSize="16sp"
-                android:gravity="center_vertical|start"
-                android:text="@string/duration_d" />
-        </TableRow>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/ic_time" />
 
-        <TableRow
-            android:background="@drawable/top_expand_topic_style"
-            android:padding="10dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|start"
+                    android:text="@string/duration_d"
+                    android:textSize="16sp" />
+            </TableRow>
 
-            <TextView
-                android:id="@+id/frag_details_equipment"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/nan"
-                android:textSize="14sp"
-                android:gravity="center"/>
+            <TableRow
+                android:background="@drawable/top_expand_topic_style"
+                android:padding="10dp">
 
-            <TextView
-                android:id="@+id/frag_details_duration"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/nan"
-                android:textSize="14sp"
-                android:gravity="center"/>
-        </TableRow>
+                <TextView
+                    android:id="@+id/frag_details_equipment"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/nan"
+                    android:textSize="14sp" />
 
-        <TableRow
-            android:background="@drawable/top_topic_style"
-            android:layout_marginTop="10dp"
-            android:padding="10dp">
+                <TextView
+                    android:id="@+id/frag_details_duration"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/nan"
+                    android:textSize="14sp" />
+            </TableRow>
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/ic_list"
-                android:contentDescription="TODO" />
+            <TableRow
+                android:layout_marginTop="10dp"
+                android:background="@drawable/top_topic_style"
+                android:padding="10dp">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:text="@string/description_d"
-                android:textSize="16sp"
-                android:gravity="center" />
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/ic_list" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-        </TableRow>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="@string/description_d"
+                    android:textSize="16sp" />
 
-        <TableRow
-            android:background="@drawable/top_expand_topic_style"
-            android:padding="10dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </TableRow>
 
-            <TextView
-                android:id="@+id/frag_details_description"
-                android:layout_width="0dp"
-                android:textSize="14sp"
-                android:gravity="center"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-        </TableRow>
-    </TableLayout>
+            <TableRow
+                android:background="@drawable/top_expand_topic_style"
+                android:padding="10dp">
 
-    <android.widget.Button
-        android:id="@+id/frag_details_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/nan"
-        style="@style/MyStandardButtonGuidelines"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frag_details_table_container" />
+                <TextView
+                    android:id="@+id/frag_details_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/nan"
+                    android:textSize="14sp" />
+            </TableRow>
+        </TableLayout>
+
+        <android.widget.Button
+            android:id="@+id/frag_details_button"
+            style="@style/MyStandardButtonGuidelines"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nan"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frag_details_table_container" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </ScrollView>
