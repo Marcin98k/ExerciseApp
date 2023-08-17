@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".SelectHeightFragment">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="30dp"
+        android:gravity="center"
+        android:text="@string/select_height"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toTopOf="@+id/fSelectHeight_numberPicker"
+        app:layout_constraintStart_toStartOf="parent" />
     <NumberPicker
         android:id="@+id/fSelectHeight_numberPicker"
         android:layout_width="wrap_content"
@@ -36,7 +45,7 @@
             android:layout_weight="0.5"
             android:background="@drawable/actual_state_two_left"
             android:button="@color/transparent"
-            android:text="firstUnit"
+            android:text="@string/cm"
             android:textAlignment="center" />
 
         <RadioButton
@@ -46,7 +55,7 @@
             android:layout_weight="0.5"
             android:background="@drawable/actual_state_two_right"
             android:button="@color/transparent"
-            android:text="secondUnit"
+            android:text="@string/in"
             android:textAlignment="center" />
     </RadioGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

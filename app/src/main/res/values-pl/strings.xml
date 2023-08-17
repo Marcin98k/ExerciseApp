@@ -111,4 +111,10 @@
     <string name="hide">Ukryj</string>
     <string name="show_more">Pokaż więcej</string>
     <string name="return_text">Wróć</string>
+
+    <string name="start_workout">Rozpocznij trening</string>
+    <string name="select_goals">Wybierz cele</string>
+    <string name="select_gender">Wybierz płeć</string>
+    <string name="select_height">Podaj wzorst</string>
+    <string name="select_weight">Podaj wagę</string>
 </resources>

@@ -18,8 +18,8 @@ import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 
 public class SelectGoalsFragment extends Fragment implements FragmentRespond {
 
-    FragmentSupportListener mListener;
-    SharedViewModel sharedViewModel;
+    private FragmentSupportListener mListener;
+    private SharedViewModel sharedViewModel;
 
     private final int[] selected = new int[4];
 

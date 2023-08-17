@@ -22,10 +22,8 @@ public class SelectHeightFragment extends Fragment implements FragmentRespond {
     private RadioButton radioButton;
     private RadioButton defaultBtn;
     private RadioGroup unitGroup;
-    SharedViewModel sharedViewModel;
-    UpdateIntegersDB updateIntegersDB;
+    private SharedViewModel sharedViewModel;
     private int selectedUnit;
-    private int number;
 
     public SelectHeightFragment() {
 

@@ -11,12 +11,20 @@
         android:orientation="vertical"
         android:paddingHorizontal="30dp">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/select_goals"
+            android:textSize="22sp"
+            android:gravity="center"
+            android:layout_marginVertical="30dp"/>
+
         <CheckBox
             android:id="@+id/fSelectGoal_firstOption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@color/transparent"
-            android:text="firstGoal"
+            android:text="@string/strength"
             android:textAlignment="center"
             android:background="@drawable/actual_state_one"
             android:layout_marginVertical="5dp"/>
@@ -26,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@color/transparent"
-            android:text="firstGoal"
+            android:text="@string/muscle"
             android:textAlignment="center"
             android:background="@drawable/actual_state_one"
             android:layout_marginVertical="5dp"/>
@@ -36,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@color/transparent"
-            android:text="firstGoal"
+            android:text="@string/fatLose"
             android:textAlignment="center"
             android:background="@drawable/actual_state_one"
             android:layout_marginVertical="5dp"/>
@@ -46,7 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@color/transparent"
-            android:text="firstGoal"
+            android:text="@string/technique"
             android:textAlignment="center"
             android:background="@drawable/actual_state_one"
             android:layout_marginVertical="5dp"/>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,11 +10,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/frag_select_level_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="30dp"
+            android:gravity="center"
+            android:text="Select level"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <RadioGroup
             android:id="@+id/fSelectLevel_levelGroup"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingHorizontal="30dp">
+            android:paddingHorizontal="30dp"
+            android:layout_marginTop="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frag_select_level_title">
 
             <RadioButton
                 android:id="@+id/fSelectLevel_firstOption"
@@ -22,8 +38,8 @@
                 android:layout_marginVertical="5dp"
                 android:background="@drawable/actual_state_one"
                 android:button="@color/transparent"
-                android:text="First Level"
-                android:textAlignment="center"/>
+                android:text="@string/beginner"
+                android:textAlignment="center" />
 
             <RadioButton
                 android:id="@+id/fSelectLevel_secondOption"
@@ -32,8 +48,8 @@
                 android:layout_marginVertical="5dp"
                 android:background="@drawable/actual_state_one"
                 android:button="@color/transparent"
-                android:text="Second Level"
-                android:textAlignment="center"/>
+                android:text="@string/intermediate"
+                android:textAlignment="center" />
 
             <RadioButton
                 android:id="@+id/fSelectLevel_thirdOption"
@@ -42,8 +58,8 @@
                 android:layout_marginVertical="5dp"
                 android:background="@drawable/actual_state_one"
                 android:button="@color/transparent"
-                android:text="Third Level"
-                android:textAlignment="center"/>
+                android:text="@string/advanced"
+                android:textAlignment="center" />
 
         </RadioGroup>
     </androidx.constraintlayout.widget.ConstraintLayout>

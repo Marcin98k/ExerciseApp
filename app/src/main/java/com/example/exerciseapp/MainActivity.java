@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         new SimulatedExternalDatabase();
 
         Intent intent = getIntent();
-        currentUserID = intent.getLongExtra(GlobalClass.userID, 1);
+        currentUserID = intent.getLongExtra(GlobalClass.userID, -1);
         initInternalFolders();
         if (currentUserID != -1) {
             initView();

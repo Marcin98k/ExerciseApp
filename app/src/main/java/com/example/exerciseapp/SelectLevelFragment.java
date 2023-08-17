@@ -20,8 +20,8 @@ import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 
 public class SelectLevelFragment extends Fragment implements FragmentRespond {
 
-    FragmentSupportListener mListener;
-    SharedViewModel sharedViewModel;
+    private FragmentSupportListener mListener;
+    private SharedViewModel sharedViewModel;
     private RadioGroup radioGroup;
     private RadioButton radioButton;
 

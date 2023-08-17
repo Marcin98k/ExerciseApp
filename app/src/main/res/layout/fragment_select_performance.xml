@@ -4,11 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".SelectPerformanceFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="30dp"
+            android:gravity="center"
+            android:text="Select performance"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toTopOf="@+id/textView2"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <View
             android:id="@+id/fSelectPerformance_pivotVertical"
@@ -30,7 +41,7 @@
             android:id="@+id/textView2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="TO-DO"
+            android:text="@string/push"
             android:textSize="20sp"
             android:textAlignment="center"
             app:layout_constraintBottom_toTopOf="@+id/fSelectPerformance_ET_push"
@@ -53,7 +64,7 @@
             android:id="@+id/textView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="TO-DO"
+            android:text="@string/pull"
             android:textSize="20sp"
             android:textAlignment="center"
             app:layout_constraintBottom_toTopOf="@+id/fSelectPerformance_ET_pull"
@@ -76,7 +87,7 @@
             android:id="@+id/textView4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="TO-DO"
+            android:text="@string/squad"
             android:textSize="20sp"
             android:textAlignment="center"
             app:layout_constraintEnd_toStartOf="@+id/fSelectPerformance_pivotHorizontal"
@@ -99,7 +110,7 @@
             android:id="@+id/textView3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="TO-DO"
+            android:text="@string/dip"
             android:textAlignment="center"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"

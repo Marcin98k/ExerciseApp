@@ -10,6 +10,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="Attention, activity not ready"
+            android:gravity="center"
+            android:textSize="22sp"
+            android:background="#FF0000"/>
 
         <FrameLayout
             android:id="@+id/act_main_container"

@@ -109,5 +109,12 @@
     <string name="show_more">Show more</string>
     <string name="return_text">Return</string>
     <string name="start_workout">Start workout</string>
+    <string name="select_goals">Select goals</string>
+    <string name="select_gender">Select gender</string>
+    <string name="select_height">Select height</string>
+    <string name="select_weight">Select weight</string>
+    <string name="cm" translatable="false">cm</string>
+    <string name="in" translatable="false">in</string>
+    <string name="lbs" translatable="false">lbs</string>
 
 </resources>
