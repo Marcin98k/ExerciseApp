@@ -93,9 +93,9 @@ public class RadioButtonList extends Fragment {
 
         recyclerView = v.findViewById(R.id.fRadioButtonList_recyclerView);
 
-        updateIntegersDB = (listName, firstValue, secondValue, thirdValue) -> {
+        updateIntegersDB = (listName, firstValue, secondValue, thirdValue, fourthValue) -> {
             adapter.notifyDataSetChanged();
-            updateIntegersDB1.values(listName, firstValue, secondValue, thirdValue);
+            updateIntegersDB1.values(listName, firstValue, secondValue, thirdValue, fourthValue);
         };
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));

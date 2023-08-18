@@ -12,6 +12,7 @@ import android.widget.DatePicker;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.TaskDateModel;
@@ -62,7 +63,8 @@ public class CalendarFragment extends Fragment implements DatePicker.OnDateChang
         } else {
             id = -1;
         }
-        updateIntegersDB.values("calendarFragment", (int) id, 0, 0);
+        updateIntegersDB.values("calendarFragment", (int) id, 0, 0,
+                GlobalClass.FOURTH_VAL);
     }
 
     @Override

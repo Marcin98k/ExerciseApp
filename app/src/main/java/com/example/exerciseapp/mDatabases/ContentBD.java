@@ -33,6 +33,7 @@ public class ContentBD extends SQLiteOpenHelper {
     private static final String TAG = "TAG";
     private static final String INT_VAL = "VALUE";
     private static final String USER_ID = "USER";
+    private static final String FROM_WHERE = "FROM_WHERE";
 
 
     private static final String BODY_PARTS_TAB = "BODY_PART_TAB";
@@ -137,8 +138,9 @@ public class ContentBD extends SQLiteOpenHelper {
                 + WORKOUT_EQUIPMENT + " TEXT, "
                 + WORKOUT_KCAL + " INTEGER, "
                 + WORKOUT_DURATION + " INTEGER, "
-                + WORKOUT_DESCRIPTION + " TEXT,"
-                + WORKOUT_EXERCISES_ID + " INTEGER)";
+                + WORKOUT_DESCRIPTION + " TEXT, "
+                + WORKOUT_EXERCISES_ID + " INTEGER, "
+                + FROM_WHERE + " INTEGER)";
         sqLiteDatabase.execSQL(createWorkoutTab);
 
         String createEquipmentTab = "CREATE TABLE " + EQUIPMENT_TAB + " ("
@@ -156,7 +158,8 @@ public class ContentBD extends SQLiteOpenHelper {
                 + EXERCISE_KCAL + " INTEGER, "
                 + EXERCISE_DURATION + " INTEGER, "
                 + EXERCISE_DESCRIPTION + " TEXT, "
-                + EXERCISE_EXTENSIONS_ID + " INTEGER)";
+                + EXERCISE_EXTENSIONS_ID + " INTEGER, "
+                + FROM_WHERE + " INTEGER)";
         sqLiteDatabase.execSQL(createExerciseTab);
 
         String createExerciseExtensionTab = "CREATE TABLE " + EXERCISE_EXTENSIONS_TAB + " ("
@@ -174,7 +177,8 @@ public class ContentBD extends SQLiteOpenHelper {
                 + USER_EXERCISE_PERFORMED_DATE + " TEXT, "
                 + USER_EXERCISE_PERFORMED_MAIN_EXERCISE_ID + " INTGER, "
                 + USER_EXERCISE_PERFORMED_EXTENSIONS_ID + " INTEGER, "
-                + USER_EXERCISE_PERFORMED_SUM_TIME + " TEXT)";
+                + USER_EXERCISE_PERFORMED_SUM_TIME + " TEXT, "
+                + FROM_WHERE + " INTEGER)";
         sqLiteDatabase.execSQL(createUserExercise);
 
         String createAppearanceTab = "CREATE TABLE " + APPEARANCE_TAB + " ("
@@ -321,7 +325,7 @@ public class ContentBD extends SQLiteOpenHelper {
                                         mainCursor.getInt(mainCursor.getColumnIndexOrThrow(EXERCISE_DURATION)),
                                         mainCursor.getString(mainCursor.getColumnIndexOrThrow(EXERCISE_DESCRIPTION)),
                                         mainCursor.getInt(mainCursor.getColumnIndexOrThrow(EXERCISE_EXTENSIONS_ID)),
-                                        1);
+                                        mainCursor.getInt(mainCursor.getColumnIndexOrThrow(FROM_WHERE)));
                             }
                         }
                     } else {
@@ -411,7 +415,7 @@ public class ContentBD extends SQLiteOpenHelper {
                             "Undefined",
                             -1,
                             -1,
-                            "Undefined",
+                            "-1",
                             customExerciseModel.getType(),
                             -1,
                             -1,
@@ -569,6 +573,7 @@ public class ContentBD extends SQLiteOpenHelper {
             values.put(USER_EXERCISE_PERFORMED_MAIN_EXERCISE_ID, performedModel.getExerciseID());
             values.put(USER_EXERCISE_PERFORMED_EXTENSIONS_ID, performedModel.getExtensionID());
             values.put(USER_EXERCISE_PERFORMED_SUM_TIME, performedModel.getSumTime());
+            values.put(FROM_WHERE, performedModel.getFromWhere());
 
             return db.insert(USER_EXERCISE_PERFORMED_TAB, null, values) != -1;
         }
@@ -620,6 +625,7 @@ public class ContentBD extends SQLiteOpenHelper {
             values.put(EXERCISE_DURATION, exerciseModel.getDuration());
             values.put(EXERCISE_DESCRIPTION, exerciseModel.getDescription());
             values.put(EXERCISE_EXTENSIONS_ID, exerciseModel.getExtension());
+            values.put(FROM_WHERE, exerciseModel.getFromWhere());
 
             return db.insert(EXERCISE_TAB, null, values) != -1;
         }
@@ -639,6 +645,7 @@ public class ContentBD extends SQLiteOpenHelper {
             values.put(WORKOUT_DURATION, exerciseModel.getDuration());
             values.put(WORKOUT_DESCRIPTION, exerciseModel.getDescription());
             values.put(WORKOUT_EXERCISES_ID, exerciseModel.getExerciseId());
+            values.put(FROM_WHERE, exerciseModel.getFromWhere());
 
             return db.insert(WORKOUT_TAB, null, values) != -1;
         }
@@ -686,7 +693,7 @@ public class ContentBD extends SQLiteOpenHelper {
                             cursor.getInt(cursor.getColumnIndexOrThrow(EXERCISE_DURATION)),
                             cursor.getString(cursor.getColumnIndexOrThrow(EXERCISE_DESCRIPTION)),
                             cursor.getInt(cursor.getColumnIndexOrThrow(EXERCISE_EXTENSIONS_ID)),
-                            0);
+                            cursor.getInt(cursor.getColumnIndexOrThrow(FROM_WHERE)));
                     result.add(exerciseModel);
                 }
             }
@@ -752,7 +759,7 @@ public class ContentBD extends SQLiteOpenHelper {
                             cursor.getInt(cursor.getColumnIndexOrThrow(EXERCISE_DURATION)),
                             cursor.getString(cursor.getColumnIndexOrThrow(EXERCISE_DESCRIPTION)),
                             cursor.getInt(cursor.getColumnIndexOrThrow(EXERCISE_EXTENSIONS_ID)),
-                            0);
+                            cursor.getInt(cursor.getColumnIndexOrThrow(FROM_WHERE)));
                     result.add(exerciseModel);
                 }
             }
@@ -805,7 +812,7 @@ public class ContentBD extends SQLiteOpenHelper {
                             cursor.getInt(cursor.getColumnIndexOrThrow(WORKOUT_DURATION)),
                             cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_DESCRIPTION)),
                             cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_EXERCISES_ID)),
-                            0);
+                            cursor.getInt(cursor.getColumnIndexOrThrow(FROM_WHERE)));
                     result.add(exerciseModel);
                 }
             }
@@ -834,7 +841,7 @@ public class ContentBD extends SQLiteOpenHelper {
                         cursor.getInt(cursor.getColumnIndexOrThrow(WORKOUT_DURATION)),
                         cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_DESCRIPTION)),
                         cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_EXERCISES_ID)),
-                        0);
+                        cursor.getInt(cursor.getColumnIndexOrThrow(FROM_WHERE)));
                 result.add(exerciseModel);
             }
         }

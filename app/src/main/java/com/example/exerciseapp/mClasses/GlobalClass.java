@@ -13,6 +13,7 @@ public class GlobalClass {
     public static final int MY_PERMISSIONS_REQUEST_POST_NOTIFICATIONS = 1;
     public static final int DEFAULT_EXERCISE_TIME = 60;
     public static String userID = "userID";
+    public static final int FOURTH_VAL = 0;
 
     public static Context initLanguage(Context context) {
 

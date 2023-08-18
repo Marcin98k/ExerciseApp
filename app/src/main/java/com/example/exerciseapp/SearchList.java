@@ -49,8 +49,8 @@ public class SearchList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_search_list, container, false);
-        updateIntegersDB = (listName, firstValue, secondValue, thirdValue) ->
-                updateIntegersDB1.values(listName, firstValue, secondValue, thirdValue);
+        updateIntegersDB = (listName, firstValue, secondValue, thirdValue, fourthValue) ->
+                updateIntegersDB1.values(listName, firstValue, secondValue, thirdValue, fourthValue);
         initView(mView);
         return mView;
     }

@@ -33,8 +33,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class LibraryActivity extends AppCompatActivity implements UpdateIntegersDB,
         ISingleIntegerValue, INewExercise, ITitleChangeListener {
@@ -106,7 +104,6 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
         currentUserID = intent.getLongExtra(GlobalClass.userID, -1);
 
 
-        Log.i(TAG, "initView: " + currentUserID);
         if (findViewById(R.id.act_library_container) != null) {
             if (savedInstanceState != null) {
                 return;
@@ -326,14 +323,15 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
     }
 
     @Override
-    public void values(String listName, int firstValue, int secondValue, int thirdValue) {
+    public void values(String listName, int firstValue, int secondValue, int thirdValue, int fourthValue) {
         id = (long) firstValue;
-        fromWhere = secondValue;
-
+        Log.i(TAG, "values(fromWhere): " + fromWhere);
+        Log.i(TAG, "values(val): " + firstValue + " 2: " + secondValue + " " + thirdValue);
         switch (listName) {
             case THIRD_LIST:
             case FIRST_LIST:
-                Log.i(TAG, "values: Third and first list " + id + " sec: " + fromWhere);
+                fromWhere = secondValue;
+                Log.i(TAG, "values(FIRST_LIST): " + fromWhere);
                 replaceFragment(R.id.act_library_container, new DetailsFragment(), TAG_DETAIL,
                         R.string.start, DETAILS_FRAGMENT_LIST);
                 break;
@@ -344,16 +342,19 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
                 break;
             case DETAILS_FRAGMENT_LIST:
                 Intent intent = new Intent(LibraryActivity.this, ExerciseActivity.class);
+                intent.putExtra(GlobalClass.userID, currentUserID);
                 if (workoutId != 0) {
                     intent.putExtra("id", (long) workoutId);
                     intent.putExtra("type", (byte) -1);
                     intent.putExtra("listName", "Workout");
                     intent.putExtra("extension", -1);
+                    intent.putExtra("fromWhere", fromWhere);
                 } else {
                     intent.putExtra("id", (long) firstValue);
                     intent.putExtra("type", (byte) secondValue);
                     intent.putExtra("listName", "Exercise");
                     intent.putExtra("extension", extensionId);
+                    intent.putExtra("fromWhere", fromWhere);
                 }
                 startActivity(intent);
                 break;
@@ -375,6 +376,7 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
 
     @Override
     public void singleIntValue(String name, int value) {
+        Log.i(TAG, "singleIntValue: " + fromWhere);
         if (name.equals("LibraryButtonFragment")) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             Bundle bundle = new Bundle();
@@ -409,8 +411,10 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
             ft.commit();
         } else if (name.equals("startWorkout")) {
             Intent intent = new Intent(LibraryActivity.this, ExerciseActivity.class);
+            intent.putExtra(GlobalClass.userID, currentUserID);
             intent.putExtra("id", (long) workoutId);
             intent.putExtra("type", (byte) -1);
+            intent.putExtra("fromWhere", fromWhere);
             intent.putExtra("listName", "Workout");
             startActivity(intent);
         }

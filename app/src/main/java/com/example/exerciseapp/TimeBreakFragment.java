@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.exerciseapp.mClasses.ClockClass;
+import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 
 public class TimeBreakFragment extends Fragment {
@@ -65,8 +66,8 @@ public class TimeBreakFragment extends Fragment {
                 .setTextView(showTime);
         clockClass.setFragmentSupportListener(param -> {
             if (updateIntegersDB != null) {
-                updateIntegersDB.values(FRAGMENT_TAG,
-                        0, 3, 0);
+                updateIntegersDB.values(FRAGMENT_TAG, 0, 3, 0,
+                        GlobalClass.FOURTH_VAL);
             }
         });
         showNext.setText(exerciseName);

@@ -7,13 +7,16 @@ public class UserExercisePerformedModel {
     private long exerciseID;
     private long extensionID;
     private String sumTime;
+    private int fromWhere;
 
-    public UserExercisePerformedModel(long id, String date, long exerciseID, long extensionID, String sumTime) {
+    public UserExercisePerformedModel(long id, String date, long exerciseID, long extensionID,
+                                      String sumTime, int fromWhere) {
         this.id = id;
         this.date = date;
         this.exerciseID = exerciseID;
         this.extensionID = extensionID;
         this.sumTime = sumTime;
+        this.fromWhere = fromWhere;
     }
 
     public long getId() {
@@ -54,5 +57,13 @@ public class UserExercisePerformedModel {
 
     public void setSumTime(String sumTime) {
         this.sumTime = sumTime;
+    }
+
+    public int getFromWhere() {
+        return fromWhere;
+    }
+
+    public void setFromWhere(int fromWhere) {
+        this.fromWhere = fromWhere;
     }
 }

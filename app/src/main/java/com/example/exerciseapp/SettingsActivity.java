@@ -384,7 +384,7 @@ public class SettingsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void values(String listName, int firstValue, int secondValue, int thirdValue) {
+    public void values(String listName, int firstValue, int secondValue, int thirdValue, int fourthValue) {
 
         switch (listName) {
             case informationName:

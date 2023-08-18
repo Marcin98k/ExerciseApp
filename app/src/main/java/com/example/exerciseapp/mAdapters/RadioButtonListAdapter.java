@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exerciseapp.R;
+import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 
@@ -69,7 +70,8 @@ public class RadioButtonListAdapter extends RecyclerView.Adapter<RadioButtonList
                 selectedPosition = list.get(holder.getBindingAdapterPosition()).getId();
                 currentPos = holder.getBindingAdapterPosition();
                 notifyDataSetChanged();
-                updateIntegersDB.values(listName, oldPosition, selectedPosition, 0);
+                updateIntegersDB.values(listName, oldPosition, selectedPosition, 0,
+                        GlobalClass.FOURTH_VAL);
             }
         });
     }

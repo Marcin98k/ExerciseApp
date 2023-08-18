@@ -25,6 +25,7 @@ public class SummaryFragment extends Fragment implements FragmentRespond {
     private double duration;
     private String name;
     private long extensionId;
+    private int fromWhere;
 
 
     private ISummary iSummary;
@@ -50,9 +51,10 @@ public class SummaryFragment extends Fragment implements FragmentRespond {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             id = getArguments().getLong("id", -1);
-
+            extensionId = getArguments().getLong("extensionId", -1);
             duration = getArguments().getDouble("duration", 0);
             name = getArguments().getString("name", "Null");
+            fromWhere = getArguments().getInt("fromWhere", -1);
         }
     }
 
@@ -73,7 +75,10 @@ public class SummaryFragment extends Fragment implements FragmentRespond {
 
     @Override
     public void fragmentMessage() {
-        iSummary.summaryMessage("summaryFragment",
-                String.valueOf(duration), (int) id, true);
+        if (name.equals("Null") || fromWhere < 0 || id < 0 || extensionId < 0 || duration < 0) {
+          throw new NullPointerException(getContext() + " -> Incorrect data");
+        }
+        iSummary.summaryMessage("summaryFragment", name, String.valueOf(duration), id,
+                extensionId, fromWhere, true);
     }
 }

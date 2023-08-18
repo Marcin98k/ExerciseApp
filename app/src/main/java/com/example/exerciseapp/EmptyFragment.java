@@ -33,7 +33,8 @@ public class EmptyFragment extends Fragment implements FragmentRespond {
     @Override
     public void fragmentMessage() {
         Log.i(TAG, "fragmentMessage: EmptyFrag");
-        summary.summaryMessage("EmptyFragment", "", 0, true);
+        summary.summaryMessage("EmptyFragment", "", "", 0,
+                0, 0, true);
     }
 
     @Override

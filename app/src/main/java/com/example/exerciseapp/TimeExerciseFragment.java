@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.exerciseapp.mClasses.ClockClass;
+import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mInterfaces.FragmentRespond;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
@@ -42,6 +43,8 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
     private byte currentSet;
     private int rest;
     private final byte POSITION = 0;
+    private int fromWhere;
+    private int last = 0;
 
     private UpdateIntegersDB updateIntegersDB;
     private FragmentSupportListener fragmentSupportListener;
@@ -59,6 +62,7 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             exerciseId = getArguments().getLong("id");
+            fromWhere = getArguments().getInt("fromWhere");
         }
     }
 
@@ -83,7 +87,11 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
 
         contentBD = new ContentBD(requireActivity());
 
-        exercise = contentBD.showExerciseById(exerciseId);
+        if (fromWhere == 0) {
+            exercise = contentBD.showExerciseById(exerciseId);
+        } else {
+            exercise = contentBD.showUserExerciseById(exerciseId);
+        }
 
         byte getSet;
         if (exercise.isEmpty()) {
@@ -95,7 +103,6 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
             getSet = (byte) extension.get(POSITION).getSecondValue();
             nameView.setText(exercise.get(POSITION).getName());
             rest = extension.get(POSITION).getFifthValue();
-            Log.i(TAG, "initView: (Exercise) " + rest);
             sumSetView.setText(String.valueOf(getSet));
             currentSetView.setText(String.valueOf(currentSet));
             clockClass = new ClockClass(requireActivity(), true,
@@ -105,13 +112,17 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
             clockClass.setFragmentSupportListener(param -> {
                 if (updateIntegersDB != null) {
                     updateIntegersDB.values("TimeExerciseFragment",
-                            rest, 2, 2);
+                            rest, 2, 2, last);
                 }
             });
             clockClass.runClock();
         }
         int sumSet = getSet + 1;
+        if (currentSet == (sumSet - 1)) {
+            last = 1;
+        }
         if (currentSet == sumSet) {
+            last = 0;
             fragmentSupportListener.checkCondition(true);
         }
     }
@@ -140,7 +151,8 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
 
     @Override
     public void fragmentMessage() {
-        updateIntegersDB.values("TimeExerciseFragment", rest, 2, 2);
+        updateIntegersDB.values("TimeExerciseFragment", rest, 2, 2,
+                last);
     }
 
 

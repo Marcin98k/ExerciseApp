@@ -29,7 +29,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     private List<FourElementsModel> resultList;
     private List<FourElementsModel> resultListFull;
     private String listName;
-    private int fromWhere;
     private UpdateIntegersDB updateIntegersDB;
 
 
@@ -52,8 +51,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             updateIntegersDB.values(listName,
                     resultList.get(viewHolder.getAdapterPosition()).getId(),
                     resultList.get(viewHolder.getBindingAdapterPosition()).getFromWhere(),
-                    resultList.get(0).getId());
+                    resultList.get(0).getId(), 0);
+            Log.i("TAG", "onCreateViewHolder: " + resultList.get(viewHolder.getBindingAdapterPosition()).getFromWhere());
         });
+
         return viewHolder;
     }
 

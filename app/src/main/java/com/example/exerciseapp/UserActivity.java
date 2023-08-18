@@ -272,7 +272,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
     }
 
     @Override
-    public void values(String listName, int firstValue, int secondValue, int thirdValue) {
+    public void values(String listName, int firstValue, int secondValue, int thirdValue, int fourthValue) {
 
         if (listName.equals("detailsFragment")) {
             Log.i(TAG, "values: (intent): " + firstValue);
@@ -302,7 +302,8 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
     }
 
     @Override
-    public void summaryMessage(String name, String strVal, int numVal, boolean conditionVal) {
+    public void summaryMessage(String name, String exerciseName, String duration, long exerciseId,
+                               long extensionId, int fromWhere, boolean conditionVal) {
 
     }
 

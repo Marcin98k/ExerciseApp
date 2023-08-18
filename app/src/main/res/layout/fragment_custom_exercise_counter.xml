@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
+    android:paddingHorizontal="75dp"
     tools:context=".CustomExerciseCounterFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:paddingHorizontal="75dp">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sets"
+        android:gravity="center"
         android:minHeight="50dp"
-        android:gravity="center"/>
+        android:text="Sets" />
+
     <Button
         android:id="@+id/frag_custom_exercise_btn_plus_sets"
         android:layout_width="match_parent"
@@ -28,21 +25,22 @@
         android:id="@+id/frag_custom_exercise_txt_sets"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="50dp"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:minHeight="50dp" />
 
     <Button
         android:id="@+id/frag_custom_exercise_btn_minus_sets"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="-"/>
+        android:text="-" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Volume"
+        android:gravity="center"
         android:minHeight="50dp"
-        android:gravity="center"/>
+        android:text="Volume" />
+
     <Button
         android:id="@+id/frag_custom_exercise_btn_plus_exercise_volume"
         android:layout_width="match_parent"
@@ -53,21 +51,22 @@
         android:id="@+id/frag_custom_exercise_txt_exercise_volume"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="50dp"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:minHeight="50dp" />
 
     <Button
         android:id="@+id/frag_custom_exercise_btn_minus_exercise_volume"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="-"/>
+        android:text="-" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Rest"
+        android:gravity="center"
         android:minHeight="50dp"
-        android:gravity="center"/>
+        android:text="Rest" />
+
     <Button
         android:id="@+id/frag_custom_exercise_btn_plus_rest_volume"
         android:layout_width="match_parent"
@@ -78,13 +77,12 @@
         android:id="@+id/frag_custom_exercise_txt_rest_volume"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="50dp"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:minHeight="50dp" />
 
     <Button
         android:id="@+id/frag_custom_exercise_btn_minus_rest_volume"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="-"/>
-    </LinearLayout>
-</ScrollView>
+        android:text="-" />
+</LinearLayout>

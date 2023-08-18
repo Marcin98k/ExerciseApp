@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exerciseapp.R;
+import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mEnums.ListType;
 import com.example.exerciseapp.mEnums.NumberOfItem;
 import com.example.exerciseapp.mEnums.RowNames;
@@ -106,7 +107,8 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
             switch (listType) {
                 case SELECTABLE_BUTTONS:
                     valueDB.values(listName, viewHolder.getBindingAdapterPosition(), pos,
-                            list.get(viewHolder.getBindingAdapterPosition()).getSecondId());
+                            list.get(viewHolder.getBindingAdapterPosition()).getSecondId(),
+                            GlobalClass.FOURTH_VAL);
                     break;
                 case MULTIPLE_CHOICE_BUTTONS:
                     int temp;
@@ -119,7 +121,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
                     }
 
                     valueDB.values(listName, list.get(viewHolder.getBindingAdapterPosition()).getId(),
-                            temp, 0);
+                            temp, 0, GlobalClass.FOURTH_VAL);
                     break;
                 case SELECTABLE_BUTTONS_STR: {
                     AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
@@ -185,7 +187,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
                         if (!editText.getText().toString().equals("")) {
                             int value = Integer.parseInt(editText.getText().toString());
                             valueDB.values(listName, list.get(viewHolder.getBindingAdapterPosition()).getId(),
-                                    value, 0);
+                                    value, 0, GlobalClass.FOURTH_VAL);
                         }
                     });
                     alert.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss());
@@ -194,7 +196,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
                     break;
                 }
                 default:
-                    valueDB.values(listName, oldPosition, pos, 0);
+                    valueDB.values(listName, oldPosition, pos, 0, GlobalClass.FOURTH_VAL);
                     break;
             }
             notifyDataSetChanged();

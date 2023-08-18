@@ -229,9 +229,9 @@ public class ProfileFragment extends Fragment {
                 , tag, list, valueDB);
 
 
-        valueDB = (listName, firstValue, secondValue, thirdValue) -> view.post(() -> {
+        valueDB = (listName, firstValue, secondValue, thirdValue, fourthValue) -> view.post(() -> {
             radioAdapter.notifyDataSetChanged();
-            valueDB1.values(listName, firstValue, secondValue, thirdValue);
+            valueDB1.values(listName, firstValue, secondValue, thirdValue, fourthValue);
         });
         radioAdapter = new RadioButtonListAdapter(requireContext(), tag, list, valueDB);
         view.setAdapter(radioAdapter);
@@ -264,9 +264,9 @@ public class ProfileFragment extends Fragment {
         view.setLayoutManager(new LinearLayoutManager(requireContext(),
                 LinearLayoutManager.VERTICAL, false));
 
-        valueDB = (listName, firstValue, secondValue, thirdValue) -> view.post(() -> {
+        valueDB = (listName, firstValue, secondValue, thirdValue, fourthValue) -> view.post(() -> {
             adapter.notifyDataSetChanged();
-            valueDB1.values(listName, firstValue, secondValue, thirdValue);
+            valueDB1.values(listName, firstValue, secondValue, thirdValue, fourthValue);
         });
         adapter = new FourElementLinearListAdapter(requireContext(),
                 list, tag, valueDB, listType, numberOfItem);

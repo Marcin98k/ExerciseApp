@@ -256,7 +256,7 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
     }
 
     @Override
-    public void values(String listName, int firstValue, int secondValue, int thirdValue) {
+    public void values(String listName, int firstValue, int secondValue, int thirdValue, int fourthValue) {
         switch (listName) {
             case "customExerciseCounterFragmentName":
                 Log.i(TAG, "values: customExerciseCounterFragmentName");

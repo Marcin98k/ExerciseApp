@@ -18,8 +18,11 @@ import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 import com.example.exerciseapp.mInterfaces.ISummary;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
+import com.example.exerciseapp.mModels.UserExercisePerformedModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ExerciseActivity extends AppCompatActivity implements
@@ -28,19 +31,22 @@ public class ExerciseActivity extends AppCompatActivity implements
     private Button nextBtn;
 
 
+    private long currentUserID;
     private byte typeExercise = 0;
     private long id = 0;
     private String exerciseName = "";
-    private long extensionId;
+    private int fromWhere;
     private byte scenario;
     private byte currentFragment;
     private int rest;
+    private long extensionId;
     private int currentExercise;
     private long idMain;
     private double duration;
     private String name;
     private List<WorkoutModel> workoutPattern;
     private long startTime;
+    private boolean lastSet;
 
 
     private static final String TAG = "ExerciseActivity";
@@ -82,7 +88,7 @@ public class ExerciseActivity extends AppCompatActivity implements
             } else if (summaryFragment != null && summaryFragment.isVisible()) {
                 summaryFragment.fragmentMessage();
             } else {
-                throw new NullPointerException("(ExerciseActivity)nextBtn -> not work");
+                throw new NullPointerException(TAG + " (nextBtn) -> not work");
             }
         });
     }
@@ -91,10 +97,14 @@ public class ExerciseActivity extends AppCompatActivity implements
 
         nextBtn = findViewById(R.id.act_exercise_button);
 
+        Intent intent = getIntent();
+        currentUserID = intent.getLongExtra(GlobalClass.userID, -1);
+
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             id = bundle.getLong("id");
             typeExercise = bundle.getByte("type");
+            fromWhere = bundle.getInt("fromWhere");
             idMain = id;
         }
         workoutPattern = new ArrayList<>();
@@ -107,11 +117,20 @@ public class ExerciseActivity extends AppCompatActivity implements
             int sumExercise = 0;
             currentExercise = 0;
             if (typeExercise > 0) {
-                WorkoutModel singleExercise = new WorkoutModel(0, id, typeExercise,
-                        contentBD.showExerciseById(id).get(0).getName());
-                workoutPattern.add(singleExercise);
+                if (fromWhere == 0) {
+                    name = contentBD.showExerciseById(id).get(0).getName();
+                    WorkoutModel singleExercise = new WorkoutModel(0, id,
+                            contentBD.showExerciseById(id).get(0).getExtension(), typeExercise,
+                            contentBD.showExerciseById(id).get(0).getName(), fromWhere);
+                    workoutPattern.add(singleExercise);
+                } else {
+                    name = contentBD.showUserExerciseById(id).get(0).getName();
+                    WorkoutModel singleExercise = new WorkoutModel(0, id,
+                            contentBD.showUserExerciseById(id).get(0).getExtension(), typeExercise,
+                            contentBD.showUserExerciseById(id).get(0).getName(), fromWhere);
+                    workoutPattern.add(singleExercise);
+                }
                 sumExercise++;
-                name = contentBD.showExerciseById(id).get(0).getName();
             } else {
                 name = contentBD.showWorkoutById(id).get(0).getName();
                 String exerciseIds = contentBD.showExercisesFromWorkout(id);
@@ -124,15 +143,14 @@ public class ExerciseActivity extends AppCompatActivity implements
                 }
                 for (int i = 0; i < exercisesIdLength; i++) {
                     WorkoutModel model = new WorkoutModel(i, exercisesId[i],
+                            contentBD.showExerciseById(exercisesId[i]).get(0).getExtension(),
                             (byte) contentBD.showExerciseByIdFromWorkout(exercisesId[i]).get(0).getType(),
-                            contentBD.showExerciseById(exercisesId[i]).get(0).getName());
-
-
-                    Log.i(TAG, "intView: exerciseName" +
-                            contentBD.showExerciseById(exercisesId[i]).get(0).getName());
+                            contentBD.showExerciseById(exercisesId[i]).get(0).getName(),
+                            contentBD.showExerciseById(exercisesId[i]).get(0).getFromWhere());
                     workoutPattern.add(model);
                 }
             }
+            extensionId = workoutPattern.get(currentExercise).getExtensionId();
             typeExercise = workoutPattern.get(currentExercise).getType();
             exerciseName = workoutPattern.get(0).getName();
             addFragment(workoutPattern.get(0).getExerciseId(), typeExercise);
@@ -144,8 +162,12 @@ public class ExerciseActivity extends AppCompatActivity implements
 
     private void elapsed() {
         long endTime = SystemClock.elapsedRealtime() - startTime;
-        duration = endTime/1000.0;
+        duration = endTime / 1000.0;
+    }
 
+    private String getCurrentDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
+        return dateFormat.format(new Date());
     }
 
     private void addFragment(long id, int type) {
@@ -154,6 +176,7 @@ public class ExerciseActivity extends AppCompatActivity implements
         Bundle sendToFragment = new Bundle();
         sendToFragment.putLong("id", id);
         sendToFragment.putString("exerciseName", exerciseName);
+        sendToFragment.putInt("fromWhere", fromWhere);
         if (type == 1) {
             repetitionExerciseFragment = new RepetitionExerciseFragment();
             repetitionExerciseFragment.setArguments(sendToFragment);
@@ -171,8 +194,29 @@ public class ExerciseActivity extends AppCompatActivity implements
     }
 
     private void swapFragments() {
-
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        if (lastSet && workoutPattern.get(currentExercise + 1).getExerciseId() == -1) {
+            summaryFragment = new SummaryFragment();
+            Bundle bundle = new Bundle();
+            elapsed();
+            Log.i(TAG, "swapFragments(id): " + MINUS_ONE);
+            bundle.putLong("id", idMain);
+            bundle.putDouble("duration", duration);
+            bundle.putString("name", name);
+            bundle.putLong("extensionId", extensionId);
+            bundle.putInt("fromWhere", fromWhere);
+            FragmentTransaction summaryTransaction = getSupportFragmentManager().beginTransaction();
+            summaryFragment.setArguments(bundle);
+            summaryTransaction.replace(R.id.act_exercise_container, summaryFragment, "summaryTag");
+            summaryTransaction.setReorderingAllowed(true);
+            summaryTransaction.commit();
+            return;
+        }
+        if (lastSet) {
+            exerciseName = workoutPattern.get(currentExercise + 1).getName();
+        } else {
+            exerciseName = workoutPattern.get(currentExercise).getName();
+        }
         Bundle sendRestValue = new Bundle();
         sendRestValue.putInt("rest", rest);
         sendRestValue.putString("exerciseName", exerciseName);
@@ -225,10 +269,10 @@ public class ExerciseActivity extends AppCompatActivity implements
                 summaryFragment = new SummaryFragment();
                 Bundle bundle = new Bundle();
                 elapsed();
-                Log.i(TAG, "checkCondition: " + duration);
                 bundle.putLong("id", idMain);
                 bundle.putDouble("duration", duration);
                 bundle.putString("name", name);
+                bundle.putInt("fromWhere", fromWhere);
                 bundle.putLong("extensionId", MINUS_ONE);
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 summaryFragment.setArguments(bundle);
@@ -247,6 +291,7 @@ public class ExerciseActivity extends AppCompatActivity implements
                 bundle.putDouble("duration", duration);
                 bundle.putString("name", name);
                 bundle.putLong("extensionId", extensionId);
+                bundle.putInt("fromWhere", fromWhere);
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 summaryFragment.setArguments(bundle);
                 ft.replace(R.id.act_exercise_container, summaryFragment, "summaryTag");
@@ -254,39 +299,47 @@ public class ExerciseActivity extends AppCompatActivity implements
                 ft.commit();
                 return;
             }
-            exerciseName = workoutPattern.get(currentExercise).getName();
             addFragment(workoutPattern.get(
                     workoutPattern.get(currentExercise).getId()).getExerciseId(), typeExercise);
         }
     }
 
     @Override
-    public void values(String listName, int firstValue, int secondValue, int thirdValue) {
+    public void values(String listName, int firstValue, int secondValue, int thirdValue, int fourthValue) {
+
+        Log.i(TAG, "values: " + listName + " " + firstValue + " " + secondValue +
+                " " + thirdValue + " " + fourthValue);
         rest = firstValue;
         currentFragment = (byte) secondValue;
         if (thirdValue > 0) {
             scenario = (byte) thirdValue;
         }
+        lastSet = fourthValue == 1;
         swapFragments();
     }
 
     @Override
-    public void summaryMessage(String name, String strVal, int numVal, boolean conditionVal) {
-        Log.i(TAG, "summaryMessage: ");
+    public void summaryMessage(String name, String exerciseName, String duration, long exerciseId,
+                               long extensionId, int fromWhere, boolean conditionVal) {
         if (name.equals("EmptyFragment") && conditionVal) {
             summaryFragment = new SummaryFragment();
             Bundle bundle = new Bundle();
             elapsed();
             bundle.putLong("id", idMain);
-            bundle.putDouble("duration", duration);
-            bundle.putString("name", name);
+            bundle.putDouble("duration", this.duration);
+            bundle.putString("name", exerciseName);
+            bundle.putLong("extensionId", extensionId);
+            bundle.putInt("fromWhere", this.fromWhere);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             summaryFragment.setArguments(bundle);
             ft.replace(R.id.act_exercise_container, summaryFragment, "summaryTag");
             ft.setReorderingAllowed(true);
             ft.commit();
         } else if (name.equals("summaryFragment") && conditionVal) {
-            Intent intent = new Intent(this, MainActivity.class);
+            contentBD.insertUserSummaryExercise(new UserExercisePerformedModel(currentUserID,
+                    getCurrentDate(), exerciseId, extensionId, duration, fromWhere));
+            Intent intent = new Intent(this, LibraryActivity.class);
+            intent.putExtra(GlobalClass.userID, currentUserID);
             startActivity(intent);
         }
     }

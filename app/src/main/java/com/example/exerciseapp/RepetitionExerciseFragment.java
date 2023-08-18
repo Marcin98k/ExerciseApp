@@ -27,6 +27,8 @@ public class RepetitionExerciseFragment extends Fragment implements FragmentResp
     private long id;
     private byte currentSet;
     private int rest;
+    private int fromWhere;
+    private int last = 0;
 
     private static final String FRAGMENT_TAG = "RepetitionExerciseFragment";
 
@@ -44,6 +46,7 @@ public class RepetitionExerciseFragment extends Fragment implements FragmentResp
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             id = getArguments().getLong("id");
+            fromWhere = getArguments().getInt("fromWhere");
         }
     }
 
@@ -65,9 +68,13 @@ public class RepetitionExerciseFragment extends Fragment implements FragmentResp
         TextView currentSetView = v.findViewById(R.id.frag_repetition_exercise_current_set);
         TextView sumSetView = v.findViewById(R.id.frag_repetition_exercise_sum_set);
 
+        List<ExerciseModel> exercise;
         contentBD = new ContentBD(requireActivity());
-        List<ExerciseModel> exercise = contentBD.showExerciseById(id);
-
+        if (fromWhere == 0) {
+            exercise = contentBD.showExerciseById(id);
+        } else {
+            exercise = contentBD.showUserExerciseById(id);
+        }
         if (exercise.isEmpty()) {
             throw new NullPointerException(getContext() + " list is empty");
         } else {
@@ -85,7 +92,12 @@ public class RepetitionExerciseFragment extends Fragment implements FragmentResp
             currentSetView.setText(String.valueOf(currentSet));
             rest = integerModel.getFifthValue();
 
+
+            if (currentSet == (sumSet - 1)) {
+                last = 1;
+            }
             if (currentSet == sumSet) {
+                last = 0;
                 fragmentSupportListener.checkCondition(true);
             }
         }
@@ -105,6 +117,7 @@ public class RepetitionExerciseFragment extends Fragment implements FragmentResp
 
     @Override
     public void fragmentMessage() {
-        updateIntegersDB.values(FRAGMENT_TAG, rest, 1, 1);
+        updateIntegersDB.values(FRAGMENT_TAG, rest, 1,
+                1, last);
     }
 }

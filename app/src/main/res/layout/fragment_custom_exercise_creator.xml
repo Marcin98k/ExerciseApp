@@ -6,12 +6,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".CustomExerciseCreatorFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
     <ToggleButton
         android:id="@+id/frag_custom_exercise_creator_btn_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAllCaps="false"
-        android:textOff="@string/select_exercise" />
+        android:textOff="@string/select_exercise"
+        android:textOn="@string/hide"/>
 
     <FrameLayout
         android:id="@+id/frag_custom_exercise_creator_select_container"
@@ -23,7 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAllCaps="false"
-        android:textOff="@string/select_details" />
+        android:textOff="@string/select_details"
+        android:textOn="@string/hide"/>
 
     <FrameLayout
         android:id="@+id/frag_custom_exercise_creator_volume_container"
@@ -207,4 +215,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/create" />
+    </LinearLayout>
 </LinearLayout>

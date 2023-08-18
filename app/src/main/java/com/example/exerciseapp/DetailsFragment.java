@@ -26,6 +26,7 @@ import com.example.exerciseapp.mModels.StringModel;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 
 public class DetailsFragment extends Fragment implements View.OnClickListener {
 
@@ -114,7 +115,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         nextBtnView = v.findViewById(R.id.frag_details_button);
 
 
-        Log.i(TAG, "fromWhere: : " + fromWhere);
+        Log.i(TAG, "(initView)fromWhere: : " + fromWhere);
         Log.i(TAG, "id: : " + id);
         if (fromWhere == 0) {
             exerciseDetail = contentBD.showExerciseById(id);
@@ -128,39 +129,53 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         typeTV.setText(exercise.getType() == 1 ? getString(R.string.repetition) : getString(R.string.time));
         String[] names = {getString(R.string.beginner), getString(R.string.intermediate),
                 getString(R.string.advanced)};
-        levelTV.setText(names[exercise.getLevel() - 1]);
+        if (exercise.getLevel() == -1) {
+            levelTV.setText(getString(R.string.unknown));
+        } else {
+            levelTV.setText(names[exercise.getLevel() - 1]);
+        }
 
-//        Equipment:
-        String bodyPartsText = String.join(",\n ",
-                contentBD.showBodyPartsById(exerciseDetail.get(POSITION).getBodyParts()));
+        String bodyPartsText;
+        if (exerciseDetail.get(0).getBodyParts() == -1) {
+            bodyPartsText = getString(R.string.unknown);
+        } else {
+            bodyPartsText = String.join(",\n ",
+                    contentBD.showBodyPartsById(exerciseDetail.get(POSITION).getBodyParts()));
+        }
         bodyPartsTV.setText(bodyPartsText);
 
         List<StringModel> equipmentList = new ArrayList<>();
         String equipmentIDs = exerciseDetail.get(POSITION).getEquipment();
         String[] splitEquipment = equipmentIDs.split(",");
+        if (splitEquipment[0].equals("-1") || splitEquipment[0].equals("")) {
+            equipmentTV.setText(getString(R.string.unknown));
+        } else {
 
-        LinkedHashSet<String> equipmentSet = new LinkedHashSet<>();
-        for (String s : splitEquipment) {
-            StringModel equipmentModelDB = contentBD.showEquipment(Long.parseLong(s));
-            equipmentList.add(equipmentModelDB);
-        }
-        for (int i = 0; i < equipmentList.size(); i++) {
-            equipmentSet.add(equipmentList.get(i).getName());
-        }
-        StringBuilder setEquipment = new StringBuilder();
-        for (String equipment : equipmentSet) {
-            setEquipment.append(equipment);
-            if (!equipment.equals(equipmentSet.toArray()[equipmentSet.size() - 1])) {
-                setEquipment.append(",");
-                setEquipment.append("\n");
+            LinkedHashSet<String> equipmentSet = new LinkedHashSet<>();
+            for (String s : splitEquipment) {
+                StringModel equipmentModelDB = contentBD.showEquipment(Long.parseLong(s));
+                equipmentList.add(equipmentModelDB);
             }
+            for (int i = 0; i < equipmentList.size(); i++) {
+                equipmentSet.add(equipmentList.get(i).getName());
+            }
+            StringBuilder setEquipment = new StringBuilder();
+            for (String equipment : equipmentSet) {
+                setEquipment.append(equipment);
+                if (!equipment.equals(equipmentSet.toArray()[equipmentSet.size() - 1])) {
+                    setEquipment.append(",");
+                    setEquipment.append("\n");
+                }
+            }
+            equipmentTV.setText(setEquipment.toString());
         }
 
-        equipmentTV.setText(setEquipment.toString());
 
-
-        kcalTV.setText(String.valueOf(exercise.getKcal()));
-
+        if (exercise.getKcal() < 0) {
+            kcalTV.setText(R.string.unknown);
+        } else {
+            kcalTV.setText(String.valueOf(exercise.getKcal()));
+        }
         List<IntegerModel> extensionExe = contentBD.showExerciseExtensionId(
                 exerciseDetail.get(0).getExtension());
 
@@ -180,6 +195,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        updateIntegersDB.values(listName, (int) id, exerciseDetail.get(POSITION).getType(), 0);
+        updateIntegersDB.values(listName, (int) id, exerciseDetail.get(POSITION).getType(),
+                fromWhere, GlobalClass.FOURTH_VAL);
     }
 }
