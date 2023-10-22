@@ -34,33 +34,26 @@ public class ClockClass {
 
     private Thread thread;
     private volatile boolean isRunning = true;
-
-    //    Start loop = true; || Stop loop = false;
-    private boolean clockWork;
-    //    Increases = false; || Decreases = true;
+    private boolean isClockRunning;
     private boolean clockState;
-    //    To avoid refreshing 'setMax' whenever a loop is executed and the second is not changed;
-    private boolean clockMax;
-    //    Activate buttons = true; Disable buttons = false;
-    private boolean buttonState;
+    private boolean isMaxTimeSet;
+    private boolean isButtonActive;
 
     public ClockClass(Context context) {
         this.mContext = context;
     }
 
-    //    insert Context; set ClockState Increases = false, Decreases = true; set maxTime;
     public ClockClass(Context context, boolean clockState, int maxTime) {
         this.mContext = context;
         this.clockState = clockState;
         this.maxTime = maxTime;
     }
 
-    //    insert Context; set ClockState Increases = false, Decreases = true; set maxTime;
-    public ClockClass(Context context, boolean clockState, int maxTime, boolean buttonState) {
+    public ClockClass(Context context, boolean clockState, int maxTime, boolean isButtonActive) {
         this.mContext = context;
         this.clockState = clockState;
         this.maxTime = maxTime;
-        this.buttonState = buttonState;
+        this.isButtonActive = isButtonActive;
     }
 
     public ClockClass setBar(ProgressBar progressBar) {
@@ -98,8 +91,8 @@ public class ClockClass {
 
     public void runClock() {
 
-        clockWork = true;
-        clockMax = true;
+        isClockRunning = true;
+        isMaxTimeSet = true;
 
         if (clockState) {
             setTime();
@@ -107,7 +100,7 @@ public class ClockClass {
             maxTime = second;
         }
 
-        if (buttonState) {
+        if (isButtonActive) {
             addTime();
             skipTime();
         }
@@ -118,9 +111,9 @@ public class ClockClass {
 
         thread = new Thread(() -> {
             while (isRunning) {
-                if (clockMax) {
+                if (isMaxTimeSet) {
                     progressBar.setMax(maxTime);
-                    clockMax = false;
+                    isMaxTimeSet = false;
                 }
 //                ***Time decreases***
                 if (clockState) {
@@ -192,9 +185,9 @@ public class ClockClass {
                     currentProgress -= 15;
                 }
             }
-            clockMax = true;
-            if (!clockWork) {
-                clockWork = true;
+            isMaxTimeSet = true;
+            if (!isClockRunning) {
+                isClockRunning = true;
                 updateProgressBar();
             }
         });

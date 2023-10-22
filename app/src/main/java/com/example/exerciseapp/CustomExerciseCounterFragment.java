@@ -2,6 +2,7 @@ package com.example.exerciseapp;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +17,12 @@ import com.example.exerciseapp.mInterfaces.INewExercise;
 
 public class CustomExerciseCounterFragment extends Fragment implements View.OnClickListener {
 
-    private Button plusSetsBtn, minusSetsBtn;
+    private static final String SELECT_EXERCISE = "selectExercise";
+    private static final String TAG = "CustomExerciseCounterFragment";
+    private static final int INCREASE_TIME_AT = 5;
+
     private TextView showSetsVolume;
-    private Button plusExerciseVolumeBtn, minusExerciseVolumeBtn;
     private TextView showExerciseVolume;
-    private Button plusRestVolumeBtn, minusRestVolumeBtn;
     private TextView showRestVolume;
 
 
@@ -28,13 +30,7 @@ public class CustomExerciseCounterFragment extends Fragment implements View.OnCl
     private int trainingVolume;
     private int restVolume;
 
-
-    private static final int INCREASE_TIME_AT = 5;
-
-
     private ExerciseType exerciseType;
-
-
     private ClockClass clockClassExerciseVolume;
     private ClockClass clockClassRestVolume;
 
@@ -64,8 +60,8 @@ public class CustomExerciseCounterFragment extends Fragment implements View.OnCl
     @Override
     public void onResume() {
         super.onResume();
-        iNewExercise.createExercise("selectExercise", exerciseType,
-                numberOfSets, trainingVolume, restVolume);
+        iNewExercise.createExercise(SELECT_EXERCISE, exerciseType, numberOfSets, trainingVolume,
+                restVolume);
     }
 
     @Override
@@ -79,24 +75,40 @@ public class CustomExerciseCounterFragment extends Fragment implements View.OnCl
 
     private void initView(View v) {
 
-        plusSetsBtn = v.findViewById(R.id.frag_custom_exercise_btn_plus_sets);
-        plusSetsBtn.setOnClickListener(this);
-        minusSetsBtn = v.findViewById(R.id.frag_custom_exercise_btn_minus_sets);
-        minusSetsBtn.setOnClickListener(this);
-        showSetsVolume = v.findViewById(R.id.frag_custom_exercise_txt_sets);
+        initButtons(v);
+        initTextView(v);
+        initClockClasses();
+    }
+
+    private void initButtons(View view) {
+
+        getButton(view, R.id.frag_custom_exercise_btn_plus_sets);
+        getButton(view, R.id.frag_custom_exercise_btn_minus_sets);
+        getButton(view, R.id.frag_custom_exercise_btn_plus_exercise_volume);
+        getButton(view, R.id.frag_custom_exercise_btn_minus_exercise_volume);
+        getButton(view, R.id.frag_custom_exercise_btn_plus_rest_volume);
+        getButton(view, R.id.frag_custom_exercise_btn_minus_rest_volume);
+    }
+
+    private void getButton(View view, int id) {
+        Button button = view.findViewById(id);
+        button.setOnClickListener(this);
+    }
+
+    private void initTextView(View view) {
+
+        showSetsVolume = getTextView(view, R.id.frag_custom_exercise_txt_sets);
         showSetsVolume.setText(String.valueOf(numberOfSets));
 
-        plusExerciseVolumeBtn = v.findViewById(R.id.frag_custom_exercise_btn_plus_exercise_volume);
-        plusExerciseVolumeBtn.setOnClickListener(this);
-        minusExerciseVolumeBtn = v.findViewById(R.id.frag_custom_exercise_btn_minus_exercise_volume);
-        minusExerciseVolumeBtn.setOnClickListener(this);
-        showExerciseVolume = v.findViewById(R.id.frag_custom_exercise_txt_exercise_volume);
+        showExerciseVolume = getTextView(view, R.id.frag_custom_exercise_txt_exercise_volume);
+        showRestVolume = getTextView(view, R.id.frag_custom_exercise_txt_rest_volume);
+    }
 
-        plusRestVolumeBtn = v.findViewById(R.id.frag_custom_exercise_btn_plus_rest_volume);
-        plusRestVolumeBtn.setOnClickListener(this);
-        minusRestVolumeBtn = v.findViewById(R.id.frag_custom_exercise_btn_minus_rest_volume);
-        minusRestVolumeBtn.setOnClickListener(this);
-        showRestVolume = v.findViewById(R.id.frag_custom_exercise_txt_rest_volume);
+    private TextView getTextView(View view, int id) {
+        return view.findViewById(id);
+    }
+
+    private void initClockClasses() {
 
         clockClassRestVolume = new ClockClass(requireContext()).setSecond(INCREASE_TIME_AT);
         clockClassRestVolume.dynamicIncreaseTime(showRestVolume);
@@ -117,54 +129,87 @@ public class CustomExerciseCounterFragment extends Fragment implements View.OnCl
         try {
             switch (view.getId()) {
                 case (R.id.frag_custom_exercise_btn_plus_sets):
-                    numberOfSets++;
+                    incrementSets();
                     break;
                 case (R.id.frag_custom_exercise_btn_minus_sets):
-                    if (numberOfSets > 1) numberOfSets--;
+                    decrementSets();
                     break;
                 case (R.id.frag_custom_exercise_btn_plus_exercise_volume):
-                    if (exerciseType == ExerciseType.TIME) {
-                        trainingVolume += INCREASE_TIME_AT;
-                        clockClassExerciseVolume.addSecond(INCREASE_TIME_AT);
-                        break;
-                    }
-                    trainingVolume++;
+                    incrementExerciseVolume();
                     break;
                 case (R.id.frag_custom_exercise_btn_minus_exercise_volume):
-                    if (exerciseType == ExerciseType.TIME) {
-                        if (trainingVolume > INCREASE_TIME_AT) {
-                            clockClassExerciseVolume.minusSecond(INCREASE_TIME_AT);
-                            trainingVolume -= INCREASE_TIME_AT;
-                        }
-                        break;
-                    }
-                    if (trainingVolume > 1) trainingVolume--;
+                    decrementExerciseVolume();
                     break;
                 case (R.id.frag_custom_exercise_btn_plus_rest_volume):
-                    clockClassRestVolume.addSecond(INCREASE_TIME_AT);
-                    restVolume += INCREASE_TIME_AT;
+                    incrementRestVolume();
                     break;
                 case (R.id.frag_custom_exercise_btn_minus_rest_volume):
-                    if (restVolume > INCREASE_TIME_AT) {
-                        clockClassRestVolume.minusSecond(INCREASE_TIME_AT);
-                        restVolume -= INCREASE_TIME_AT;
-                    }
+                    decrementRestVolume();
                     break;
                 default:
+                    Log.i(TAG, "onClick: default");
             }
         } finally {
-            showSetsVolume.setText(String.valueOf(numberOfSets));
-            if (exerciseType == ExerciseType.TIME) {
-                clockClassExerciseVolume.dynamicIncreaseTime(showExerciseVolume);
-            } else {
-                showExerciseVolume.setText(String.valueOf(trainingVolume));
-            }
-            clockClassRestVolume.dynamicIncreaseTime(showRestVolume);
+            updateUI();
+        }
+    }
 
-            if (iNewExercise != null) {
-                iNewExercise.createExercise("selectExercise", exerciseType,
-                        numberOfSets, trainingVolume, restVolume);
+    private void incrementSets() {
+        numberOfSets++;
+    }
+
+    private void decrementSets() {
+        if (numberOfSets > 1) {
+            numberOfSets--;
+        }
+    }
+
+    private void incrementExerciseVolume() {
+        if (exerciseType == ExerciseType.TIME) {
+            trainingVolume += INCREASE_TIME_AT;
+            clockClassExerciseVolume.addSecond(INCREASE_TIME_AT);
+        } else {
+            trainingVolume++;
+        }
+    }
+
+    private void decrementExerciseVolume() {
+        if (exerciseType == ExerciseType.TIME) {
+            if (trainingVolume > INCREASE_TIME_AT) {
+                clockClassExerciseVolume.minusSecond(INCREASE_TIME_AT);
+                trainingVolume -= INCREASE_TIME_AT;
             }
+        } else {
+            if (trainingVolume > 1) {
+                trainingVolume--;
+            }
+        }
+    }
+
+    private void incrementRestVolume() {
+        clockClassRestVolume.addSecond(INCREASE_TIME_AT);
+        restVolume += INCREASE_TIME_AT;
+    }
+
+    private void decrementRestVolume() {
+        if (restVolume > INCREASE_TIME_AT) {
+            clockClassRestVolume.minusSecond(INCREASE_TIME_AT);
+            restVolume -= INCREASE_TIME_AT;
+        }
+    }
+
+    private void updateUI() {
+        showSetsVolume.setText(String.valueOf(numberOfSets));
+        if (exerciseType == ExerciseType.TIME) {
+            clockClassExerciseVolume.dynamicIncreaseTime(showExerciseVolume);
+        } else {
+            showExerciseVolume.setText(String.valueOf(trainingVolume));
+        }
+        clockClassRestVolume.dynamicIncreaseTime(showRestVolume);
+
+        if (iNewExercise != null) {
+            iNewExercise.createExercise("selectExercise", exerciseType,
+                    numberOfSets, trainingVolume, restVolume);
         }
     }
 }

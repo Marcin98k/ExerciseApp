@@ -37,32 +37,35 @@ import java.util.stream.Collectors;
 
 public class CustomExerciseCreatorFragment extends Fragment implements UpdateIntegersDB {
 
-    private static final String TAG = "CustomExerciseCreatorFragment";
+    private static final String CREATOR_TAG = "CustomExerciseCreatorFragment";
+    private static final String COUNTER_TAG = "CustomExerciseCounterTag";
+    private static final String EXERCISE_MODEL_TAG = "ExerciseModelTag";
     private static final String FRAGMENT_NAME = "Create exercise";
+    private static final String SEARCH_LIST_NAME = "ExerciseModelList";
+    private static final String[] CUSTOM_EXERCISE_TITLES = {"Repetition", "Time"};
 
 
     private ToggleButton selectExercise;
     private ToggleButton selectDetails;
+    private Button createExercise;
     private TextView exerciseName;
     private TextView exerciseType;
     private TextView exerciseSets;
     private TextView exerciseVolume;
     private TextView exerciseRest;
     private EditText customExerciseName;
-    private Button btnCreate;
 
 
     private List<FourElementsModel> fourElementsModelList;
-    private static final String[] CUSTOM_EXERCISE_TITLES = {"Repetition", "Time"};
     private String nameOfCustomExercise;
     private Integer numberOfExerciseID;
     private Integer numberOfExerciseType;
     private Integer numberOfExerciseSets;
     private Integer numberOfExerciseVolume;
     private Integer numberOfExerciseRest;
-    private long userId = 0;
+    private Long userId = 0L;
 
-    private FragmentManager fm;
+    private FragmentManager fragmentManager;
 
     private ViewPagerFragment viewPagerFragment;
     private SearchList searchList;
@@ -117,93 +120,9 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
         View mView = inflater.inflate(R.layout.fragment_custom_exercise_creator, container, false);
         initView(mView);
 
-        createExerciseClass = new ViewModelProvider(requireActivity()).get(CreateExerciseClass.class);
-        contentBD = new ContentBD(requireContext());
-        fourElementsModelList = new ArrayList<>();
-        clockClassVolumeTime = new ClockClass(requireContext());
-        clockClassRestTime = new ClockClass(requireContext());
-        fm = getChildFragmentManager();
+        initClassProperties();
+        buttonOperation();
 
-
-        selectExercise.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
-            if (isChecked) {
-                if (searchList == null) {
-                    BackgroundTask.executeWithLoading(
-                            () -> {
-                                List<ExerciseModel> showExercise = contentBD.showExercise();
-                                    fourElementsModelList = showExercise.stream()
-                                            .map(exerciseModel -> new FourElementsModel(
-                                                    exerciseModel.getId(), exerciseModel.getImage(),
-                                                    exerciseModel.getName(), String.valueOf(exerciseModel.getType()),
-                                                    exerciseModel.getLevel()
-                                            )).collect(Collectors.toList());
-                            },
-                            () -> fm.beginTransaction().replace(R.id.frag_custom_exercise_creator_select_container,
-                                    new LoadingFragment()).commit(),
-                            () -> {
-                                searchList = new SearchList("ExerciseModelList", fourElementsModelList);
-                                fm.beginTransaction().replace(R.id.frag_custom_exercise_creator_select_container, searchList,
-                                        "ExerciseModelTag").commit();
-                            }
-                    );
-                } else {
-                    fm.beginTransaction().attach(searchList).commit();
-                }
-            } else {
-                fm.beginTransaction().detach(searchList).commit();
-            }
-        }));
-
-        selectDetails.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if (isChecked) {
-                if (viewPagerFragment == null) {
-                    FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                    viewPagerFragment = new ViewPagerFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putStringArray("titles", CUSTOM_EXERCISE_TITLES);
-                    viewPagerFragment.setArguments(bundle);
-                    fragmentTransaction.add(R.id.frag_custom_exercise_creator_volume_container,
-                            viewPagerFragment, "CustomExerciseCounterTag");
-                    fragmentTransaction.commit();
-                } else {
-                    fm.beginTransaction().attach(viewPagerFragment).commit();
-                }
-            } else {
-                if (viewPagerFragment != null) {
-                    fm.beginTransaction().detach(viewPagerFragment).commit();
-                }
-            }
-        });
-
-        btnCreate.setOnClickListener(v -> {
-            nameOfCustomExercise = String.valueOf(customExerciseName.getText()).trim();
-
-            if (nameOfCustomExercise.equals("")) {
-                Toast.makeText(requireActivity(), "Enter the name", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (contentBD.searchByName("CUSTOM_USER_EXERCISE_TAB", 
-                    "CUSTOM_USER_EXERCISE_NAME", nameOfCustomExercise) ||
-                    contentBD.searchByName("EXERCISE_TAB", "NAME", nameOfCustomExercise)) {
-                Toast.makeText(requireActivity(), "An exercise with that name exist",
-                        Toast.LENGTH_SHORT).show();
-            }
-            IntegerModel integerModel;
-            if (numberOfExerciseType == 0) {
-                integerModel = new IntegerModel(-1, (int) userId, numberOfExerciseSets,
-                        numberOfExerciseVolume, 0, numberOfExerciseRest);
-            } else {
-                integerModel = new IntegerModel(-1, (int) userId, numberOfExerciseSets, 0,
-                        numberOfExerciseVolume, numberOfExerciseRest);
-            }
-
-            InsertResult exerciseExtensionResult = contentBD.insertExerciseExtension(integerModel);
-            
-            CustomUserExerciseModel customUserExerciseModel = new CustomUserExerciseModel(
-                    -1, userId, nameOfCustomExercise, numberOfExerciseType, numberOfExerciseID,
-                    (int) exerciseExtensionResult.getIndex());
-            contentBD.insertCustomUserExercise(customUserExerciseModel);
-        });
         return mView;
     }
 
@@ -211,6 +130,7 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
 
         selectExercise = v.findViewById(R.id.frag_custom_exercise_creator_btn_select);
         selectDetails = v.findViewById(R.id.frag_custom_exercise_creator_btn_details);
+        createExercise = v.findViewById(R.id.frag_custom_exercise_creator_btn_create);
 
         exerciseName = v.findViewById(R.id.frag_custom_exercise_creator_exist_exercise_name);
         exerciseType = v.findViewById(R.id.frag_custom_exercise_creator_exercise_type);
@@ -219,18 +139,37 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
         exerciseRest = v.findViewById(R.id.frag_custom_exercise_creator_exercise_rest);
 
         customExerciseName = v.findViewById(R.id.frag_custom_exercise_creator_new_exercise_name);
+    }
 
-        btnCreate = v.findViewById(R.id.frag_custom_exercise_creator_btn_create);
+    private void initClassProperties() {
+
+        createExerciseClass = new ViewModelProvider(requireActivity()).get(CreateExerciseClass.class);
+        contentBD = new ContentBD(requireContext());
+        fourElementsModelList = new ArrayList<>();
+        clockClassVolumeTime = new ClockClass(requireContext());
+        clockClassRestTime = new ClockClass(requireContext());
+        fragmentManager = getChildFragmentManager();
     }
 
     public void fillFields() {
+
+        initExerciseValue();
+        setExerciseTimeAndVolume();
+        exerciseSets.setText(String.valueOf(numberOfExerciseSets));
+        exerciseName.setText(getExerciseName());
+        setRestTime();
+    }
+
+    private void initExerciseValue() {
 
         numberOfExerciseType = createExerciseClass.getValue(createExerciseClass.TYPE).getValue();
         numberOfExerciseSets = createExerciseClass.getValue(createExerciseClass.SETS).getValue();
         numberOfExerciseVolume = createExerciseClass.getValue(createExerciseClass.VOLUME).getValue();
         numberOfExerciseRest = createExerciseClass.getValue(createExerciseClass.REST).getValue();
         numberOfExerciseID = createExerciseClass.getValue(createExerciseClass.EXERCISE).getValue();
+    }
 
+    private void setExerciseTimeAndVolume() {
         if (numberOfExerciseType == 0) {
             exerciseType.setText(R.string.time);
             clockClassVolumeTime.setSecond(numberOfExerciseVolume);
@@ -242,24 +181,164 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
             exerciseType.setText(R.string.unknown);
             exerciseVolume.setText(String.valueOf(numberOfExerciseVolume));
         }
-        exerciseSets.setText(String.valueOf(numberOfExerciseSets));
+    }
 
-        String nameOfExercise;
+    private String getExerciseName() {
         if (numberOfExerciseID == null || numberOfExerciseID <= 0) {
-            nameOfExercise = "---";
+            return "---";
         } else {
-            nameOfExercise = contentBD.showExerciseById(numberOfExerciseID).get(0).getName();
+            return contentBD.showExerciseById(numberOfExerciseID).get(0).getName();
         }
-        exerciseName.setText(nameOfExercise);
+    }
+
+    private void setRestTime() {
         clockClassRestTime.setSecond(numberOfExerciseRest);
         clockClassRestTime.dynamicIncreaseTime(exerciseRest);
     }
 
+    private void buttonOperation() {
+
+        selectExerciseBtn(selectExercise);
+        selectDetailsBtn(selectDetails);
+        createExerciseBtn(createExercise);
+    }
+
+    private void selectExerciseBtn(ToggleButton btn) {
+        btn.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
+            if (isChecked) {
+                attachSearchListFragment();
+            } else {
+                detachSearchListFragment();
+            }
+        }));
+    }
+
+    private void attachSearchListFragment() {
+        if (searchList == null) {
+            BackgroundTask.executeWithLoading(
+                    this::prepareExerciseData,
+                    this::showLoadingFragment,
+                    this::replaceWithSearchListFragment
+            );
+        }
+    }
+
+    private void prepareExerciseData() {
+        List<ExerciseModel> showExercise = contentBD.showExercise();
+        fourElementsModelList = showExercise.stream()
+                .map(exerciseModel -> new FourElementsModel(
+                        exerciseModel.getId(), exerciseModel.getImage(),
+                        exerciseModel.getName(), String.valueOf(exerciseModel.getType()),
+                        exerciseModel.getLevel()
+                )).collect(Collectors.toList());
+    }
+
+    private void showLoadingFragment() {
+        fragmentManager.beginTransaction().replace(R.id.frag_custom_exercise_creator_select_container,
+                new LoadingFragment()).commit();
+    }
+
+    private void replaceWithSearchListFragment() {
+        searchList = new SearchList(SEARCH_LIST_NAME, fourElementsModelList);
+        fragmentManager.beginTransaction().replace(R.id.frag_custom_exercise_creator_select_container,
+                searchList, EXERCISE_MODEL_TAG).commit();
+    }
+
+    private void detachSearchListFragment() {
+        fragmentManager.beginTransaction().detach(searchList).commit();
+    }
+
+    private void selectDetailsBtn(ToggleButton detailsBtn) {
+        detailsBtn.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if (isChecked) {
+                attachViewPagerView();
+            } else {
+                detachViewPagerView();
+            }
+        });
+    }
+    private void attachViewPagerView() {
+        if (viewPagerFragment == null) {
+           viewPagerFragment = createViewPagerFragment();
+           addFragmentToFragmentManager(viewPagerFragment,
+                   R.id.frag_custom_exercise_creator_volume_container, COUNTER_TAG);
+        } else {
+            fragmentManager.beginTransaction().attach(viewPagerFragment).commit();
+        }
+    }
+
+    private ViewPagerFragment createViewPagerFragment() {
+        ViewPagerFragment fragment = new ViewPagerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putStringArray("titles", CUSTOM_EXERCISE_TITLES);
+        viewPagerFragment.setArguments(bundle);
+        return fragment;
+    }
+
+    private void addFragmentToFragmentManager(Fragment fragment, int containerId, String tag) {
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(containerId, fragment, tag);
+        fragmentTransaction.commit();
+    }
+
+    private void detachViewPagerView() {
+        if (viewPagerFragment != null) {
+            fragmentManager.beginTransaction().detach(viewPagerFragment).commit();
+        }
+    }
+
+    private void createExerciseBtn(Button createBtn) {
+        createBtn.setOnClickListener(v -> {
+
+            IntegerModel customExercise;
+            nameOfCustomExercise = String.valueOf(customExerciseName.getText()).trim();
+
+            if (nameOfCustomExercise.equals("")) {
+                displayToast("Enter the name");
+                return;
+            }
+            if (doesExerciseExist(nameOfCustomExercise)) {
+                displayToast("An exercise with that name exist");
+            }
+
+            customExercise = createCustomExercise();
+            insertExerciseExtension(customExercise);
+        });
+    }
+    private void displayToast(String message) {
+        Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean doesExerciseExist(String exerciseName) {
+        return contentBD.searchByName("CUSTOM_USER_EXERCISE_TAB",
+                "CUSTOM_USER_EXERCISE_NAME", exerciseName) ||
+                contentBD.searchByName("EXERCISE_TAB", "NAME", exerciseName);
+    }
+
+    private IntegerModel createCustomExercise() {
+        int timeExerciseValue = (numberOfExerciseType == 0) ? numberOfExerciseVolume : 0;
+        int repetitionExerciseValue = (numberOfExerciseType == 0) ? 0 : numberOfExerciseVolume;
+
+//        TO-DO create a personalized model
+        return new IntegerModel(-1, Math.toIntExact(userId), numberOfExerciseSets, timeExerciseValue,
+                repetitionExerciseValue, numberOfExerciseVolume, numberOfExerciseRest);
+    }
+
+    private void insertExerciseExtension(IntegerModel customExercise) {
+        InsertResult exerciseExtensionResult = contentBD.insertExerciseExtension(customExercise);
+
+        CustomUserExerciseModel customUserExerciseModel = new CustomUserExerciseModel(
+                -1, userId, nameOfCustomExercise, numberOfExerciseType, numberOfExerciseID,
+                (int) exerciseExtensionResult.getIndex());
+        contentBD.insertCustomUserExercise(customUserExerciseModel);
+    }
+
     @Override
-    public void values(String listName, int firstValue, int secondValue, int thirdValue, int fourthValue) {
+    public void values(String listName, int firstValue, int secondValue, int thirdValue,
+                       int fourthValue) {
         switch (listName) {
             case "customExerciseCounterFragmentName":
-                Log.i(TAG, "values: customExerciseCounterFragmentName");
+                Log.i(CREATOR_TAG, "values: customExerciseCounterFragmentName");
                 if (firstValue == 1) {
                     exerciseName.setText(R.string.repetition);
                 } else {
@@ -270,16 +349,16 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
                 break;
             case "firstList":
                 exerciseName.setText(String.valueOf(thirdValue));
-                Log.i(TAG, "values: == firstValue");
+                Log.i("CustomExerciseCounterTag", "values: == firstValue");
                 break;
             case "Counter":
-                Log.i(TAG, "values: FragValues");
+                Log.i("CustomExerciseCounterTag", "values: FragValues");
                 break;
             default:
-                Log.i(TAG, "values: value else");
+                Log.i("CustomExerciseCounterTag", "values: value else");
                 break;
         }
 
-        Log.i(TAG, "values: UpdateIntegerDB");
+        Log.i("CustomExerciseCounterTag", "values: UpdateIntegerDB");
     }
 }

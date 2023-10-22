@@ -14,6 +14,7 @@ import java.io.IOException;
 
 public class StorageClass {
 
+    private static final String TAG = "StorageClass";
     private Context context;
 
     private String fileName;
@@ -52,6 +53,7 @@ public class StorageClass {
         this.context = context;
         this.folderName = folderName;
         this.fileName = fileName;
+        this.extension = extension;
     }
 
     public String getFileName() {
@@ -76,7 +78,7 @@ public class StorageClass {
         if (!create.exists()) {
             if (create.createNewFile());
         } else {
-            Toast.makeText(context, fileName + " exists", Toast.LENGTH_SHORT).show();
+            Log.i(TAG, fileName +  " exist!");
         }
     }
 

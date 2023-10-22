@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.exerciseapp.mClasses.ClockClass;
 import com.example.exerciseapp.mClasses.GlobalClass;
+import com.example.exerciseapp.mClasses.StorageClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
@@ -124,7 +125,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
         }
         ExerciseModel exercise = exerciseDetail.get(POSITION);
 
-//        imageIMG.setImageResource(exercise.getImage());
+//        imageIMG.setImageResource(new StorageClass().exercise.getImage());
         nameTV.setText(exercise.getName());
         typeTV.setText(exercise.getType() == 1 ? getString(R.string.repetition) : getString(R.string.time));
         String[] names = {getString(R.string.beginner), getString(R.string.intermediate),

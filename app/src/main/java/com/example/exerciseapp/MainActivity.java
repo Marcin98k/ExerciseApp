@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         currentUserID = intent.getLongExtra(GlobalClass.userID, -1);
         initInternalFolders();
+
         if (currentUserID != -1) {
             initView();
             initMenu();
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
     private void insertExercise() {
 
         ExerciseModel exercise1 = new ExerciseModel(-1, "Exercise1 ABC", "", 2,
-                2, "3,2", 1, 5, 20, "description1", 1,1);
+                2, "3,2", 1, 5, 20, "description1", 1, 1);
         ExerciseModel exercise2 = new ExerciseModel(-1, "Exercise2 BGH", "", 1,
                 2, "1", 2, 10, 25, "description2", 2, 1);
         ExerciseModel exercise3 = new ExerciseModel(-1, "Exercise3 BCI", "", 3,
