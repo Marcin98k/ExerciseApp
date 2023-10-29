@@ -1,14 +1,15 @@
-package com.example.exerciseapp;
-
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
-import android.util.Log;
+package com.example.exerciseapp.mAdapters;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.example.exerciseapp.CustomExerciseCounterFragment;
+import com.example.exerciseapp.EmptyFragment;
+import com.example.exerciseapp.mEnums.ExerciseType;
+import com.example.exerciseapp.SearchList;
+import com.example.exerciseapp.mEnums.ViewPagerType;
 import com.example.exerciseapp.mModels.FourElementsModel;
 
 import java.util.List;

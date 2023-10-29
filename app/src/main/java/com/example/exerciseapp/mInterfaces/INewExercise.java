@@ -1,6 +1,6 @@
 package com.example.exerciseapp.mInterfaces;
 
-import com.example.exerciseapp.ExerciseType;
+import com.example.exerciseapp.mEnums.ExerciseType;
 
 public interface INewExercise {
 

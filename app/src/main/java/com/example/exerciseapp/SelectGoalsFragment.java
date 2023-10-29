@@ -16,17 +16,16 @@ import com.example.exerciseapp.mClasses.SharedViewModel;
 import com.example.exerciseapp.mInterfaces.FragmentRespond;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 
-public class SelectGoalsFragment extends Fragment implements FragmentRespond {
+import java.util.Arrays;
 
-    private FragmentSupportListener mListener;
-    private SharedViewModel sharedViewModel;
+public class SelectGoalsFragment extends Fragment implements FragmentRespond {
 
     private final int[] selected = new int[4];
 
-    private CheckBox firstOption;
-    private CheckBox secondOption;
-    private CheckBox thirdOption;
-    private CheckBox forthOption;
+    private CheckBox strengthBtn, muscleBtn, fatLoseBtn, techniqueBtn;
+
+    private FragmentSupportListener fragmentSupportListener;
+    private SharedViewModel sharedViewModel;
 
     public SelectGoalsFragment() {
         // Required empty public constructor
@@ -35,57 +34,55 @@ public class SelectGoalsFragment extends Fragment implements FragmentRespond {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mListener.checkCondition(false);
+        fragmentSupportListener.checkCondition(false);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_select_goals, container, false);
-
+        initView(mView);
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
-        firstOption = mView.findViewById(R.id.fSelectGoal_firstOption);
-        secondOption = mView.findViewById(R.id.fSelectGoal_secondOption);
-        thirdOption = mView.findViewById(R.id.fSelectGoal_thirdOption);
-        forthOption = mView.findViewById(R.id.fSelectGoal_forthOption);
-
-        selectGoals(firstOption, secondOption, thirdOption, forthOption);
+        selectGoals(strengthBtn, muscleBtn, fatLoseBtn, techniqueBtn);
         return mView;
     }
 
-    private void selectGoals(CheckBox btn0, CheckBox btn1, CheckBox btn2, CheckBox btn3) {
+    private void initView(View v) {
+
+        strengthBtn = v.findViewById(R.id.fSelectGoal_strength);
+        muscleBtn = v.findViewById(R.id.fSelectGoal_muscle);
+        fatLoseBtn = v.findViewById(R.id.fSelectGoal_fat_lose);
+        techniqueBtn = v.findViewById(R.id.fSelectGoal_technique);
+    }
+
+    private void selectGoals(CheckBox... buttons) {
 
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener = (compoundButton, b) -> {
 
-            if (btn0.isChecked()) {
-                selected[0] = 1;
-            }
-            if (btn1.isChecked()) {
-                selected[1] = 1;
-            }
-            if (btn2.isChecked()) {
-                selected[2] = 1;
-            }
-            if (btn3.isChecked()) {
-                selected[3] = 1;
+            for(int i = 0; i < 4; i++) {
+                if (buttons[i].isChecked()) {
+                    selected[i] = 1;
+                }
             }
 
-            mListener.checkCondition(btn0.isChecked() || btn1.isChecked() || btn2.isChecked() || btn3.isChecked());
+            boolean isAnyButtonChecked = Arrays.stream(buttons)
+                    .anyMatch(CheckBox::isChecked);
+            fragmentSupportListener.checkCondition(isAnyButtonChecked);
         };
 
-        btn0.setOnCheckedChangeListener(onCheckedChangeListener);
-        btn1.setOnCheckedChangeListener(onCheckedChangeListener);
-        btn2.setOnCheckedChangeListener(onCheckedChangeListener);
-        btn3.setOnCheckedChangeListener(onCheckedChangeListener);
+        for(CheckBox button: buttons) {
+            button.setOnCheckedChangeListener(onCheckedChangeListener);
+        }
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            mListener = (FragmentSupportListener) context;
+            fragmentSupportListener = (FragmentSupportListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context + " must implement FragmentSupportListener");
+            throw new ClassCastException(context
+                    + " must implement FragmentSupportListener");
         }
     }
 

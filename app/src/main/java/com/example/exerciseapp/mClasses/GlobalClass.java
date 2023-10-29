@@ -16,16 +16,21 @@ public class GlobalClass {
     public static final int FOURTH_VAL = 0;
 
     public static Context initLanguage(Context context) {
+        String languagePrefix = getLanguagePrefix(context);
+        return updateLocale(context, languagePrefix);
+    }
 
-        String languagePrefix;
+    private static String getLanguagePrefix(Context context) {
         try (DBHelper dbHelper = new DBHelper(context)) {
-            languagePrefix = dbHelper.showLanguage().stream()
+            return dbHelper.showLanguage().stream()
                     .filter(LanguageModel::getStatus)
                     .map(LanguageModel::getPrefix)
                     .findFirst()
                     .orElse("en");
         }
+    }
 
+    private static Context updateLocale(Context context, String languagePrefix) {
         Locale locale = new Locale(languagePrefix);
         Locale.setDefault(locale);
         Configuration config = context.getResources().getConfiguration();

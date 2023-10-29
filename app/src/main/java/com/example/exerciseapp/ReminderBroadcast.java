@@ -18,13 +18,19 @@ public class ReminderBroadcast extends BroadcastReceiver {
         NotificationManager notificationManager = (NotificationManager) context.
                 getSystemService(context.NOTIFICATION_SERVICE);
         Notification notification = intent.getParcelableExtra(NOTIFICATION);
+        int id = intent.getIntExtra(NOTIFICATION_ID, 0);
+
+        createNotificationChannel(notificationManager);
+
+        if (notification != null) {
+            notificationManager.notify(id, notification);
+        }
+    }
+
+    private void createNotificationChannel(NotificationManager notificationManager) {
         int importance = NotificationManager.IMPORTANCE_HIGH;
         NotificationChannel channel = new NotificationChannel(
                 SettingsActivity.NOTIFICATION_CHANNEL_ID, "NOTIFICATION_NAME", importance);
-        assert notificationManager != null;
         notificationManager.createNotificationChannel(channel);
-        int id = intent.getIntExtra(NOTIFICATION_ID, 0);
-        assert notification != null;
-        notificationManager.notify(id, notification);
     }
 }

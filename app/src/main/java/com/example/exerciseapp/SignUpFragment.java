@@ -12,11 +12,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 
-import com.example.exerciseapp.mInterfaces.FragmentRespond;
 import com.example.exerciseapp.mInterfaces.IUserData;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -25,16 +24,15 @@ import java.util.regex.Pattern;
 
 public class SignUpFragment extends Fragment {
 
+    private EditText usernameEditText;
+    private EditText emailEditText;
+    private EditText passwordEditText;
 
-    private EditText usernameTV;
-    private EditText emailTV;
-    private EditText passwordTV;
-
-    private Button confirmBtn;
+    private Button signUpBtn;
 
     private Editable editable;
 
-    private String usernameStr, emailStr;
+    private String username, email;
 
     private char[] password;
 
@@ -51,7 +49,7 @@ public class SignUpFragment extends Fragment {
         try {
             iUserData = (IUserData) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() +
+            throw new ClassCastException(context +
                     " must implement IUserData");
         }
     }
@@ -61,55 +59,65 @@ public class SignUpFragment extends Fragment {
                              Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_sign_up, container, false);
 
-        usernameTV = mView.findViewById(R.id.fSignUp_ET_username);
-        emailTV = mView.findViewById(R.id.fSignUp_ET_email);
-        passwordTV = mView.findViewById(R.id.fSignUp_ET_password);
-
-
-        Log.i("TAG", "onCreateView: (username1) " + usernameTV.getText().toString().trim());
-        confirmBtn = mView.findViewById(R.id.frag_sign_up_confirm_btn);
-        confirmBtn.setOnClickListener(v -> {
-            usernameStr = usernameTV.getText().toString().trim();
-            emailStr = emailTV.getText().toString().trim();
-            editable = passwordTV.getText();
-            password = new char[editable.length()];
-            Log.i("TAG", "onCreateView {pass}: " + passwordTV.getText().toString());
-            for (int i = 0; i < editable.length(); i++) {
-                password[i] = editable.charAt(i);
-            }
-
-            Log.i("TAG", "onCreateView: username: " + usernameStr);
-            if (validateUser(usernameStr, emailStr)) {
-                iUserData.data(usernameStr, emailStr, hashPassword(password));
-            }
-        });
+        initializeViews(mView);
+        setupSignUpBtn(signUpBtn);
 
         return mView;
     }
 
+    private void initializeViews(View v) {
+        usernameEditText = v.findViewById(R.id.fSignUp_username);
+        emailEditText = v.findViewById(R.id.fSignUp_email);
+        passwordEditText = v.findViewById(R.id.fSignUp_password);
+        signUpBtn = v.findViewById(R.id.fSignUp_sign_in);
+    }
+
+    private void setupSignUpBtn(Button signUpBtn) {
+        signUpBtn.setOnClickListener(v -> {
+            username = usernameEditText.getText().toString().trim();
+            email = emailEditText.getText().toString().trim();
+            editable = passwordEditText.getText();
+            password = new char[editable.length()];
+
+            for (int i = 0; i < editable.length(); i++) {
+                password[i] = editable.charAt(i);
+            }
+
+            if (validateUser(username, email)) {
+                iUserData.data(username, email, hashPassword(password));
+            }
+        });
+    }
+
+    @VisibleForTesting
     private boolean validateUser(String username, String email) {
 
-        String usernameFormula = "^[a-zA-Z0-9]+([a-zA-Z0-9][a-zA-Z0-9])*[a-zA-Z0-9]+$";
-        String emailFormula = "^[\\w!#$%&amp;'*+/=?'{|}~^-]+(?:\\.[\\w!#$%&'*+/=?'{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+        String usernamePatternStr = "^[a-zA-Z0-9]+([a-zA-Z0-9][a-zA-Z0-9])*[a-zA-Z0-9]+$";
+        String emailPatternStr = "^[\\w!#$%&amp;'*+/=?'{|}~^-]+(?:\\.[\\w!#$%&'*+/=?'{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
 
-        Pattern usernamePattern = Pattern.compile(usernameFormula);
+        Pattern usernamePattern = Pattern.compile(usernamePatternStr);
         Matcher usernameMatcher = usernamePattern.matcher(username);
 
-        Pattern emailPattern = Pattern.compile(emailFormula);
+        Pattern emailPattern = Pattern.compile(emailPatternStr);
         Matcher emailMatcher = emailPattern.matcher(email);
 
         if (!usernameMatcher.matches()) {
-            Toast.makeText(requireContext(), "Incorrect username", Toast.LENGTH_SHORT).show();
+            showToast("Incorrect username");
             return false;
         }
 
         if (!emailMatcher.matches()) {
-            Toast.makeText(requireActivity(), "Incorrect email", Toast.LENGTH_SHORT).show();
+            showToast("Incorrect email");
             return false;
         }
         return true;
     }
 
+    private void showToast(String message) {
+        Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @VisibleForTesting
     private static byte[] hashPassword(char[] password) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");

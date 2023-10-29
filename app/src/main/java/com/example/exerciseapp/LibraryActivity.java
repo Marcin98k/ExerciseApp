@@ -19,6 +19,7 @@ import com.example.exerciseapp.mClasses.BackgroundTask;
 import com.example.exerciseapp.mClasses.CreateExerciseClass;
 import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
+import com.example.exerciseapp.mEnums.ExerciseType;
 import com.example.exerciseapp.mEnums.Side;
 import com.example.exerciseapp.mInterfaces.CallbackList;
 import com.example.exerciseapp.mInterfaces.INewExercise;
@@ -37,23 +38,7 @@ import java.util.concurrent.CountDownLatch;
 public class LibraryActivity extends AppCompatActivity implements UpdateIntegersDB,
         ISingleIntegerValue, INewExercise, ITitleChangeListener {
 
-    private BottomNavigationView bottomNavigationView;
-    private TextView fragmentTitle;
-
-
-    private long id;
-    private int fromWhere;
-    private long workoutId;
-    private long extensionId;
-    private static long currentUserID;
-    int durationSum = 0;
-    private List<Integer> workoutTimeList;
-    private List<Integer> exerciseTimeList;
     private final String[] fragmentTitles = new String[]{"Exercises", "Workouts"};
-    private List<FourElementsModel> exerciseList;
-    private List<FourElementsModel> workoutList = new ArrayList<>();
-
-
     private static final String FIRST_LIST = "firstList";
     private static final String SECOND_LIST = "secondList";
     private static final String THIRD_LIST = "userExerciseList";
@@ -65,9 +50,21 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
     private static final String DETAILS_FRAGMENT_LIST = "detailsFragmentList";
     private static final String WORKOUT_DETAILS = "workoutDetails";
 
+    private BottomNavigationView bottomNavigationView;
+    private TextView fragmentTitle;
+
+
+    private long id;
+    private int fromWhere;
+    private long workoutId;
+    private long extensionId;
+    private static long currentUserID;
+    private List<Integer> workoutTimeList = new ArrayList<>();
+    private List<Integer> exerciseTimeList = new ArrayList<>();
+    private List<FourElementsModel> exerciseList;
+    private List<FourElementsModel> workoutList = new ArrayList<>();
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
-
 
     private ContentBD contentBD;
     private CustomExerciseCreatorFragment creatorExerciseFragment;
@@ -89,33 +86,37 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
     }
 
     private void initView(Bundle savedInstanceState) {
-
-        TextView activityTitle = findViewById(R.id.act_library_title_part_one);
-        fragmentTitle = findViewById(R.id.act_library_title_part_two);
-        bottomNavigationView = findViewById(R.id.act_library_bottom_nav_bar);
+        initializeViews();
 
         contentBD = new ContentBD(this);
-
-
-        String activityName = getString(R.string.workout);
-        activityTitle.setText(activityName);
+        createExerciseClass = new ViewModelProvider(this).get(CreateExerciseClass.class);
 
         Intent intent = getIntent();
         currentUserID = intent.getLongExtra(GlobalClass.userID, -1);
-
 
         if (findViewById(R.id.act_library_container) != null) {
             if (savedInstanceState != null) {
                 return;
             }
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.setReorderingAllowed(true);
-            ft.addToBackStack(LIBRARY_BUTTON_TAG);
-            ft.add(R.id.act_library_container, new LibraryButtonsFragment(), LIBRARY_BUTTON_TAG);
-            ft.commit();
+            addFirstFragmentToActivity();
         }
+    }
 
-        createExerciseClass = new ViewModelProvider(this).get(CreateExerciseClass.class);
+    private void initializeViews() {
+        fragmentTitle = findViewById(R.id.act_library_title_part_two);
+        bottomNavigationView = findViewById(R.id.act_library_bottom_nav_bar);
+
+        String activityName = getString(R.string.workout);
+        TextView activityTitle = findViewById(R.id.act_library_title_part_one);
+        activityTitle.setText(activityName);
+    }
+
+    private void addFirstFragmentToActivity() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setReorderingAllowed(true);
+        ft.addToBackStack(LIBRARY_BUTTON_TAG);
+        ft.add(R.id.act_library_container, new LibraryButtonsFragment(), LIBRARY_BUTTON_TAG);
+        ft.commit();
     }
 
     private void initMenu() {
@@ -150,7 +151,6 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
         finish();
     }
 
-
     private void fillLists(CallbackList callbackList) {
 
         CountDownLatch latch = new CountDownLatch(3);
@@ -160,129 +160,32 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
                 .commit();
 
         List<FourElementsModel> mainExerciseList = new ArrayList<>();
-        int[] tempTimeExercise = new int[1];
         List<FourElementsModel> userExerciseList = new ArrayList<>();
-        int[] tempUserTimeExercise = new int[1];
 
         BackgroundTask.executeWithLoading(
                 () -> {
-                    exerciseTimeList = new ArrayList<>();
-                    List<ExerciseModel> showExercise = contentBD.showExercise();
-                    for (int i = 0; i < showExercise.size(); i++) {
-                        List<IntegerModel> extensionExe = contentBD.showExerciseExtensionId(
-                                showExercise.get(i).getExtension());
-
-                        if (showExercise.get(0).getType() == 1) {
-                            tempTimeExercise[0] += (extensionExe.get(0).getSecondValue() * GlobalClass.DEFAULT_EXERCISE_TIME) +
-                                    ((extensionExe.get(0).getSecondValue() - 1) * extensionExe.get(0).getFifthValue());
-                        } else {
-                            tempTimeExercise[0] += (extensionExe.get(0).getSecondValue() * extensionExe.get(0).getForthValue()) +
-                                    ((extensionExe.get(0).getSecondValue() - 1) * extensionExe.get(0).getFifthValue());
-                        }
-                        exerciseTimeList.add(tempTimeExercise[0]);
-                        tempTimeExercise[0] = 0;
-
-                        ExerciseModel exerciseModel = showExercise.get(i);
-                        mainExerciseList.add(new FourElementsModel(exerciseModel.getId(),
-                                exerciseModel.getImage(), exerciseModel.getName(),
-                                String.valueOf(exerciseModel.getType()), exerciseModel.getLevel(),
-                                exerciseTimeList.get(i), 0));
-                    }
-                    latch.countDown();
+                   fillMainExerciseList(mainExerciseList);
+                   latch.countDown();
                 },
-                () -> {
-//                    Empty;
-                },
-                () -> {
-//                    Empty;
-                }
+                () -> {},
+                () -> {}
         );
         BackgroundTask.executeWithLoading(
                 () -> {
-                    List<ExerciseModel> showWorkout = contentBD.showWorkout();
-                    workoutTimeList = new ArrayList<>();
-
-                    int[] tempTimeWorkout = new int[1];
-
-                    for (int i = 0; i < showWorkout.size(); i++) {
-                        String temp = showWorkout.get(i).getExerciseId();
-                        String[] exerciseStr = temp.split(",");
-                        long[] exercisesId = new long[exerciseStr.length];
-                        for (int j = 0; j < exercisesId.length; j++) {
-                            exercisesId[j] = Long.parseLong(exerciseStr[j]);
-                        }
-
-                        for (long l : exercisesId) {
-                            List<ExerciseModel> temp2 = contentBD.showExerciseById(l);
-                            List<IntegerModel> temp3 = contentBD.showExerciseExtensionId(
-                                    temp2.get(0).getExtension());
-                            if (temp2.get(0).getType() == 1) {
-                                tempTimeWorkout[0] += (temp3.get(0).getSecondValue() * 60) +
-                                        ((temp3.get(0).getSecondValue() - 1) * temp3.get(0).getFifthValue());
-                            } else {
-                                tempTimeWorkout[0] += (temp3.get(0).getSecondValue() * temp3.get(0).getForthValue()) +
-                                        ((temp3.get(0).getSecondValue() - 1) * temp3.get(0).getFifthValue());
-                            }
-                        }
-                        workoutTimeList.add(tempTimeWorkout[0]);
-                        tempTimeWorkout[0] = 0;
-                    }
-
-                    for (int i = 0; i < showWorkout.size(); i++) {
-                        ExerciseModel exerciseModel = showWorkout.get(i);
-                        workoutList.add(new FourElementsModel(
-                                exerciseModel.getId(), exerciseModel.getImage(),
-                                exerciseModel.getName(), String.valueOf(exerciseModel.getType()),
-                                exerciseModel.getLevel(), workoutTimeList.get(i), 0));
-                    }
-                    //                        Last element in RecyclerView;
-                    workoutList.add(new FourElementsModel(0, "", "", "",
-                            0, 0, 0));
+                    fillWorkoutList();
                     latch.countDown();
                 },
-                () -> {
-//                    Empty;
-                },
-                () -> {
-//                    Empty;
-                }
+                () -> {},
+                () -> {}
         );
 
         BackgroundTask.executeWithLoading(
                 () -> {
-                    if (contentBD.getCount("CUSTOM_USER_EXERCISE_TAB") >= 1) {
-                        List<ExerciseModel> showUserExercise = contentBD.showUserExercise();
-
-                        for (int i = 0; i < showUserExercise.size(); i++) {
-                            if (showUserExercise.get(i).getExtension() > 0) {
-                                List<IntegerModel> extensionExe = contentBD.showExerciseExtensionId(
-                                        showUserExercise.get(i).getExtension());
-
-                                if (showUserExercise.get(0).getType() == 1) {
-                                    tempUserTimeExercise[0] += (extensionExe.get(0).getSecondValue() * GlobalClass.DEFAULT_EXERCISE_TIME) +
-                                            ((extensionExe.get(0).getSecondValue() - 1) * extensionExe.get(0).getFifthValue());
-                                } else {
-                                    tempUserTimeExercise[0] += (extensionExe.get(0).getSecondValue() * extensionExe.get(0).getForthValue()) +
-                                            ((extensionExe.get(0).getSecondValue() - 1) * extensionExe.get(0).getFifthValue());
-                                }
-                                exerciseTimeList.add(tempUserTimeExercise[0]);
-                                tempUserTimeExercise[0] = 0;
-                            }
-                            ExerciseModel exerciseModel = showUserExercise.get(i);
-                            userExerciseList.add(new FourElementsModel(exerciseModel.getId(),
-                                    exerciseModel.getImage(), exerciseModel.getName(),
-                                    String.valueOf(exerciseModel.getType()), exerciseModel.getLevel(),
-                                    exerciseTimeList.get(i), 1));
-                        }
-                    }
+                    fillUserExerciseList(userExerciseList);
                     latch.countDown();
                 },
-                () -> {
-//                    Empty;
-                },
-                () -> {
-//                    Empty;
-                }
+                () -> {},
+                () -> {}
         );
         try {
             latch.await();
@@ -298,8 +201,96 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
         callbackList.onListsLoaded();
     }
 
+
+    private void fillMainExerciseList(List<FourElementsModel> mainExerciseList) {
+        int[] tempTimeExercise = new int[1];
+        List<ExerciseModel> showExercise = contentBD.showExercise();
+
+        for (int i = 0; i < showExercise.size(); i++) {
+            ExerciseModel exerciseModel = showExercise.get(i);
+            List<IntegerModel> extensionExe = contentBD.showExerciseExtensionId(exerciseModel.getExtension());
+
+            tempTimeExercise[0] = calculateTime(exerciseModel, extensionExe);
+            exerciseTimeList.add(tempTimeExercise[0]);
+            tempTimeExercise[0] = 0;
+
+            mainExerciseList.add(createFourElementsModel(exerciseModel, exerciseTimeList.get(i), 0));
+        }
+    }
+
+    private void fillWorkoutList() {
+        List<ExerciseModel> showWorkout = contentBD.showWorkout();
+        workoutTimeList = new ArrayList<>();
+        int[] tempTimeWorkout = new int[1];
+
+        int index = 0;
+        for (ExerciseModel exerciseModel : showWorkout) {
+            long[] exercisesId = parseExerciseIds(exerciseModel.getExerciseId());
+
+            for (long l : exercisesId) {
+                List<ExerciseModel> tempExercises = contentBD.showExerciseById(l);
+                List<IntegerModel> tempExtensions = contentBD.showExerciseExtensionId(tempExercises.get(0).getExtension());
+                tempTimeWorkout[0] += calculateTime(tempExercises.get(0), tempExtensions);
+            }
+
+            workoutTimeList.add(tempTimeWorkout[0]);
+            tempTimeWorkout[0] = 0;
+
+            workoutList.add(createFourElementsModel(exerciseModel, workoutTimeList.get(index), 0));
+            index++;
+        }
+
+        // Last element in RecyclerView
+        workoutList.add(new FourElementsModel(0, "", "", "", 0, 0, 0));
+    }
+
+    private long[] parseExerciseIds(String exerciseIdsStr) {
+        String[] exerciseStr = exerciseIdsStr.split(",");
+        long[] exercisesId = new long[exerciseStr.length];
+        for (int j = 0; j < exercisesId.length; j++) {
+            exercisesId[j] = Long.parseLong(exerciseStr[j]);
+        }
+        return exercisesId;
+    }
+
+
+    private void fillUserExerciseList(List<FourElementsModel> userExerciseList) {
+        if (contentBD.getCount("CUSTOM_USER_EXERCISE_TAB") >= 1) {
+            int[] tempUserTimeExercise = new int[1];
+            List<ExerciseModel> showUserExercise = contentBD.showUserExercise();
+
+            for (int i = 0; i < showUserExercise.size(); i++) {
+                ExerciseModel exerciseModel = showUserExercise.get(i);
+
+                if (exerciseModel.getExtension() > 0) {
+                    List<IntegerModel> extensionExe = contentBD.showExerciseExtensionId(exerciseModel.getExtension());
+                    tempUserTimeExercise[0] = calculateTime(exerciseModel, extensionExe);
+                    exerciseTimeList.add(tempUserTimeExercise[0]);
+                    tempUserTimeExercise[0] = 0;
+                }
+
+                userExerciseList.add(createFourElementsModel(exerciseModel, exerciseTimeList.get(i), 1));
+            }
+        }
+    }
+    private int calculateTime(ExerciseModel exerciseModel, List<IntegerModel> extensionExe) {
+        if (exerciseModel.getType() == 1) {
+            return (extensionExe.get(0).getSecondValue() * GlobalClass.DEFAULT_EXERCISE_TIME) +
+                    ((extensionExe.get(0).getSecondValue() - 1) * extensionExe.get(0).getFifthValue());
+        } else {
+            return (extensionExe.get(0).getSecondValue() * extensionExe.get(0).getForthValue()) +
+                    ((extensionExe.get(0).getSecondValue() - 1) * extensionExe.get(0).getFifthValue());
+        }
+    }
+
+    private FourElementsModel createFourElementsModel(ExerciseModel exerciseModel, int time, int lastElement) {
+        return new FourElementsModel(exerciseModel.getId(),
+                exerciseModel.getImage(), exerciseModel.getName(),
+                String.valueOf(exerciseModel.getType()), exerciseModel.getLevel(),
+                time, lastElement);
+    }
+
     private void setDefaultValuesForTheList() {
-        //        default values;
         createExerciseClass.setValue(createExerciseClass.TYPE, 1);
         createExerciseClass.setValue(createExerciseClass.SETS, 1);
         createExerciseClass.setValue(createExerciseClass.VOLUME, 1);

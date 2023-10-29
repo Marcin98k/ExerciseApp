@@ -20,7 +20,7 @@
             android:layout_marginVertical="30dp"/>
 
         <CheckBox
-            android:id="@+id/fSelectGoal_firstOption"
+            android:id="@+id/fSelectGoal_strength"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@color/transparent"
@@ -30,7 +30,7 @@
             android:layout_marginVertical="5dp"/>
 
         <CheckBox
-            android:id="@+id/fSelectGoal_secondOption"
+            android:id="@+id/fSelectGoal_muscle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@color/transparent"
@@ -40,7 +40,7 @@
             android:layout_marginVertical="5dp"/>
 
         <CheckBox
-            android:id="@+id/fSelectGoal_thirdOption"
+            android:id="@+id/fSelectGoal_fat_lose"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@color/transparent"
@@ -50,7 +50,7 @@
             android:layout_marginVertical="5dp"/>
 
         <CheckBox
-            android:id="@+id/fSelectGoal_forthOption"
+            android:id="@+id/fSelectGoal_technique"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@color/transparent"

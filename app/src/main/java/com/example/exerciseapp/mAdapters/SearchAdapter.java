@@ -1,4 +1,4 @@
-package com.example.exerciseapp;
+package com.example.exerciseapp.mAdapters;
 
 import android.content.Context;
 import android.util.Log;
@@ -13,10 +13,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.exerciseapp.R;
 import com.example.exerciseapp.mClasses.ClockClass;
-import com.example.exerciseapp.mInterfaces.INewExercise;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
-import com.example.exerciseapp.mModels.ExerciseModel;
 import com.example.exerciseapp.mModels.FourElementsModel;
 
 import java.util.ArrayList;

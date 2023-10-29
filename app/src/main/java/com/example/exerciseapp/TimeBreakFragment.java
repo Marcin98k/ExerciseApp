@@ -19,17 +19,16 @@ import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 
 public class TimeBreakFragment extends Fragment {
 
+    private static final String FRAGMENT_TAG = "TimeBreakFragment";
+
     private ProgressBar progressBar;
     private TextView showTime;
-    private TextView showNext;
     private Button skipBtn;
     private Button addBtn;
 
 
     private int rest;
     private String exerciseName;
-
-    private static final String FRAGMENT_TAG = "TimeBreakFragment";
 
     private ClockClass clockClass;
     private UpdateIntegersDB updateIntegersDB;
@@ -39,9 +38,14 @@ public class TimeBreakFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        clockClass.stopThread();
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            updateIntegersDB = (UpdateIntegersDB) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context +
+                    " must implement UpdateIntegersDB");
+        }
     }
 
     @Override
@@ -59,39 +63,39 @@ public class TimeBreakFragment extends Fragment {
 
         View mView = inflater.inflate(R.layout.fragment_time_break, container, false);
         initView(mView);
-
-        clockClass = new ClockClass(requireContext(), true, rest, true)
-                .setBar(progressBar)
-                .setAddBtn(addBtn).setSkipBtn(skipBtn)
-                .setTextView(showTime);
-        clockClass.setFragmentSupportListener(param -> {
-            if (updateIntegersDB != null) {
-                updateIntegersDB.values(FRAGMENT_TAG, 0, 3, 0,
-                        GlobalClass.FOURTH_VAL);
-            }
-        });
-        showNext.setText(exerciseName);
-        clockClass.runClock();
+        setupClockClass();
         return mView;
     }
 
     private void initView(View v) {
         progressBar = v.findViewById(R.id.frag_time_break_progress_bar);
         showTime = v.findViewById(R.id.frag_time_break_tv_show_time);
-        showNext = v.findViewById(R.id.frag_time_break_tv_next);
         addBtn = v.findViewById(R.id.frag_time_break_btn_add);
         skipBtn = v.findViewById(R.id.frag_time_break_btn_skip);
+
+        TextView showNext = v.findViewById(R.id.frag_time_break_tv_next);
+        showNext.setText(exerciseName);
+    }
+
+    private void setupClockClass() {
+        clockClass = new ClockClass(requireContext(), true, rest, true)
+                .setBar(progressBar)
+                .setAddBtn(addBtn).setSkipBtn(skipBtn)
+                .setTextView(showTime);
+
+        clockClass.setFragmentSupportListener(param -> {
+            if (updateIntegersDB != null) {
+                updateIntegersDB.values(FRAGMENT_TAG, 0, 3, 0,
+                        GlobalClass.FOURTH_VAL);
+            }
+        });
+        clockClass.runClock();
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            updateIntegersDB = (UpdateIntegersDB) context;
-        } catch (RuntimeException e) {
-            throw new RuntimeException(context +
-                    " must implement FragmentSupportListener and/or UpdateIntegersDB");
-        }
+    public void onDestroyView() {
+        super.onDestroyView();
+        clockClass.stopThread();
     }
 
     public void setUpdateIntegersDB(UpdateIntegersDB updateIntegersDB) {

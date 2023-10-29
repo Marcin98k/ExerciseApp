@@ -2,88 +2,89 @@ package com.example.exerciseapp;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.exerciseapp.mClasses.SharedViewModel;
 import com.example.exerciseapp.mInterfaces.FragmentRespond;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class SelectGenderFragment extends Fragment implements FragmentRespond {
-
-    private CompoundButton previousCheckedCompoundButton;
     private RadioButton maleBtn, femaleBtn, otherBtn;
     private int selectedGender;
 
-    FragmentSupportListener mListener;
-
-    SharedViewModel sharedViewModel;
+    private FragmentSupportListener fragmentSupportListener;
+    private CompoundButton previousCheckedCompoundButton;
+    private SharedViewModel sharedViewModel;
 
     public SelectGenderFragment() {
         // Required empty public constructor
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            fragmentSupportListener = (FragmentSupportListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context
+                    + " must implement FragmentSupportListener");
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View mView = inflater.inflate(R.layout.fragment_select_gender, container, false);
 
-        maleBtn = mView.findViewById(R.id.fSelectGender_rBtn_male);
-        femaleBtn = mView.findViewById(R.id.fSelectGender_rBtn_female);
-        otherBtn = mView.findViewById(R.id.fSelectGender_rBtn_other);
-
-        selectBtn(maleBtn, femaleBtn, otherBtn);
+        initView(mView);
+        selectGender(maleBtn, femaleBtn, otherBtn);
 
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-
         return mView;
     }
 
-    private void selectBtn(RadioButton btn1, RadioButton btn2, RadioButton btn3) {
+    private void initView(View v) {
+        maleBtn = v.findViewById(R.id.fSelectGender_rBtn_male);
+        femaleBtn = v.findViewById(R.id.fSelectGender_rBtn_female);
+        otherBtn = v.findViewById(R.id.fSelectGender_rBtn_other);
+    }
+
+    private void selectGender(RadioButton... buttons) {
+
+        Map<RadioButton, Integer> buttonValues = new HashMap<>();
+        for (int i = 0; i < buttons.length; i++) {
+            buttonValues.put(buttons[i], i + 1);
+        }
 
         CompoundButton.OnCheckedChangeListener onCheckedChangeListener = (compoundButton, b) -> {
 
-            if (!b) { mListener.checkCondition(false);}
+            if (!b) {
+                fragmentSupportListener.checkCondition(false);
+            }
+
             if (previousCheckedCompoundButton != null) {
                 previousCheckedCompoundButton.setChecked(false);
             }
             previousCheckedCompoundButton = compoundButton;
 
-            if (btn1.isChecked()) {
-                selectedGender = 1;
-            } else if (btn2.isChecked()) {
-                selectedGender = 2;
-            } else if (btn3.isChecked()) {
-                selectedGender = 3;
-            } else {
-                selectedGender = 0;
-            }
-
-            mListener.checkCondition(true);
+            selectedGender = buttonValues.getOrDefault(compoundButton, 0);
+            fragmentSupportListener.checkCondition(true);
         };
-        btn1.setOnCheckedChangeListener(onCheckedChangeListener);
-        btn2.setOnCheckedChangeListener(onCheckedChangeListener);
-        btn3.setOnCheckedChangeListener(onCheckedChangeListener);
-    }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            mListener = (FragmentSupportListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement FragmentSupportListener");
+        for (RadioButton button : buttons) {
+            button.setOnCheckedChangeListener(onCheckedChangeListener);
         }
     }
 

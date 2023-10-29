@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.exerciseapp.mClasses.SharedViewModel;
 import com.example.exerciseapp.mInterfaces.FragmentRespond;
-import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 
 public class SelectHeightFragment extends Fragment implements FragmentRespond {
 
@@ -39,18 +38,30 @@ public class SelectHeightFragment extends Fragment implements FragmentRespond {
                              Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_select_height, container, false);
 
+        initializeViews(mView);
+        setupNumberPicker();
+        setupUnitGroup();
+
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        return mView;
+    }
+
+    private void initializeViews(View mView) {
         numberPicker = mView.findViewById(R.id.fSelectHeight_numberPicker);
+        defaultBtn = mView.findViewById(R.id.fSelectHeight_firstUnit);
+        unitGroup = mView.findViewById(R.id.fSelectHeight_unitGroup);
+    }
+
+    private void setupNumberPicker() {
         numberPicker.setMinValue(10);
         numberPicker.setMaxValue(400);
         numberPicker.setValue(170);
+    }
 
-        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-
-        defaultBtn = mView.findViewById(R.id.fSelectHeight_firstUnit);
+    private void setupUnitGroup() {
         defaultBtn.setChecked(true);
         selectedUnit = 1;
 
-        unitGroup = mView.findViewById(R.id.fSelectHeight_unitGroup);
         unitGroup.setOnCheckedChangeListener((radioGroup, i) -> {
             radioButton = radioGroup.findViewById(i);
             switch (i) {
@@ -62,8 +73,6 @@ public class SelectHeightFragment extends Fragment implements FragmentRespond {
                     break;
             }
         });
-
-        return mView;
     }
 
     @Override

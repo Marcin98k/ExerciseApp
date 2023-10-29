@@ -17,10 +17,6 @@ import com.example.exerciseapp.mInterfaces.ISummary;
 
 public class SummaryFragment extends Fragment implements FragmentRespond {
 
-    private TextView nameTV;
-    private TextView timeTV;
-
-
     private long id;
     private double duration;
     private String name;
@@ -63,20 +59,22 @@ public class SummaryFragment extends Fragment implements FragmentRespond {
                              Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_summary, container, false);
         initView(mView);
-        nameTV.setText(name);
-        new ClockClass(requireActivity()).setSecond((int) duration).dynamicIncreaseTime(timeTV);
         return mView;
     }
 
     private void initView(View v) {
-        nameTV = v.findViewById(R.id.frag_summary_name);
-        timeTV = v.findViewById(R.id.frag_summary_time);
+        TextView nameTV = v.findViewById(R.id.frag_summary_name);
+        TextView timeTV = v.findViewById(R.id.frag_summary_time);
+
+        nameTV.setText(name);
+
+        new ClockClass(requireActivity()).setSecond((int) duration).dynamicIncreaseTime(timeTV);
     }
 
     @Override
     public void fragmentMessage() {
         if (name.equals("Null") || fromWhere < 0 || id < 0 || extensionId < 0 || duration < 0) {
-          throw new NullPointerException(getContext() + " -> Incorrect data");
+            throw new IllegalStateException(getContext() + " -> Incorrect data");
         }
         iSummary.summaryMessage("summaryFragment", name, String.valueOf(duration), id,
                 extensionId, fromWhere, true);

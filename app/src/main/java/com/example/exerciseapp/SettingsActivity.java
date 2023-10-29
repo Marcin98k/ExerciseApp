@@ -47,23 +47,12 @@ public class SettingsActivity extends AppCompatActivity implements
         LinearListFragment.SelectedItem, UpdateIntegersDB, UpdateStringsDB, ITitleChangeListener,
         INotificationCallback, ISendUserData {
 
-    private TextView fragmentTitle;
-
-
-    private int unitsID;
-    private boolean reminderStatus;
-    private long exerciseReminderInMilli;
-
-    private List<Integer> tab;
-    private long currentUserID;
     public static String NOTIFICATION_CHANNEL_ID = "999";
     public static String defaultNotificationId = "default";
+    private static final String NOTIFICATION_CONTENT_TEXT = "Time to train";
 
 
     private static final String TAG = "SettingsActivity";
-    private final String tagHeight = "tagHeight";
-    private final String tagWeight = "tagWeight";
-
 
     //    LinearListFragment == TELL
     private static final String tagMainList = "tagTELL_main";
@@ -77,6 +66,16 @@ public class SettingsActivity extends AppCompatActivity implements
     private static final String levelName = "userLevel";
     private static final String genderName = "userGender";
 
+    private TextView fragmentTitle;
+
+
+    private int unitsID;
+    private boolean reminderStatus;
+    private long exerciseReminderInMilli;
+
+    private List<Integer> tab;
+    private long currentUserID;
+
 
     private Bundle bundle;
     private DBHelper dbHelper;
@@ -88,26 +87,6 @@ public class SettingsActivity extends AppCompatActivity implements
         super.attachBaseContext(GlobalClass.initLanguage(newBase));
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-        if (selectHeightFragment != null) {
-            selectHeightFragment.fragmentMessage();
-            Log.i(TAG, "onBackPressed: " + unitsID + " " + tab.get(0) + " " + tab.get(1));
-            dbHelper.updateHeight(currentUserID, tab.get(0), tab.get(1));
-            tab.clear();
-            selectHeightFragment = null;
-        } else if (selectWeightFragment != null) {
-            selectWeightFragment.fragmentMessage();
-            dbHelper.updateWeight(currentUserID, tab.get(0), tab.get(1));
-            tab.clear();
-            selectWeightFragment = null;
-        } else {
-            Log.i(TAG, "onBackPressed : null ");
-        }
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,21 +94,15 @@ public class SettingsActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_settings);
         initView(savedInstanceState);
         initMenu();
+
         dbHelper = new DBHelper(this);
-
-        Log.i(TAG, "onCreate: " + currentUserID);
-
         tab = new ArrayList<>(2);
-        SharedViewModel sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
-        sharedViewModel.getSharedInt().observe(this, tab::add);
+
+        initializeSharedViewModel();
     }
 
     private void initView(Bundle savedInstanceState) {
-
-        TextView firstPartOfTitle = findViewById(R.id.act_settings_title_part_one);
-        fragmentTitle = findViewById(R.id.act_settings_title_part_two);
-
-        firstPartOfTitle.setText(getString(R.string.settings));
+        initializeViews();
 
         Intent intent = getIntent();
         currentUserID = intent.getLongExtra(GlobalClass.userID, -1);
@@ -139,16 +112,27 @@ public class SettingsActivity extends AppCompatActivity implements
             if (savedInstanceState != null) {
                 return;
             }
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            LinearListFragment linearListFragment = new LinearListFragment();
-            bundle = new Bundle();
-            bundle.putParcelableArrayList("currentList", (ArrayList<? extends Parcelable>) mainList());
-            bundle.putString("listName", tagMainList);
-            linearListFragment.setArguments(bundle);
-            ft.addToBackStack(tagMainList);
-            ft.add(R.id.act_settings_mainContainer, linearListFragment, tagMainList);
-            ft.commit();
+            setupMainSettingsList();
         }
+    }
+
+    private void initializeViews() {
+        TextView firstPartOfTitle = findViewById(R.id.act_settings_title_part_one);
+        fragmentTitle = findViewById(R.id.act_settings_title_part_two);
+
+        firstPartOfTitle.setText(getString(R.string.settings));
+    }
+
+    private void setupMainSettingsList() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        LinearListFragment linearListFragment = new LinearListFragment();
+        bundle = new Bundle();
+        bundle.putParcelableArrayList("currentList", (ArrayList<? extends Parcelable>) mainList());
+        bundle.putString("listName", tagMainList);
+        linearListFragment.setArguments(bundle);
+        ft.addToBackStack(tagMainList);
+        ft.add(R.id.act_settings_mainContainer, linearListFragment, tagMainList);
+        ft.commit();
     }
 
     private void initMenu() {
@@ -176,6 +160,11 @@ public class SettingsActivity extends AppCompatActivity implements
         });
     }
 
+    private void initializeSharedViewModel() {
+        SharedViewModel sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+        sharedViewModel.getSharedInt().observe(this, tab::add);
+    }
+
     private void startNewActivity(Class<?> activity) {
         Intent intent = new Intent(getApplicationContext(), activity);
         intent.putExtra(GlobalClass.userID, currentUserID);
@@ -183,9 +172,9 @@ public class SettingsActivity extends AppCompatActivity implements
         finish();
     }
 
-    private void FragmentOperation(Fragment fragment, FragmentAction action, boolean addToBackStack,
-                                   String tag, List<?> list, String fragmentName, ListType listType,
-                                   NumberOfItem numberOfItem) {
+    private void performFragmentOperation(Fragment fragment, FragmentAction action, boolean addToBackStack,
+                                          String tag, List<?> list, String fragmentName, ListType listType,
+                                          NumberOfItem numberOfItem) {
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Bundle bundle = new Bundle();
@@ -199,6 +188,11 @@ public class SettingsActivity extends AppCompatActivity implements
         if (addToBackStack) {
             ft.addToBackStack(tag);
         }
+        performAction(ft, fragment, action, tag);
+    }
+
+    private void performAction(FragmentTransaction ft, Fragment fragment, FragmentAction action,
+                               String tag) {
         switch (action) {
             case ADD:
                 ft.add(R.id.act_settings_mainContainer, fragment, tag);
@@ -210,43 +204,16 @@ public class SettingsActivity extends AppCompatActivity implements
                 ft.remove(fragment);
                 break;
             default:
-                Log.e("SettingsActivity!", " -> FragmentActionSample: switch(enum) == default");
+                throw new IllegalStateException("Option does not exist");
         }
         ft.commit();
     }
 
-    private void FragmentOperation(Fragment fragment, FragmentAction action,
-                                   boolean addToBackStack, String tag) {
-
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setReorderingAllowed(true);
-        if (addToBackStack) {
-            ft.addToBackStack(tag);
-        }
-        switch (action) {
-            case ADD:
-                ft.add(R.id.act_settings_mainContainer, fragment, tag);
-                break;
-            case REPLACE:
-                ft.replace(R.id.act_settings_mainContainer, fragment, tag);
-                break;
-            case REMOVE:
-                ft.remove(fragment);
-                break;
-            default:
-                Log.e("SettingsActivity!", " -> FragmentActionSample: switch(enum) == default");
-        }
-        ft.commit();
-    }
-
-
-    private ThreeElementLinearListModel fillList(int icon,
-                                                 String name, int action) {
+    private ThreeElementLinearListModel fillList(int icon, String name, int action) {
         return new ThreeElementLinearListModel(-1, icon, name, action);
     }
 
     private List<UserInformationModel> userInformationList() {
-        Log.i(TAG, "userInformationList:(log) " + currentUserID);
         return dbHelper.getInformationUser(currentUserID);
     }
 
@@ -290,7 +257,7 @@ public class SettingsActivity extends AppCompatActivity implements
         list.add(usernameModel);
         list.add(emailModel);
         list.add(passwordModel);
-        Log.i(TAG, "accountList: accoutList");
+        Log.i(TAG, "accountList: accountList");
 
         return list;
     }
@@ -332,7 +299,6 @@ public class SettingsActivity extends AppCompatActivity implements
     }
 
     private List<IntegerModel> notificationList() {
-
         return new ArrayList<>(0);
     }
 
@@ -357,55 +323,75 @@ public class SettingsActivity extends AppCompatActivity implements
                 defaultNotificationId)
                 .setSmallIcon(R.drawable.ic_notifications)
                 .setContentTitle(getString(R.string.app_name))
-                .setContentText("Time to train")
+                .setContentText(NOTIFICATION_CONTENT_TEXT)
                 .setAutoCancel(true)
                 .setChannelId(NOTIFICATION_CHANNEL_ID);
         return builder.build();
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        if (selectHeightFragment != null) {
+            updateHeight();
+        } else if (selectWeightFragment != null) {
+            updateWeight();
+        } else {
+            throw new IllegalStateException("Both SelectHeightFragment and SelectWeightFragment" +
+                    " are null");
+        }
+    }
+
+    private void updateHeight() {
+        selectHeightFragment.fragmentMessage();
+        dbHelper.updateHeight(currentUserID, tab.get(0), tab.get(1));
+        clearData(selectHeightFragment);
+    }
+
+    private void updateWeight() {
+        selectWeightFragment.fragmentMessage();
+        dbHelper.updateWeight(currentUserID, tab.get(0), tab.get(1));
+        clearData(selectWeightFragment);
+    }
+
+    private void clearData(Fragment fragment) {
+        tab.clear();
+        fragment = null;
+    }
+
+    @Override
     public void strValues(String listName, int position, int id, String firstVal) {
         if (listName.equals(tagAccountList)) {
-            switch (position) {
-                case 0:
-                    dbHelper.updateUser(RowNames.NAME, id, firstVal);
-                    break;
-                case 1:
-                    dbHelper.updateUser(RowNames.EMAIL, id, firstVal);
-                    break;
-                case 2:
-                    dbHelper.updateUser(RowNames.PASSWORD, id, firstVal);
-                    break;
-                default:
-                    Log.e(TAG, "strValues:  listName --> default");
-                    break;
+            RowNames rowNames = getRowNames(position);
+
+            if (rowNames != null) {
+                dbHelper.updateUser(rowNames, id, firstVal);
+            } else {
+                throw new IllegalStateException("Option does not exist");
             }
         }
     }
 
-    @Override
-    public void values(String listName, int firstValue, int secondValue, int thirdValue, int fourthValue) {
+    private RowNames getRowNames(int position) {
+        switch (position) {
+            case 0:
+                return RowNames.NAME;
+            case 1:
+                return RowNames.EMAIL;
+            case 2:
+                return RowNames.PASSWORD;
+            default:
+                return null;
+        }
+    }
 
+    @Override
+    public void values(String listName, int firstValue, int secondValue, int thirdValue,
+                       int fourthValue) {
         switch (listName) {
             case informationName:
-                unitsID = secondValue;
-                if (firstValue == 0) {
-                    FragmentManager fm = getSupportFragmentManager();
-                    FragmentTransaction ft = fm.beginTransaction();
-                    selectHeightFragment = new SelectHeightFragment();
-                    ft.setReorderingAllowed(true);
-                    ft.addToBackStack(tagHeight);
-                    ft.replace(R.id.act_settings_mainContainer, selectHeightFragment, tagHeight);
-                    ft.commit();
-                } else if (firstValue == 1) {
-                    FragmentManager fm = getSupportFragmentManager();
-                    FragmentTransaction ft = fm.beginTransaction();
-                    selectWeightFragment = new SelectWeightFragment();
-                    ft.setReorderingAllowed(true);
-                    ft.addToBackStack(tagWeight);
-                    ft.replace(R.id.act_settings_mainContainer, selectWeightFragment, tagWeight);
-                    ft.commit();
-                }
+                handleInformationFragment(firstValue, secondValue);
                 break;
             case performanceName:
                 dbHelper.updateUserPerformance(currentUserID, firstValue, secondValue);
@@ -420,21 +406,50 @@ public class SettingsActivity extends AppCompatActivity implements
                 dbHelper.switchUserGender(currentUserID, secondValue);
                 break;
             case tagLanguageList:
-                dbHelper.switchLanguage(firstValue, secondValue);
-                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                int count = fragmentManager.getBackStackEntryCount();
-                for (int i = 0; i < count; i++) {
-                    fragmentManager.popBackStack(fragmentManager.getBackStackEntryAt(i).getName(),
-                            FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                   }
+                handleLanguageValue(firstValue, secondValue);
                 break;
             default:
-                Log.e(TAG, "values:  listName --> default");
-                break;
+                throw new IllegalStateException("listName does not exist");
+        }
+    }
+
+    private void handleInformationFragment(int firstValue, int secondValue) {
+        unitsID = secondValue;
+        if (firstValue == 0 || firstValue == 1) {
+            Fragment fragment = (firstValue == 0) ? (selectHeightFragment = new SelectHeightFragment()) :
+                    (selectWeightFragment = new SelectWeightFragment());
+            replaceFragmentInMainContainer(fragment, fragment.getTag());
+        }
+    }
+
+    private void replaceFragmentInMainContainer(Fragment fragment, String tag) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setReorderingAllowed(true);
+        ft.addToBackStack(tag);
+        ft.replace(R.id.act_settings_mainContainer, fragment, tag);
+        ft.commit();
+    }
+
+    private void handleLanguageValue(int firstValue, int secondValue) {
+        dbHelper.switchLanguage(firstValue, secondValue);
+        restartMainActivity();
+    }
+
+    private void restartMainActivity() {
+        Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+        clearBackStack();
+    }
+
+    private void clearBackStack() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        int count = fragmentManager.getBackStackEntryCount();
+        for (int i = 0; i < count; i++) {
+            fragmentManager.popBackStack(fragmentManager.getBackStackEntryAt(i).getName(),
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
 
@@ -444,63 +459,71 @@ public class SettingsActivity extends AppCompatActivity implements
         if (Objects.equals(list, tagMainList)) {
             switch (position) {
                 case 0:
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ProfileFragment profileFragment = new ProfileFragment();
-                    bundle = new Bundle();
-                    bundle.putParcelableArrayList(informationName,
-                            (ArrayList<? extends Parcelable>) userUnit());
-                    bundle.putParcelableArrayList(goalsName,
-                            (ArrayList<? extends Parcelable>) userGoals());
-                    bundle.putParcelableArrayList(performanceName,
-                            (ArrayList<? extends Parcelable>) userPerformance());
-                    bundle.putParcelableArrayList(levelName,
-                            (ArrayList<? extends Parcelable>) userLevel());
-                    bundle.putParcelableArrayList(genderName,
-                            (ArrayList<? extends Parcelable>) userGender());
-                    profileFragment.setArguments(bundle);
-                    ft.setReorderingAllowed(true);
-                    ft.addToBackStack(tagProfileLists);
-                    ft.replace(R.id.act_settings_mainContainer, profileFragment, tagProfileLists);
-                    ft.commit();
+                    openProfileFragment();
                     break;
                 case 1:
-                    FragmentOperation(new FourElementListFragment(), FragmentAction.REPLACE,
-                            true, tagAccountList, accountList(),
-                            getString(R.string.account), ListType.SELECTABLE_BUTTONS_STR,
-                            NumberOfItem.TWO);
+                    performFragmentOperation(new FourElementListFragment(), FragmentAction.REPLACE,
+                            true, tagAccountList, accountList(), getString(R.string.account),
+                            ListType.SELECTABLE_BUTTONS_STR, NumberOfItem.TWO);
                     break;
                 case 2:
-                    FragmentOperation(new NotificationFragment(), FragmentAction.REPLACE,
+                    performFragmentOperation(new NotificationFragment(), FragmentAction.REPLACE,
                             true, tagNotificationList, notificationList(),
                             getString(R.string.notification), ListType.SELECTABLE_BUTTONS,
                             NumberOfItem.ONE);
                     break;
                 case 3:
-                    FragmentOperation(new RadioButtonList(), FragmentAction.REPLACE,
+                    performFragmentOperation(new RadioButtonList(), FragmentAction.REPLACE,
                             true, tagLanguageList, languageListModel(),
                             getString(R.string.language), ListType.RADIO_BUTTONS, NumberOfItem.ONE);
                     break;
                 case 4:
-                    FragmentOperation(new ContactFragment(), FragmentAction.REPLACE,
-                            true, ContactFragment.class.getName());
+                    performFragmentOperation(new ContactFragment(), FragmentAction.REPLACE,
+                            true, ContactFragment.class.getName(), new ArrayList<>(),
+                            ContactFragment.class.getName(), ListType.NULL, NumberOfItem.NULL);
                     break;
                 case 5:
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle(R.string.log_out);
-                    builder.setPositiveButton(R.string.yes, (dialogInterface, i) -> {
-                        dbHelper.accountStatus(currentUserID, false);
-                        currentUserID = -1;
-                        Intent intent = new Intent(this, MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra(GlobalClass.userID, currentUserID);
-                        startActivity(intent);
-                    });
-                    builder.setNegativeButton(R.string.no, ((dialogInterface, i) -> dialogInterface.dismiss()));
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
+                    showLogoutDialog();
                     break;
             }
         }
+    }
+
+    private void openProfileFragment() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ProfileFragment profileFragment = new ProfileFragment();
+        bundle = new Bundle();
+        bundle.putParcelableArrayList(informationName,
+                (ArrayList<? extends Parcelable>) userUnit());
+        bundle.putParcelableArrayList(goalsName,
+                (ArrayList<? extends Parcelable>) userGoals());
+        bundle.putParcelableArrayList(performanceName,
+                (ArrayList<? extends Parcelable>) userPerformance());
+        bundle.putParcelableArrayList(levelName,
+                (ArrayList<? extends Parcelable>) userLevel());
+        bundle.putParcelableArrayList(genderName,
+                (ArrayList<? extends Parcelable>) userGender());
+        profileFragment.setArguments(bundle);
+        ft.setReorderingAllowed(true);
+        ft.addToBackStack(tagProfileLists);
+        ft.replace(R.id.act_settings_mainContainer, profileFragment, tagProfileLists);
+        ft.commit();
+    }
+
+    private void showLogoutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.log_out);
+        builder.setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+            dbHelper.accountStatus(currentUserID, false);
+            currentUserID = -1;
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra(GlobalClass.userID, currentUserID);
+            startActivity(intent);
+        });
+        builder.setNegativeButton(R.string.no, ((dialogInterface, i) -> dialogInterface.dismiss()));
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
@@ -516,20 +539,11 @@ public class SettingsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void sendData(String listName, long id, RowNames names, String value) {
-        switch (names) {
-            case NAME:
-                dbHelper.updateUser(RowNames.NAME, id, value);
-                break;
-            case EMAIL:
-                dbHelper.updateUser(RowNames.EMAIL, id, value);
-                break;
-            case PASSWORD:
-                dbHelper.updateUser(RowNames.PASSWORD, id, value);
-                break;
-            default:
-                Log.e(TAG, "sendDate:  listName --> default");
-                break;
+    public void sendData(String listName, long id, RowNames rowNames, String value) {
+        if (rowNames == RowNames.NAME || rowNames == RowNames.EMAIL || rowNames == RowNames.PASSWORD) {
+            dbHelper.updateUser(rowNames, id, value);
+        } else {
+            throw new IllegalStateException("Option does not exist");
         }
     }
 }

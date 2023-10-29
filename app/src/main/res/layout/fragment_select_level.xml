@@ -32,7 +32,7 @@
             app:layout_constraintTop_toBottomOf="@+id/frag_select_level_title">
 
             <RadioButton
-                android:id="@+id/fSelectLevel_firstOption"
+                android:id="@+id/fSelectLevel_beginner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="5dp"
@@ -42,7 +42,7 @@
                 android:textAlignment="center" />
 
             <RadioButton
-                android:id="@+id/fSelectLevel_secondOption"
+                android:id="@+id/fSelectLevel_intermediate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="5dp"
@@ -52,7 +52,7 @@
                 android:textAlignment="center" />
 
             <RadioButton
-                android:id="@+id/fSelectLevel_thirdOption"
+                android:id="@+id/fSelectLevel_advanced"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="5dp"

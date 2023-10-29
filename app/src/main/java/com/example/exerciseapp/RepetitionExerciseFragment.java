@@ -2,7 +2,6 @@ package com.example.exerciseapp;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,12 @@ import com.example.exerciseapp.mModels.IntegerModel;
 import java.util.List;
 
 public class RepetitionExerciseFragment extends Fragment implements FragmentRespond {
+
+    private ImageView imageView;
+    private TextView nameView;
+    private TextView countView;
+    private TextView currentSetView;
+    private TextView sumSetView;
 
     private long id;
     private byte currentSet;
@@ -53,53 +58,66 @@ public class RepetitionExerciseFragment extends Fragment implements FragmentResp
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View mView = inflater.inflate(R.layout.fragment_repetition_exercise, container, false);
         currentSet = (byte) (currentSet + 1);
         intiView(mView);
         return mView;
     }
 
-    private void intiView(View v) {
+    private void intiView(View mView) {
 
-        ImageView imageView = v.findViewById(R.id.frag_repetition_exercise_image);
-        TextView nameView = v.findViewById(R.id.frag_repetition_exercise_name);
-        TextView countView = v.findViewById(R.id.frag_repetition_exercise_count);
-        TextView currentSetView = v.findViewById(R.id.frag_repetition_exercise_current_set);
-        TextView sumSetView = v.findViewById(R.id.frag_repetition_exercise_sum_set);
+        initializeViews(mView);
 
-        List<ExerciseModel> exercise;
         contentBD = new ContentBD(requireActivity());
-        if (fromWhere == 0) {
-            exercise = contentBD.showExerciseById(id);
-        } else {
-            exercise = contentBD.showUserExerciseById(id);
-        }
+        List<ExerciseModel> exercise = getExerciseById(id, fromWhere);
+
         if (exercise.isEmpty()) {
             throw new NullPointerException(getContext() + " list is empty");
         } else {
-            final byte POSITION = 0;
-            ExerciseModel exerciseModel = exercise.get(POSITION);
-            List<IntegerModel> extension = contentBD.showExerciseExtensionId(exercise.get(POSITION).getExtension());
-            IntegerModel integerModel = extension.get(POSITION);
+            ExerciseModel exerciseModel = exercise.get(0);
+            IntegerModel integerModel = getExerciseExtension(exerciseModel);
+
             int getSet = integerModel.getSecondValue();
             int sumSet = getSet + 1;
 
-//            imageView.setImageResource(exercise.get(POSITION).getImage());
             nameView.setText(exerciseModel.getName());
             countView.setText(String.valueOf(integerModel.getThirdValue()));
             sumSetView.setText(String.valueOf(getSet));
             currentSetView.setText(String.valueOf(currentSet));
             rest = integerModel.getFifthValue();
 
+            checkLastSet(currentSet, sumSet - 1);
+        }
+    }
 
-            if (currentSet == (sumSet - 1)) {
-                last = 1;
-            }
-            if (currentSet == sumSet) {
-                last = 0;
-                fragmentSupportListener.checkCondition(true);
-            }
+    private void initializeViews(View v) {
+        imageView = v.findViewById(R.id.frag_repetition_exercise_image);
+        nameView = v.findViewById(R.id.frag_repetition_exercise_name);
+        countView = v.findViewById(R.id.frag_repetition_exercise_count);
+        currentSetView = v.findViewById(R.id.frag_repetition_exercise_current_set);
+        sumSetView = v.findViewById(R.id.frag_repetition_exercise_sum_set);
+    }
+
+    private List<ExerciseModel> getExerciseById(long id, int fromWhere) {
+        if (fromWhere == 0) {
+            return contentBD.showExerciseById(id);
+        } else {
+            return contentBD.showUserExerciseById(id);
+        }
+    }
+
+    private IntegerModel getExerciseExtension(ExerciseModel exerciseModel) {
+        List<IntegerModel> extension = contentBD.showExerciseExtensionId(exerciseModel.getExtension());
+        return extension.get(0);
+    }
+
+    private void checkLastSet(int currentSet, int sumSet) {
+        if (currentSet == (sumSet - 1)) {
+            last = 1;
+        }
+        if (currentSet == sumSet) {
+            last = 0;
+            fragmentSupportListener.checkCondition(true);
         }
     }
 

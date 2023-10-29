@@ -3,7 +3,6 @@ package com.example.exerciseapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 
 import com.example.exerciseapp.mClasses.InsertResult;
@@ -20,25 +20,22 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SignInFragment extends Fragment implements FragmentRespond {
 
-    private EditText username;
-    private EditText emailET;
-    private EditText passwordET;
+    private EditText loginEditText;
+    private EditText passwordEditText;
     private Editable editable;
 
-    private Button btn1;
+    private Button signInBtn;
 
-    private TextInputLayout emailContainer;
+    private TextInputLayout loginContainer;
     private TextInputLayout passwordContainer;
 
-    private String emailStr;
-    private char[] passwordChar;
-    private long userId = -1;
+    private String login;
+    private char[] password;
 
     private DBHelper dbHelper;
 
@@ -51,26 +48,37 @@ public class SignInFragment extends Fragment implements FragmentRespond {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View mView = inflater.inflate(R.layout.fragment_sign_in, container, false);
+        initializeViews(mView);
 
         dbHelper = new DBHelper(requireActivity());
-        emailET = mView.findViewById(R.id.fSignIn_ET_email);
-        passwordET = mView.findViewById(R.id.fSignIn_ET_password);
 
-        emailContainer = mView.findViewById(R.id.fSignIn_container_email);
-        passwordContainer = mView.findViewById(R.id.fSignIn_container_password);
+        setupSignInButton(signInBtn);
+        return mView;
+    }
 
-        btn1 = mView.findViewById(R.id.fSignIn_btn);
+    private void initializeViews(View v) {
+        loginEditText = v.findViewById(R.id.fSignIn_ET_email);
+        passwordEditText = v.findViewById(R.id.fSignIn_ET_password);
 
-        btn1.setOnClickListener(v -> {
+        loginContainer = v.findViewById(R.id.fSignIn_container_email);
+        passwordContainer = v.findViewById(R.id.fSignIn_container_password);
 
-            emailStr = emailET.getText().toString().trim();
-            editable = passwordET.getText();
-            passwordChar = new char[editable.length()];
+        signInBtn = v.findViewById(R.id.fSignIn_btn);
+    }
+
+    @VisibleForTesting
+    private void setupSignInButton(Button btn) {
+
+        btn.setOnClickListener(v -> {
+            login = loginEditText.getText().toString().trim();
+            editable = passwordEditText.getText();
+            password = new char[editable.length()];
+
             for (int i = 0; i < editable.length(); i++) {
-                passwordChar[i] = editable.charAt(i);
+                password[i] = editable.charAt(i);
             }
 
-            long id = logIn(emailStr, passwordChar);
+            long id = signIn(login, password);
             if (id != -1) {
                 dbHelper.accountStatus(id, true);
                 Intent intent = new Intent(requireActivity(), LibraryActivity.class);
@@ -78,10 +86,9 @@ public class SignInFragment extends Fragment implements FragmentRespond {
                 startActivity(intent);
             }
         });
-
-        return mView;
     }
 
+    @VisibleForTesting
     private static byte[] hashPassword(char[] password) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
@@ -90,21 +97,20 @@ public class SignInFragment extends Fragment implements FragmentRespond {
             }
             return messageDigest.digest();
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
-    private long logIn(String email, char[] pass) {
+    @VisibleForTesting
+    private long signIn(String email, char[] pass) {
 
-        String emailPatter = "^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
-        Pattern pattern = Pattern.compile(emailPatter);
+        String emailPattern = "^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
+        Pattern pattern = Pattern.compile(emailPattern);
         Matcher matcher = pattern.matcher(email);
 
-        Log.i("TAG", "logIn: " + email + " pass: " + Arrays.toString(pass));
-
         if (!matcher.matches()) {
-            Toast.makeText(requireActivity(), "Incorrect login or passwordET", Toast.LENGTH_SHORT).show();
-            passwordET.setText("");
+            showToast("Incorrect login or password");
+            passwordEditText.setText("");
             return -1;
         }
         byte[] hashPassword = hashPassword(pass);
@@ -112,12 +118,14 @@ public class SignInFragment extends Fragment implements FragmentRespond {
         InsertResult result = dbHelper.logIn(email, hashPassword);
 
         if (!result.isSuccess()) {
-            Toast.makeText(requireActivity(), "User does not exist", Toast.LENGTH_SHORT).show();
-            Log.i("SignIn", "logIn: User does not exist");
+            showToast("User does not exist");
             return -1;
         }
-        Log.i("TAG", "logIn: getIndex");
         return result.getIndex();
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

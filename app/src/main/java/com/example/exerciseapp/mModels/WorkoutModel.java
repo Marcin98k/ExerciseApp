@@ -1,4 +1,4 @@
-package com.example.exerciseapp;
+package com.example.exerciseapp.mModels;
 
 public class WorkoutModel {
 
@@ -29,8 +29,20 @@ public class WorkoutModel {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public long getExerciseId() {
         return exerciseId;
+    }
+
+    public void setExerciseId(long exerciseId) {
+        this.exerciseId = exerciseId;
+    }
+
+    public void setExtensionId(long extensionId) {
+        this.extensionId = extensionId;
     }
 
     public long getExtensionId() {
@@ -41,11 +53,23 @@ public class WorkoutModel {
         return type;
     }
 
+    public void setType(byte type) {
+        this.type = type;
+    }
+
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public int getFromWhere() {
         return fromWhere;
+    }
+
+    public void setFromWhere(int fromWhere) {
+        this.fromWhere = fromWhere;
     }
 }

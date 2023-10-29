@@ -1,17 +1,16 @@
 package com.example.exerciseapp;
 
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.exerciseapp.mClasses.SharedViewModel;
 import com.example.exerciseapp.mInterfaces.FragmentRespond;
@@ -23,9 +22,9 @@ public class SelectWeightFragment extends Fragment implements FragmentRespond {
     private RadioButton defaultBtn;
     private NumberPicker numberPicker;
 
-    SharedViewModel sharedViewModel;
-
     private int selectedUnit;
+
+    private SharedViewModel sharedViewModel;
 
     public SelectWeightFragment() {
         // Required empty public constructor
@@ -41,18 +40,30 @@ public class SelectWeightFragment extends Fragment implements FragmentRespond {
                              Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_select_weight, container, false);
 
+        initializeViews(mView);
+        setupNumberPicker();
+        setupUnitGroup();
+
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        return mView;
+    }
+
+    private void initializeViews(View mView) {
         numberPicker = mView.findViewById(R.id.fSelectWeight_numberPicker);
+        defaultBtn = mView.findViewById(R.id.fSelectWeight_firstUnit);
+        radioGroup = mView.findViewById(R.id.fSelectWeight_unitGroup);
+    }
+
+    private void setupNumberPicker() {
         numberPicker.setMinValue(10);
         numberPicker.setMaxValue(400);
         numberPicker.setValue(80);
+    }
 
-        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-
-        defaultBtn = mView.findViewById(R.id.fSelectWeight_firstUnit);
+    private void setupUnitGroup() {
         defaultBtn.setChecked(true);
         selectedUnit = 1;
 
-        radioGroup = mView.findViewById(R.id.fSelectWeight_unitGroup);
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> {
             radioButton = radioGroup.findViewById(i);
 
@@ -65,7 +76,6 @@ public class SelectWeightFragment extends Fragment implements FragmentRespond {
                     break;
             }
         });
-        return mView;
     }
 
     @Override

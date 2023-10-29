@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.exerciseapp.mClasses.ClockClass;
+import com.example.exerciseapp.mEnums.ExerciseType;
 import com.example.exerciseapp.mInterfaces.INewExercise;
 
 public class CustomExerciseCounterFragment extends Fragment implements View.OnClickListener {

@@ -24,35 +24,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class WelcomeActivity extends AppCompatActivity implements FragmentSupportListener, IUserData {
-
-    private Button actionBtn;
-
-
-    private LinkedList<Integer> regListInt = new LinkedList<>();
-    private LinkedList<String> regListStr = new LinkedList<>();
-    private Map<String, Runnable> runnableMap;
-    private boolean isCorrect = false;
-    private long newUser;
-    private String username;
-    private String email;
-    private String password;
-
-
-    private SharedViewModel sharedViewModel;
-    private FragmentManager fragmentManager;
-
-
-    private DBHelper dbHelper;
-    private SignInFragment signInFragment;
-    private SignUpFragment signUpFragment;
-    private SelectGenderFragment selectGenderFragment;
-    private SelectHeightFragment selectHeightFragment;
-    private SelectWeightFragment selectWeightFragment;
-    private SelectLevelFragment selectLevelFragment;
-    private SelectGoalsFragment selectGoalsFragment;
-    private SelectPerformanceFragment selectPerformanceFragment;
-
+public class WelcomeActivity extends AppCompatActivity implements FragmentSupportListener,
+        IUserData {
 
     private final String SIGN_IN_TAG = "tagSignInFragment";
     private final String SIGN_UP_TAG = "tagSignUpFragment";
@@ -63,38 +36,26 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
     private final String GOALS_TAG = "tagSelectGoalsFragment";
     private final String PERFORMANCE_TAG = "tagSelectPerformanceFragment";
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    private Button actionBtn;
 
-        initFragments();
+    private LinkedList<Integer> regListInt = new LinkedList<>();
+    private LinkedList<String> regListStr = new LinkedList<>();
+    private Map<String, Runnable> runnableMap;
+    private boolean isCorrect = false;
+    private long newUser;
+    private String username;
+    private String email;
+    private String password;
 
-        if (regListInt.isEmpty()) {
-            actionBtn.setText(R.string.sign_up);
-            Toast.makeText(this, "List is Empty", Toast.LENGTH_SHORT).show();
-        }
-        if (selectGenderFragment != null && selectGenderFragment.isVisible()) {
-            deleteLoop(regListInt, 1);
-        }
-        if (selectHeightFragment != null && selectHeightFragment.isVisible()) {
-            deleteLoop(regListInt, 2);
-        }
-        if (selectWeightFragment != null && selectWeightFragment.isVisible()) {
-            deleteLoop(regListInt, 2);
-        }
-        if (selectLevelFragment != null && selectLevelFragment.isVisible()) {
-            deleteLoop(regListInt, 1);
-        }
-        if (selectGoalsFragment != null && selectGoalsFragment.isVisible()) {
-            deleteLoop(regListInt, 4);
-        }
-        if (selectPerformanceFragment != null && selectPerformanceFragment.isVisible()) {
-            actionBtn.setText(R.string.next);
-            deleteLoop(regListInt, 4);
-        }
-        Toast.makeText(this, "Inside list is:\n" + regListInt, Toast.LENGTH_SHORT).show();
+    private FragmentManager fragmentManager;
 
-    }
+    private DBHelper dbHelper;
+    private SelectGenderFragment selectGenderFragment;
+    private SelectHeightFragment selectHeightFragment;
+    private SelectWeightFragment selectWeightFragment;
+    private SelectLevelFragment selectLevelFragment;
+    private SelectGoalsFragment selectGoalsFragment;
+    private SelectPerformanceFragment selectPerformanceFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +67,7 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
     }
 
     private void initView(Bundle savedInstanceState) {
-        actionBtn = findViewById(R.id.aWelcome_actionBtn);
+        initializeViews();
 
         dbHelper = new DBHelper(WelcomeActivity.this);
         fragmentManager = getSupportFragmentManager();
@@ -115,11 +76,25 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
             if (savedInstanceState != null) {
                 return;
             }
-            FragmentTransaction ft = fragmentManager.beginTransaction();
-            ft.addToBackStack(SIGN_IN_TAG);
-            ft.add(R.id.aWelcome_FL_mainContainer, new SignInFragment(), SIGN_IN_TAG);
-            ft.commit();
+            addFirstFragmentToActivity();
         }
+
+        setupRunnableMapToRegistration();
+        actionBtn.setOnClickListener(v -> handleButton());
+    }
+
+    private void initializeViews() {
+        actionBtn = findViewById(R.id.aWelcome_actionBtn);
+    }
+
+    private void addFirstFragmentToActivity() {
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.addToBackStack(SIGN_IN_TAG);
+        ft.add(R.id.aWelcome_FL_mainContainer, new SignInFragment(), SIGN_IN_TAG);
+        ft.commit();
+    }
+
+    private void setupRunnableMapToRegistration() {
 
         runnableMap = new HashMap<>();
         runnableMap.put(SIGN_IN_TAG, this::handleSignIn);
@@ -129,8 +104,6 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
         runnableMap.put(LEVEL_TAG, this::handleSelectLevel);
         runnableMap.put(GOALS_TAG, this::handleSelectGoals);
         runnableMap.put(PERFORMANCE_TAG, this::handleSelectPerformance);
-
-        actionBtn.setOnClickListener(v -> handleButton());
     }
 
     private void replaceFragment(Fragment fragment, String tag) {
@@ -142,8 +115,6 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
     }
 
     private void initFragments() {
-        this.signInFragment = (SignInFragment) this.fragmentManager.findFragmentByTag(SIGN_IN_TAG);
-        this.signUpFragment = (SignUpFragment) this.fragmentManager.findFragmentByTag(SIGN_UP_TAG);
         this.selectGenderFragment = (SelectGenderFragment) this.fragmentManager.findFragmentByTag(GENDER_TAG);
         this.selectHeightFragment = (SelectHeightFragment) this.fragmentManager.findFragmentByTag(HEIGHT_TAG);
         this.selectWeightFragment = (SelectWeightFragment) this.fragmentManager.findFragmentByTag(WEIGHT_TAG);
@@ -154,29 +125,8 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
 
     private void sendToDB() {
 
-        int height;
-        int weight;
-
-        switch (regListInt.get(2)) {
-            case 1:
-                height = 1;
-                break;
-            case 2:
-                height = 2;
-                break;
-            default:
-                height = 0;
-        }
-        switch (regListInt.get(4)) {
-            case 1:
-                weight = 1;
-                break;
-            case 2:
-                weight = 2;
-                break;
-            default:
-                weight = 0;
-        }
+        int height = getUnit(regListInt.get(2));
+        int weight = getUnit(regListInt.get(4));
 
         dbHelper.insertUnitsTab(new IntegerModel(-1, regListInt.get(1), regListInt.get(3),
                 height, weight));
@@ -198,10 +148,48 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
                 dbHelper.getLastID("NOTIFICATIONS"))).getIndex();
     }
 
+    private int getUnit(int value) {
+        switch (value) {
+            case 1:
+            case 2:
+                return value;
+            default:
+                return 0;
+        }
+    }
+
     private void fragmentObserver() {
-        sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+        SharedViewModel sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
         sharedViewModel.getSharedInt().observe(this, item -> regListInt.add(item));
         sharedViewModel.getSharedStr().observe(this, item -> regListStr.add(item));
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        initFragments();
+
+        if (regListInt.isEmpty()) {
+            actionBtn.setText(R.string.sign_up);
+        }
+
+        handleFragmentVisibility(selectGenderFragment, 1);
+        handleFragmentVisibility(selectHeightFragment, 2);
+        handleFragmentVisibility(selectWeightFragment, 2);
+        handleFragmentVisibility(selectLevelFragment, 1);
+        handleFragmentVisibility(selectGoalsFragment, 4);
+
+        if (selectPerformanceFragment != null && selectPerformanceFragment.isVisible()) {
+            actionBtn.setText(R.string.next);
+            deleteLoop(regListInt, 4);
+        }
+    }
+
+    private void handleFragmentVisibility(Fragment fragment, int value) {
+        if (fragment != null && fragment.isVisible()) {
+            deleteLoop(regListInt, value);
+        }
     }
 
     private void deleteLoop(LinkedList<Integer> list, int count) {
