@@ -12,23 +12,7 @@ public class FourElementLinearListModel implements Parcelable{
     private String name;
     private String firstValue;
     private String secondValue;
-
     private int secondId;
-
-    public FourElementLinearListModel() {
-
-    }
-
-    @Override
-    public String toString() {
-        return "FourElementLinearListModel{" +
-                "id=" + id +
-                ", icon=" + icon +
-                ", name='" + name + '\'' +
-                ", firstValue='" + firstValue + '\'' +
-                ", secondValue='" + secondValue + '\'' +
-                '}';
-    }
 
     public FourElementLinearListModel(int id, int icon,
                                       String name, String firstValue, String secondValue) {
@@ -66,7 +50,9 @@ public class FourElementLinearListModel implements Parcelable{
         secondId = in.readInt();
     }
 
-    public static final Creator<FourElementLinearListModel> CREATOR = new Creator<FourElementLinearListModel>() {
+    public static final Creator<FourElementLinearListModel> CREATOR =
+            new Creator<FourElementLinearListModel>() {
+
         @Override
         public FourElementLinearListModel createFromParcel(Parcel in) {
             return new FourElementLinearListModel(in);

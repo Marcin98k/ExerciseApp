@@ -19,17 +19,6 @@ public class CustomUserExerciseModel {
         this.exerciseExtensionID = exerciseExtensionID;
     }
 
-    @Override
-    public String toString() {
-        return "CustomUserExerciseModel{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", name='" + name + '\'' +
-                ", exerciseID=" + exerciseID +
-                ", exerciseExtensionID=" + exerciseExtensionID +
-                '}';
-    }
-
     public long getId() {
         return id;
     }

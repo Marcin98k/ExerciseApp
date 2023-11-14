@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exerciseapp.R;
-import com.example.exerciseapp.mClasses.ClockClass;
+import com.example.exerciseapp.mClasses.TrainingTimer;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.FourElementsModel;
 
@@ -71,8 +71,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                 holder.typeTV.setText(resultList.get(position).getType().equals("1") ?
                         "Repetition" : "Time");
         }
-        new ClockClass(mContext).setSecond(resultList.get(position).
-                getDuration()).dynamicIncreaseTime(holder.durationTV);
+        new TrainingTimer.TrainingTimerBuilder(mContext)
+                .setSecond(resultList.get(position).getDuration())
+                .build()
+                .dynamicIncreaseTime(holder.durationTV);
 
         String[] names = {mContext.getString(R.string.beginner),
                 mContext.getString(R.string.intermediate), mContext.getString(R.string.advanced)};

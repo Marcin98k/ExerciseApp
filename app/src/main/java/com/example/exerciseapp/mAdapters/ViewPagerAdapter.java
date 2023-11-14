@@ -5,10 +5,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.exerciseapp.CustomExerciseCounterFragment;
-import com.example.exerciseapp.EmptyFragment;
+import com.example.exerciseapp.Exercise.CustomExerciseCounterFragment;
+import com.example.exerciseapp.mResource.EmptyFragment;
 import com.example.exerciseapp.mEnums.ExerciseType;
-import com.example.exerciseapp.SearchList;
+import com.example.exerciseapp.mResource.SearchList;
 import com.example.exerciseapp.mEnums.ViewPagerType;
 import com.example.exerciseapp.mModels.FourElementsModel;
 

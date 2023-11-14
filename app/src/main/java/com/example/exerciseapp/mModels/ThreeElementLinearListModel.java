@@ -70,10 +70,6 @@ public class ThreeElementLinearListModel implements Parcelable {
         return icon;
     }
 
-    public void setIcon(int icon) {
-        this.icon = icon;
-    }
-
     public String getName() {
         return name;
     }
@@ -86,24 +82,8 @@ public class ThreeElementLinearListModel implements Parcelable {
         return action;
     }
 
-    public void setAction(int action) {
-        this.action = action;
-    }
-
     public String getImage() {
         return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getStrVal() {
-        return strVal;
-    }
-
-    public void setStrVal(String strVal) {
-        this.strVal = strVal;
     }
 
     @Override

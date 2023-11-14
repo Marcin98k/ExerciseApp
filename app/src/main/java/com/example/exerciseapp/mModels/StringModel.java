@@ -6,9 +6,6 @@ public class StringModel {
     private String name;
     private int intValue;
 
-    public StringModel() {
-    }
-
     public StringModel(int id, String name) {
         this.id = id;
         this.name = name;

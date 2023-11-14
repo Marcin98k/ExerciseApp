@@ -13,14 +13,19 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.exerciseapp.Exercise.RepetitionExerciseFragment;
+import com.example.exerciseapp.Exercise.SummaryFragment;
+import com.example.exerciseapp.Exercise.TimeBreakFragment;
+import com.example.exerciseapp.Exercise.TimeExerciseFragment;
 import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mInterfaces.FragmentRespond;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
-import com.example.exerciseapp.mInterfaces.ISummary;
+import com.example.exerciseapp.mInterfaces.TrainingSummaryHandler;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.UserExercisePerformedModel;
 import com.example.exerciseapp.mModels.WorkoutModel;
+import com.example.exerciseapp.mResource.EmptyFragment;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -28,8 +33,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class ExerciseActivity extends AppCompatActivity implements
-        FragmentSupportListener, UpdateIntegersDB, ISummary {
+public class ExerciseActivity extends AppCompatActivity implements FragmentSupportListener,
+        UpdateIntegersDB, TrainingSummaryHandler {
 
     private static final String REPETITION_EXE_TAG = "tagRepetitionExerciseFragment";
     private static final String TIME_EXE_TAG = "tagTimeExerciseFragment";
@@ -86,7 +91,7 @@ public class ExerciseActivity extends AppCompatActivity implements
     private void setNextButtonOnClickListener() {
         nextBtn.setOnClickListener(v -> {
             Fragment visibleFragment = getVisibilityFragment();
-            if (visibleFragment instanceof FragmentSupportListener) {
+            if (visibleFragment instanceof FragmentRespond) {
                 ((FragmentRespond) visibleFragment).fragmentMessage();
             }
         });
@@ -94,7 +99,6 @@ public class ExerciseActivity extends AppCompatActivity implements
 
     private Fragment getVisibilityFragment() {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
-
         for (Fragment fragment : fragments) {
             if (fragment != null && fragment.isVisible()) {
                 return fragment;

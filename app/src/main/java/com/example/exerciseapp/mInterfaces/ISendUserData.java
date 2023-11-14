@@ -1,7 +1,7 @@
 package com.example.exerciseapp.mInterfaces;
 
-import com.example.exerciseapp.mEnums.RowNames;
+import com.example.exerciseapp.mEnums.UserDatabaseColumns;
 
 public interface ISendUserData {
-    void sendData(String listName, long id, RowNames rowNames, String value);
+    void sendData(String listName, long id, UserDatabaseColumns userDatabaseColumns, String value);
 }

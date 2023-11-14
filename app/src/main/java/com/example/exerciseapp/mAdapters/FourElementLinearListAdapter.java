@@ -20,9 +20,8 @@ import com.example.exerciseapp.R;
 import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mEnums.ListType;
 import com.example.exerciseapp.mEnums.NumberOfItem;
-import com.example.exerciseapp.mEnums.RowNames;
+import com.example.exerciseapp.mEnums.UserDatabaseColumns;
 import com.example.exerciseapp.mInterfaces.ISendUserData;
-import com.example.exerciseapp.mInterfaces.IUserData;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mInterfaces.UpdateStringsDB;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
@@ -30,7 +29,6 @@ import com.example.exerciseapp.mModels.FourElementLinearListModel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Objects;
 
 public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourElementLinearListAdapter.ViewHolder> {
 
@@ -149,19 +147,19 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
                                 }
                                 iSendUserData.sendData(listName,
                                         list.get(viewHolder.getBindingAdapterPosition()).getId(),
-                                        RowNames.PASSWORD, builder.toString());
+                                        UserDatabaseColumns.PASSWORD, builder.toString());
                             } else if (viewHolder.name.getText().equals(
                                     mContext.getString(R.string.username))) {
                                 String value = editText.getText().toString();
                                 iSendUserData.sendData(listName,
                                         list.get(viewHolder.getBindingAdapterPosition()).getId(),
-                                        RowNames.NAME, value);
+                                        UserDatabaseColumns.NAME, value);
                             } else if (viewHolder.name.getText().equals(
                                     mContext.getString(R.string.e_mail))){
                                 String value = editText.getText().toString();
                                 iSendUserData.sendData(listName,
                                         list.get(viewHolder.getBindingAdapterPosition()).getId(),
-                                        RowNames.EMAIL, value);
+                                        UserDatabaseColumns.EMAIL, value);
                             }
                         } else {
                             String value = editText.getText().toString();

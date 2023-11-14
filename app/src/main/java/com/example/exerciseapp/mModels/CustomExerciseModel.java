@@ -2,33 +2,18 @@ package com.example.exerciseapp.mModels;
 
 public class CustomExerciseModel {
 
-    private long id;
+    private long id, userId, exerciseId, extensionId;
     private String name;
     private int type;
-    private int userId;
-    private int mainExerciseId;
-    private int exerciseExtensionId;
 
-    public CustomExerciseModel(long id, String name, int type, int userId, int mainExerciseId,
-                               int exerciseExtensionId) {
+    public CustomExerciseModel(long id, String name, int type, long userId, long exerciseId,
+                               long extensionId) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.userId = userId;
-        this.mainExerciseId = mainExerciseId;
-        this.exerciseExtensionId = exerciseExtensionId;
-    }
-
-    @Override
-    public String toString() {
-        return "CustomExerciseModel{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", type=" + type +
-                ", userId=" + userId +
-                ", mainExerciseId=" + mainExerciseId +
-                ", exerciseExtensionId=" + exerciseExtensionId +
-                '}';
+        this.exerciseId = exerciseId;
+        this.extensionId = extensionId;
     }
 
     public long getId() {
@@ -51,24 +36,24 @@ public class CustomExerciseModel {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
-    public long getMainExerciseId() {
-        return mainExerciseId;
+    public long getExerciseId() {
+        return exerciseId;
     }
 
-    public void setMainExerciseId(int mainExerciseId) {
-        this.mainExerciseId = mainExerciseId;
+    public void setExerciseId(long exerciseId) {
+        this.exerciseId = exerciseId;
     }
 
-    public long getExerciseExtensionId() {
-        return exerciseExtensionId;
+    public long getExtensionId() {
+        return extensionId;
     }
 
-    public void setExerciseExtensionId(int exerciseExtensionId) {
-        this.exerciseExtensionId = exerciseExtensionId;
+    public void setExtensionId(long extensionId) {
+        this.extensionId = extensionId;
     }
 
     public int getType() {

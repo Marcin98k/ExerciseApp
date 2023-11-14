@@ -1,5 +1,7 @@
 package com.example.exerciseapp;
 
+import static com.example.exerciseapp.mClasses.GlobalClass.*;
+
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -9,7 +11,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -20,22 +21,31 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.exerciseapp.Settings.ContactFragment;
+import com.example.exerciseapp.Settings.ProfileFragment;
+import com.example.exerciseapp.SignInANDSingUp.SelectHeightFragment;
+import com.example.exerciseapp.SignInANDSingUp.SelectWeightFragment;
 import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mClasses.SharedViewModel;
 import com.example.exerciseapp.mDatabases.DBHelper;
 import com.example.exerciseapp.mEnums.FragmentAction;
 import com.example.exerciseapp.mEnums.ListType;
 import com.example.exerciseapp.mEnums.NumberOfItem;
-import com.example.exerciseapp.mEnums.RowNames;
+import com.example.exerciseapp.mEnums.UserDatabaseColumns;
 import com.example.exerciseapp.mInterfaces.INotificationCallback;
 import com.example.exerciseapp.mInterfaces.ISendUserData;
-import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
+import com.example.exerciseapp.mInterfaces.TitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mInterfaces.UpdateStringsDB;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 import com.example.exerciseapp.mModels.UserInformationModel;
+import com.example.exerciseapp.mResource.FourElementListFragment;
+import com.example.exerciseapp.mResource.LinearListFragment;
+import com.example.exerciseapp.mResource.NotificationFragment;
+import com.example.exerciseapp.mResource.RadioButtonList;
+import com.example.exerciseapp.mResource.ReminderBroadcast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -44,32 +54,15 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SettingsActivity extends AppCompatActivity implements
-        LinearListFragment.SelectedItem, UpdateIntegersDB, UpdateStringsDB, ITitleChangeListener,
+        LinearListFragment.SelectedItem, UpdateIntegersDB, UpdateStringsDB, TitleChangeListener,
         INotificationCallback, ISendUserData {
 
     public static String NOTIFICATION_CHANNEL_ID = "999";
     public static String defaultNotificationId = "default";
     private static final String NOTIFICATION_CONTENT_TEXT = "Time to train";
 
-
-    private static final String TAG = "SettingsActivity";
-
-    //    LinearListFragment == TELL
-    private static final String tagMainList = "tagTELL_main";
-    private static final String tagLanguageList = "tagTELL_language";
-    private static final String tagAccountList = "tagTELL_account";
-    private static final String tagNotificationList = "tagTELL_notification";
-    private static final String tagProfileLists = "tagTELL_profile";
-    private static final String informationName = "userInformation";
-    private static final String goalsName = "userGoals";
-    private static final String performanceName = "userPerformance";
-    private static final String levelName = "userLevel";
-    private static final String genderName = "userGender";
-
     private TextView fragmentTitle;
 
-
-    private int unitsID;
     private boolean reminderStatus;
     private long exerciseReminderInMilli;
 
@@ -128,10 +121,10 @@ public class SettingsActivity extends AppCompatActivity implements
         LinearListFragment linearListFragment = new LinearListFragment();
         bundle = new Bundle();
         bundle.putParcelableArrayList("currentList", (ArrayList<? extends Parcelable>) mainList());
-        bundle.putString("listName", tagMainList);
+        bundle.putString("listName", MAIN_LIST_NAME);
         linearListFragment.setArguments(bundle);
-        ft.addToBackStack(tagMainList);
-        ft.add(R.id.act_settings_mainContainer, linearListFragment, tagMainList);
+        ft.addToBackStack(MAIN_LIST_NAME);
+        ft.add(R.id.act_settings_mainContainer, linearListFragment, MAIN_LIST_NAME);
         ft.commit();
     }
 
@@ -235,7 +228,7 @@ public class SettingsActivity extends AppCompatActivity implements
         list.add(fillList(R.drawable.ic_notifications, getString(R.string.notification), R.drawable.ic_arrow_right));
         list.add(fillList(R.drawable.ic_flag, getString(R.string.language), R.drawable.ic_arrow_right));
         list.add(fillList(R.drawable.ic_question_mark, getString(R.string.questions), R.drawable.ic_arrow_right));
-        list.add(fillList(0, getString(R.string.log_out), 0));
+        list.add(fillList(R.drawable.ic_logout, getString(R.string.log_out), 0));
 
         return list;
     }
@@ -257,8 +250,6 @@ public class SettingsActivity extends AppCompatActivity implements
         list.add(usernameModel);
         list.add(emailModel);
         list.add(passwordModel);
-        Log.i(TAG, "accountList: accountList");
-
         return list;
     }
 
@@ -333,13 +324,10 @@ public class SettingsActivity extends AppCompatActivity implements
     public void onBackPressed() {
         super.onBackPressed();
 
-        if (selectHeightFragment != null) {
+        if (selectHeightFragment != null && selectHeightFragment.isVisible()) {
             updateHeight();
-        } else if (selectWeightFragment != null) {
+        } else if (selectWeightFragment != null && selectWeightFragment.isVisible()) {
             updateWeight();
-        } else {
-            throw new IllegalStateException("Both SelectHeightFragment and SelectWeightFragment" +
-                    " are null");
         }
     }
 
@@ -362,25 +350,25 @@ public class SettingsActivity extends AppCompatActivity implements
 
     @Override
     public void strValues(String listName, int position, int id, String firstVal) {
-        if (listName.equals(tagAccountList)) {
-            RowNames rowNames = getRowNames(position);
+        if (listName.equals(GlobalClass.ACCOUNT_LIST_NAME)) {
+            UserDatabaseColumns userDatabaseColumns = getRowNames(position);
 
-            if (rowNames != null) {
-                dbHelper.updateUser(rowNames, id, firstVal);
+            if (userDatabaseColumns != null) {
+                dbHelper.updateUser(userDatabaseColumns, id, firstVal);
             } else {
                 throw new IllegalStateException("Option does not exist");
             }
         }
     }
 
-    private RowNames getRowNames(int position) {
+    private UserDatabaseColumns getRowNames(int position) {
         switch (position) {
             case 0:
-                return RowNames.NAME;
+                return UserDatabaseColumns.NAME;
             case 1:
-                return RowNames.EMAIL;
+                return UserDatabaseColumns.EMAIL;
             case 2:
-                return RowNames.PASSWORD;
+                return UserDatabaseColumns.PASSWORD;
             default:
                 return null;
         }
@@ -390,22 +378,22 @@ public class SettingsActivity extends AppCompatActivity implements
     public void values(String listName, int firstValue, int secondValue, int thirdValue,
                        int fourthValue) {
         switch (listName) {
-            case informationName:
-                handleInformationFragment(firstValue, secondValue);
+            case INFORMATION_NAME:
+                handleInformationFragment(firstValue);
                 break;
-            case performanceName:
+            case PERFORMANCE_NAME:
                 dbHelper.updateUserPerformance(currentUserID, firstValue, secondValue);
                 break;
-            case goalsName:
+            case GOALS_NAME:
                 dbHelper.updateUserGoals(currentUserID, firstValue, secondValue);
                 break;
-            case levelName:
+            case LEVEL_NAME:
                 dbHelper.switchUserLevel(currentUserID, secondValue);
                 break;
-            case genderName:
+            case GENDER_NAME:
                 dbHelper.switchUserGender(currentUserID, secondValue);
                 break;
-            case tagLanguageList:
+            case LANGUAGE_LIST_NAME:
                 handleLanguageValue(firstValue, secondValue);
                 break;
             default:
@@ -413,8 +401,7 @@ public class SettingsActivity extends AppCompatActivity implements
         }
     }
 
-    private void handleInformationFragment(int firstValue, int secondValue) {
-        unitsID = secondValue;
+    private void handleInformationFragment(int firstValue) {
         if (firstValue == 0 || firstValue == 1) {
             Fragment fragment = (firstValue == 0) ? (selectHeightFragment = new SelectHeightFragment()) :
                     (selectWeightFragment = new SelectWeightFragment());
@@ -454,27 +441,27 @@ public class SettingsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void item(String list, int position, int currentlyPosition) {
+    public void item(String list, int position) {
 
-        if (Objects.equals(list, tagMainList)) {
+        if (Objects.equals(list, MAIN_LIST_NAME)) {
             switch (position) {
                 case 0:
                     openProfileFragment();
                     break;
                 case 1:
                     performFragmentOperation(new FourElementListFragment(), FragmentAction.REPLACE,
-                            true, tagAccountList, accountList(), getString(R.string.account),
+                            true, ACCOUNT_LIST_NAME, accountList(), getString(R.string.account),
                             ListType.SELECTABLE_BUTTONS_STR, NumberOfItem.TWO);
                     break;
                 case 2:
                     performFragmentOperation(new NotificationFragment(), FragmentAction.REPLACE,
-                            true, tagNotificationList, notificationList(),
+                            true, NOTIFICATION_LIST_NAME, notificationList(),
                             getString(R.string.notification), ListType.SELECTABLE_BUTTONS,
                             NumberOfItem.ONE);
                     break;
                 case 3:
                     performFragmentOperation(new RadioButtonList(), FragmentAction.REPLACE,
-                            true, tagLanguageList, languageListModel(),
+                            true, LANGUAGE_LIST_NAME, languageListModel(),
                             getString(R.string.language), ListType.RADIO_BUTTONS, NumberOfItem.ONE);
                     break;
                 case 4:
@@ -493,26 +480,28 @@ public class SettingsActivity extends AppCompatActivity implements
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ProfileFragment profileFragment = new ProfileFragment();
         bundle = new Bundle();
-        bundle.putParcelableArrayList(informationName,
+        bundle.putParcelableArrayList(INFORMATION_NAME,
                 (ArrayList<? extends Parcelable>) userUnit());
-        bundle.putParcelableArrayList(goalsName,
+        bundle.putParcelableArrayList(GOALS_NAME,
                 (ArrayList<? extends Parcelable>) userGoals());
-        bundle.putParcelableArrayList(performanceName,
+        bundle.putParcelableArrayList(PERFORMANCE_NAME,
                 (ArrayList<? extends Parcelable>) userPerformance());
-        bundle.putParcelableArrayList(levelName,
+        bundle.putParcelableArrayList(LEVEL_NAME,
                 (ArrayList<? extends Parcelable>) userLevel());
-        bundle.putParcelableArrayList(genderName,
+        bundle.putParcelableArrayList(GENDER_NAME,
                 (ArrayList<? extends Parcelable>) userGender());
+
         profileFragment.setArguments(bundle);
         ft.setReorderingAllowed(true);
-        ft.addToBackStack(tagProfileLists);
-        ft.replace(R.id.act_settings_mainContainer, profileFragment, tagProfileLists);
+        ft.addToBackStack(PROFILE_LIST_NAME);
+        ft.replace(R.id.act_settings_mainContainer, profileFragment, PROFILE_LIST_NAME);
         ft.commit();
     }
 
     private void showLogoutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.log_out);
+
         builder.setPositiveButton(R.string.yes, (dialogInterface, i) -> {
             dbHelper.accountStatus(currentUserID, false);
             currentUserID = -1;
@@ -521,7 +510,9 @@ public class SettingsActivity extends AppCompatActivity implements
             intent.putExtra(GlobalClass.userID, currentUserID);
             startActivity(intent);
         });
+
         builder.setNegativeButton(R.string.no, ((dialogInterface, i) -> dialogInterface.dismiss()));
+
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -539,9 +530,9 @@ public class SettingsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void sendData(String listName, long id, RowNames rowNames, String value) {
-        if (rowNames == RowNames.NAME || rowNames == RowNames.EMAIL || rowNames == RowNames.PASSWORD) {
-            dbHelper.updateUser(rowNames, id, value);
+    public void sendData(String listName, long id, UserDatabaseColumns userDatabaseColumns, String value) {
+        if (userDatabaseColumns == UserDatabaseColumns.NAME || userDatabaseColumns == UserDatabaseColumns.EMAIL || userDatabaseColumns == UserDatabaseColumns.PASSWORD) {
+            dbHelper.updateUser(userDatabaseColumns, id, value);
         } else {
             throw new IllegalStateException("Option does not exist");
         }

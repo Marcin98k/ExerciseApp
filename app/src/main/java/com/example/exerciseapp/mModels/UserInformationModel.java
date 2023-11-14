@@ -22,15 +22,6 @@ public class UserInformationModel implements Parcelable {
     private String authorizationToken;
     private String newsToken;
 
-    public UserInformationModel() {
-
-    }
-
-    public UserInformationModel(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     public UserInformationModel(int id, String name, String email, String password, int gender,
                                 int units, int performance, int goals, int level, int notification,
                                 int status) {
@@ -91,22 +82,6 @@ public class UserInformationModel implements Parcelable {
             return new UserInformationModel[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "UserInformationModel{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", gender=" + gender +
-                ", units=" + units +
-                ", performance=" + performance +
-                ", goals=" + goals +
-                ", level=" + level +
-                ", notification=" + notification +
-                ", authorizationToken'=" + authorizationToken + '\'' +
-                ", newsToken='" + newsToken + '\'' +
-                '}';
-    }
 
     public int getId() {
         return id;

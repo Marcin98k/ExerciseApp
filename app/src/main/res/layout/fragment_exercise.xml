@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="1"
-    tools:context=".ExerciseFragment">
+    tools:context=".Exercise.ExerciseFragment">
 
     <ImageView
         android:id="@+id/frag_exercise_image"

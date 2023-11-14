@@ -45,7 +45,7 @@
             android:name=".WelcomeActivity"
             android:exported="false"/>
 
-        <receiver android:name=".ReminderBroadcast"/>
+        <receiver android:name=".mResource.ReminderBroadcast"/>
     </application>
 
 </manifest>

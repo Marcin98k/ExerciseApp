@@ -46,20 +46,6 @@ public class FourElementsModel implements Parcelable {
         fromWhere = in.readInt();
     }
 
-    @Override
-    public String toString() {
-        return "FourElementsModel{" +
-                "id=" + id +
-                ", strImage='" + strImage + '\'' +
-                ", intImage=" + intImage +
-                ", name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", level=" + level +
-                ", duration=" + duration +
-                ", fromWhere=" + fromWhere +
-                '}';
-    }
-
     public static final Creator<FourElementsModel> CREATOR = new Creator<FourElementsModel>() {
         @Override
         public FourElementsModel createFromParcel(Parcel in) {

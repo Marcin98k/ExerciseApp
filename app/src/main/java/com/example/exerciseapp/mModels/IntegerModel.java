@@ -17,9 +17,7 @@ public class IntegerModel implements Parcelable {
     private int seventhValue;
     private int eighthValue;
 
-    public IntegerModel() {
-//        Empty constructor;
-    }
+    public IntegerModel() {}
 
     public IntegerModel(int id, int firstValue) {
         this.id = id;
@@ -67,6 +65,7 @@ public class IntegerModel implements Parcelable {
         this.fifthValue = fifthValue;
         this.sixthValue = sixthValue;
     }
+
     public IntegerModel(int id, int firstValue, int secondValue, int thirdValue,
                         int forthValue, int fifthValue, int sixthValue, int seventhValue) {
         this.id = id;
@@ -116,18 +115,6 @@ public class IntegerModel implements Parcelable {
             return new IntegerModel[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "IntegerModel{" +
-                "id=" + id +
-                ", firstValue=" + firstValue +
-                ", secondValue=" + secondValue +
-                ", thirdValue=" + thirdValue +
-                ", forthValue=" + forthValue +
-                ", fifthValue=" + fifthValue +
-                '}';
-    }
 
     public int getId() {
         return id;

@@ -13,10 +13,6 @@ public class InsertResult {
         this.success = success;
         alert(success);
     }
-    public InsertResult(boolean success) {
-        this.success = success;
-        alert(success);
-    }
 
     @Override
     public String toString() {
@@ -28,9 +24,9 @@ public class InsertResult {
 
     private void alert(boolean param) {
         if (param) {
-            Log.i(TAG, "InsertResult: (Success)");
+            Log.i(TAG, "(Success)");
         } else {
-            Log.i(TAG, "InsertResult: (Fail)");
+            Log.i(TAG, "(Fail)");
         }
     }
 

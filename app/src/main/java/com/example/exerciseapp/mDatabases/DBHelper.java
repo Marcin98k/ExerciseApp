@@ -11,7 +11,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.example.exerciseapp.mClasses.InsertResult;
-import com.example.exerciseapp.mEnums.RowNames;
+import com.example.exerciseapp.mEnums.UserDatabaseColumns;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.LanguageModel;
@@ -432,7 +432,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean updateUser(RowNames rowName, long id, String value) {
+    public boolean updateUser(UserDatabaseColumns rowName, long id, String value) {
 
         String cause = ID + " == ?";
         String[] args = {String.valueOf(id)};

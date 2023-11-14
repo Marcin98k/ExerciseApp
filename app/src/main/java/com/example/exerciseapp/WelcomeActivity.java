@@ -2,7 +2,6 @@ package com.example.exerciseapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -12,11 +11,19 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.exerciseapp.SignInANDSingUp.SelectGenderFragment;
+import com.example.exerciseapp.SignInANDSingUp.SelectGoalsFragment;
+import com.example.exerciseapp.SignInANDSingUp.SelectHeightFragment;
+import com.example.exerciseapp.SignInANDSingUp.SelectLevelFragment;
+import com.example.exerciseapp.SignInANDSingUp.SelectPerformanceFragment;
+import com.example.exerciseapp.SignInANDSingUp.SelectWeightFragment;
+import com.example.exerciseapp.SignInANDSingUp.SignInFragment;
+import com.example.exerciseapp.SignInANDSingUp.SignUpFragment;
 import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mClasses.SharedViewModel;
 import com.example.exerciseapp.mDatabases.DBHelper;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
-import com.example.exerciseapp.mInterfaces.IUserData;
+import com.example.exerciseapp.mInterfaces.UserMasterData;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.UserInformationModel;
 
@@ -25,7 +32,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class WelcomeActivity extends AppCompatActivity implements FragmentSupportListener,
-        IUserData {
+        UserMasterData {
 
     private final String SIGN_IN_TAG = "tagSignInFragment";
     private final String SIGN_UP_TAG = "tagSignUpFragment";
@@ -61,13 +68,13 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-        initView(savedInstanceState);
+        initializeView(savedInstanceState);
 
         fragmentObserver();
     }
 
-    private void initView(Bundle savedInstanceState) {
-        initializeViews();
+    private void initializeView(Bundle savedInstanceState) {
+        initializeWidgets();
 
         dbHelper = new DBHelper(WelcomeActivity.this);
         fragmentManager = getSupportFragmentManager();
@@ -83,7 +90,7 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
         actionBtn.setOnClickListener(v -> handleButton());
     }
 
-    private void initializeViews() {
+    private void initializeWidgets() {
         actionBtn = findViewById(R.id.aWelcome_actionBtn);
     }
 
@@ -115,12 +122,18 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
     }
 
     private void initFragments() {
-        this.selectGenderFragment = (SelectGenderFragment) this.fragmentManager.findFragmentByTag(GENDER_TAG);
-        this.selectHeightFragment = (SelectHeightFragment) this.fragmentManager.findFragmentByTag(HEIGHT_TAG);
-        this.selectWeightFragment = (SelectWeightFragment) this.fragmentManager.findFragmentByTag(WEIGHT_TAG);
-        this.selectLevelFragment = (SelectLevelFragment) this.fragmentManager.findFragmentByTag(LEVEL_TAG);
-        this.selectGoalsFragment = (SelectGoalsFragment) this.fragmentManager.findFragmentByTag(GOALS_TAG);
-        this.selectPerformanceFragment = (SelectPerformanceFragment) this.fragmentManager.findFragmentByTag(PERFORMANCE_TAG);
+        this.selectGenderFragment = (SelectGenderFragment) this.fragmentManager
+                .findFragmentByTag(GENDER_TAG);
+        this.selectHeightFragment = (SelectHeightFragment) this.fragmentManager
+                .findFragmentByTag(HEIGHT_TAG);
+        this.selectWeightFragment = (SelectWeightFragment) this.fragmentManager
+                .findFragmentByTag(WEIGHT_TAG);
+        this.selectLevelFragment = (SelectLevelFragment) this.fragmentManager
+                .findFragmentByTag(LEVEL_TAG);
+        this.selectGoalsFragment = (SelectGoalsFragment) this.fragmentManager
+                .findFragmentByTag(GOALS_TAG);
+        this.selectPerformanceFragment = (SelectPerformanceFragment) this.fragmentManager
+                .findFragmentByTag(PERFORMANCE_TAG);
     }
 
     private void sendToDB() {
@@ -268,7 +281,7 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
     }
 
     @Override
-    public void data(String username, String email, byte[] password) {
+    public void userData(String username, String email, byte[] password) {
         this.username = username;
         this.email = email;
 

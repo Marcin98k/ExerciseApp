@@ -15,6 +15,18 @@ public class GlobalClass {
     public static String userID = "userID";
     public static final int FOURTH_VAL = 0;
 
+    //    LinearListFragment == TELL
+    public static final String MAIN_LIST_NAME = "tagTELL_main";
+    public static final String LANGUAGE_LIST_NAME = "tagTELL_language";
+    public static final String ACCOUNT_LIST_NAME = "tagTELL_account";
+    public static final String NOTIFICATION_LIST_NAME = "tagTELL_notification";
+    public static final String PROFILE_LIST_NAME = "tagTELL_profile";
+    public static final String INFORMATION_NAME = "userInformation";
+    public static final String GOALS_NAME = "userGoals";
+    public static final String PERFORMANCE_NAME = "userPerformance";
+    public static final String LEVEL_NAME = "userLevel";
+    public static final String GENDER_NAME = "userGender";
+
     public static Context initLanguage(Context context) {
         String languagePrefix = getLanguagePrefix(context);
         return updateLocale(context, languagePrefix);

@@ -20,7 +20,6 @@ public class RadioButtonListAdapter extends RecyclerView.Adapter<RadioButtonList
 
     private Context mContext;
 
-
     private List<ThreeElementLinearListModel> list;
     private String listName;
     int selectedPosition = -1;
@@ -37,6 +36,10 @@ public class RadioButtonListAdapter extends RecyclerView.Adapter<RadioButtonList
         this.listName = listName;
         this.updateIntegersDB = updateIntegersDB;
 
+        setCheckedButtons();
+    }
+
+    private void setCheckedButtons() {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getAction() == 1) {
                 oldPosition = list.get(i).getId();
@@ -93,7 +96,7 @@ public class RadioButtonListAdapter extends RecyclerView.Adapter<RadioButtonList
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        RadioButton radioButton;
+        private final RadioButton radioButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

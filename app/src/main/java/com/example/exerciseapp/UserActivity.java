@@ -14,13 +14,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.exerciseapp.Exercise.DetailsFragment;
 import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mEnums.Side;
-import com.example.exerciseapp.mInterfaces.ISummary;
-import com.example.exerciseapp.mInterfaces.ITitleChangeListener;
+import com.example.exerciseapp.mInterfaces.TitleChangeListener;
+import com.example.exerciseapp.mInterfaces.TrainingSummaryHandler;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.IntegerModel;
+import com.example.exerciseapp.mResource.CalendarFragment;
+import com.example.exerciseapp.mResource.EmptyFragment;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -37,8 +40,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UserActivity extends AppCompatActivity implements UpdateIntegersDB, ISummary,
-        ITitleChangeListener {
+public class UserActivity extends AppCompatActivity implements UpdateIntegersDB, TrainingSummaryHandler,
+        TitleChangeListener {
 
     private final DateTimeFormatter LONG_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyMMdd");
     private final DateTimeFormatter SHORT_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMdd");
@@ -124,8 +127,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
     private void initializeLineChartWeight() {
         String current = today.format(LONG_DATE_TIME_FORMATTER);
         String showDate = today.format(DATE_TIME_FORMATTER);
-        int currentDate = Integer.parseInt(current);
-        selectedDateToDB = currentDate;
+        selectedDateToDB = Integer.parseInt(current);
         selectDate.setText(String.valueOf(showDate));
     }
 

@@ -12,7 +12,7 @@ import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mDatabases.DBHelper;
 import com.example.exerciseapp.mDatabases.SimulatedExternalDatabase;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
-import com.example.exerciseapp.mModels.ExerciseModel;
+import com.example.exerciseapp.mModels.ExerciseDescriptionModel;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.LanguageModel;
 import com.example.exerciseapp.mModels.StringModel;
@@ -153,13 +153,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void insertWorkout() {
 
-        ExerciseModel workout1 = new ExerciseModel(-1, "Workout1 YTR", "", 2,
+        ExerciseDescriptionModel workout1 = new ExerciseDescriptionModel(-1, "Workout1 YTR", "", 2,
                 1, "0", 10, 55, "descriptionWorkout1",
                 "2,3,1", 0);
-        ExerciseModel workout2 = new ExerciseModel(-1, "Workout2 URC", "", 1,
+        ExerciseDescriptionModel workout2 = new ExerciseDescriptionModel(-1, "Workout2 URC", "", 1,
                 2, "0", 21, 35, "descriptionWorkout2",
                 "1,3", 0);
-        ExerciseModel workout3 = new ExerciseModel(-1, "Workout3 YTN", "", 3,
+        ExerciseDescriptionModel workout3 = new ExerciseDescriptionModel(-1, "Workout3 YTN", "", 3,
                 3, "0", 17, 15, "descriptionWorkout3",
                 "3,2,1", 0);
 
@@ -170,11 +170,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void insertExercise() {
 
-        ExerciseModel exercise1 = new ExerciseModel(-1, "Exercise1 ABC", "", 2,
+        ExerciseDescriptionModel exercise1 = new ExerciseDescriptionModel(-1, "Exercise1 ABC", "", 2,
                 2, "3,2", 1, 5, 20, "description1", 1, 1);
-        ExerciseModel exercise2 = new ExerciseModel(-1, "Exercise2 BGH", "", 1,
+        ExerciseDescriptionModel exercise2 = new ExerciseDescriptionModel(-1, "Exercise2 BGH", "", 1,
                 2, "1", 2, 10, 25, "description2", 2, 1);
-        ExerciseModel exercise3 = new ExerciseModel(-1, "Exercise3 BCI", "", 3,
+        ExerciseDescriptionModel exercise3 = new ExerciseDescriptionModel(-1, "Exercise3 BCI", "", 3,
                 3, "2,1", 1, 15, 35, "description3", 3, 1);
 
         contentBD.insertExercise(exercise1);

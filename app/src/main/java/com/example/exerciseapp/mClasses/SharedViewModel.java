@@ -8,7 +8,6 @@ import java.util.HashMap;
 
 public class SharedViewModel extends ViewModel {
 
-    //    Integer;
     private final MutableLiveData<Integer> shareInt = new MutableLiveData<>();
 
     public void setShareInt(Integer shareInt) {
