@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,21 +36,8 @@ public class ProfileFragment extends Fragment {
     private final String LEVEL = "userLevel";
     private final String GENDER = "userGender";
 
-    private Button genderButton;
-    private RecyclerView genderList;
-
-    private Button informationButton;
-    private RecyclerView informationList;
-
-    private Button goalsButton;
-    private RecyclerView goalsList;
-
-    private Button performanceButton;
-    private RecyclerView performanceList;
-
-    private Button levelButton;
-    private RecyclerView levelList;
-
+    private ToggleButton genderButton, dimensionsButton, goalsButton, performanceButton, levelButton;
+    private RecyclerView genderList, dimensionsList, goalsList, performanceList, levelList;
 
     private String fragmentName;
     private List<FourElementLinearListModel> userInformationList;
@@ -58,12 +45,10 @@ public class ProfileFragment extends Fragment {
     private List<FourElementLinearListModel> userPerformanceList;
     private List<ThreeElementLinearListModel> userLevelList;
     private List<ThreeElementLinearListModel> userGenderList;
-    private List<FourElementLinearListModel> emptyList;
-    private List<ThreeElementLinearListModel> emptyRadioList;
     private FourElementLinearListAdapter adapter;
     private RadioButtonListAdapter radioAdapter;
 
-    private UpdateIntegersDB valueDB, valueDB1;
+    private UpdateIntegersDB sendToFragment, getFromFragment;
     private TitleChangeListener titleChangeListener;
 
     public ProfileFragment() {
@@ -75,7 +60,7 @@ public class ProfileFragment extends Fragment {
         super.onAttach(context);
 
         try {
-            valueDB1 = (UpdateIntegersDB) context;
+            getFromFragment = (UpdateIntegersDB) context;
             titleChangeListener = (TitleChangeListener) context;
         } catch (RuntimeException e) {
             throw new ClassCastException(context +
@@ -123,19 +108,19 @@ public class ProfileFragment extends Fragment {
     }
 
     private ArrayList<FourElementLinearListModel> fillStandardList(String name) {
-        emptyList = new ArrayList<>();
+        ArrayList<FourElementLinearListModel> emptyList = new ArrayList<>();
         FourElementLinearListModel model = new FourElementLinearListModel(
                 -1, 0, name, "0", "");
         emptyList.add(model);
-        return (ArrayList<FourElementLinearListModel>) emptyList;
+        return emptyList;
     }
 
     private ArrayList<ThreeElementLinearListModel> fillRadioList(String name) {
-        emptyRadioList = new ArrayList<>();
+        ArrayList<ThreeElementLinearListModel> emptyRadioList = new ArrayList<>();
         ThreeElementLinearListModel model = new ThreeElementLinearListModel(
                 -1, 0, name, 0);
         emptyRadioList.add(model);
-        return (ArrayList<ThreeElementLinearListModel>) emptyRadioList;
+        return emptyRadioList;
     }
 
     @Override
@@ -144,36 +129,49 @@ public class ProfileFragment extends Fragment {
         View mView = inflater.inflate(R.layout.fragment_profile, container, false);
         initializeView(mView);
 
+        setupLists();
+        setupButtons();
+        prepareView();
+
+        return mView;
+    }
+
+    private void setupLists() {
+
         initRadioButtonList(genderList, userGenderList, GENDER);
-        initRecyclerView(informationList, userInformationList, INFORMATION,
-                ListType.SELECTABLE_BUTTONS, NumberOfItem.TWO);
+        initRecyclerView(dimensionsList, userInformationList, INFORMATION,
+                ListType.EXTERNAL_WINDOW_ACTION, NumberOfItem.TWO);
         initRecyclerView(performanceList, userPerformanceList, PERFORMANCE,
-                ListType.SELECTABLE_BUTTONS_INT, NumberOfItem.ONE);
+                ListType.INTEGER_INPUT_POPUP, NumberOfItem.ONE);
         initRecyclerView(goalsList, userGoalsList, GOALS,
-                ListType.MULTIPLE_CHOICE_BUTTONS, NumberOfItem.NULL);
+                ListType.CHECKBOX_LIST, NumberOfItem.NULL);
         initRadioButtonList(levelList, userLevelList, LEVEL);
+    }
+
+    private void setupButtons() {
 
         expandOrCollapseList(genderButton, genderList);
-        expandOrCollapseList(informationButton, informationList);
+        expandOrCollapseList(dimensionsButton, dimensionsList);
         expandOrCollapseList(performanceButton, performanceList);
         expandOrCollapseList(goalsButton, goalsList);
         expandOrCollapseList(levelButton, levelList);
+    }
+
+    private void prepareView() {
 
         prepareView(genderList);
-        prepareView(informationList);
+        prepareView(dimensionsList);
         prepareView(performanceList);
         prepareView(goalsList);
         prepareView(levelList);
-
-        return mView;
     }
 
     private void initializeView(View v) {
 
         fragmentName = getString(R.string.profile);
 
-        informationButton = v.findViewById(R.id.frag_profile_toggle_button_user_info);
-        informationList = v.findViewById(R.id.fProfile_userInformation);
+        dimensionsButton = v.findViewById(R.id.frag_profile_toggle_button_user_info);
+        dimensionsList = v.findViewById(R.id.fProfile_userInformation);
 
         goalsButton = v.findViewById(R.id.frag_profile_toggle_button_user_goals);
         goalsList = v.findViewById(R.id.fProfile_userGoals);
@@ -192,56 +190,59 @@ public class ProfileFragment extends Fragment {
         view.setVisibility(View.GONE);
     }
 
-    private void expandOrCollapseList(Button btn, RecyclerView view) {
+    private void expandOrCollapseList(ToggleButton toggleButton, RecyclerView listView) {
 
-        btn.setOnClickListener(v -> {
-            if (view.getVisibility() == View.GONE) {
-                view.setVisibility(View.VISIBLE);
-                btn.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                        R.drawable.ic_double_arrow_up, 0,
-                        R.drawable.ic_double_arrow_up, 0);
-            } else {
-                view.setVisibility(View.GONE);
-                btn.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                        R.drawable.ic_double_arrow_down, 0,
-                        R.drawable.ic_double_arrow_down, 0);
-            }
+        toggleButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            updateListVisibility(listView, isChecked);
+            updateToggleButtonIcon(toggleButton, isChecked);
         });
+    }
+
+    private void updateListVisibility(RecyclerView listView, boolean isListVisible) {
+        int newVisibility = isListVisible ? View.VISIBLE : View.GONE;
+        listView.setVisibility(newVisibility);
+    }
+
+    private void updateToggleButtonIcon(ToggleButton toggleButton, boolean isListVisibility) {
+        int iconResource = isListVisibility ? R.drawable.ic_double_arrow_up :
+                R.drawable.ic_double_arrow_down;
+        toggleButton.setCompoundDrawablesRelativeWithIntrinsicBounds(iconResource, 0,
+                iconResource, 0);
+    }
+
+    private void setupRecyclerView(RecyclerView view) {
+
+        view.setHasFixedSize(true);
+        view.setLayoutManager(new LinearLayoutManager(requireContext(),
+                LinearLayoutManager.VERTICAL, false));
     }
 
     private void initRadioButtonList(RecyclerView view, List<ThreeElementLinearListModel> list, String tag) {
 
-        view.setHasFixedSize(true);
-        view.setLayoutManager(new LinearLayoutManager(
-                requireContext(),
-                LinearLayoutManager.VERTICAL,
-                false));
+        setupRecyclerView(view);
 
-        radioAdapter = new RadioButtonListAdapter(requireContext(), tag, list, valueDB);
-
-        valueDB = (listName, firstValue, secondValue, thirdValue, fourthValue) -> view.post(() -> {
+        radioAdapter = new RadioButtonListAdapter(requireContext(), tag, list, sendToFragment);
+        sendToFragment = (listName, firstValue, secondValue, thirdValue, fourthValue) -> view.post(() -> {
             radioAdapter.notifyDataSetChanged();
-            valueDB1.values(listName, firstValue, secondValue, thirdValue, fourthValue);
+            getFromFragment.values(listName, firstValue, secondValue, thirdValue, fourthValue);
         });
 
-        radioAdapter = new RadioButtonListAdapter(requireContext(), tag, list, valueDB);
         view.setAdapter(radioAdapter);
     }
 
     private void initRecyclerView(RecyclerView view, List<FourElementLinearListModel> list,
                                   String tag, ListType listType, NumberOfItem numberOfItem) {
 
-        view.setHasFixedSize(true);
-        view.setLayoutManager(new LinearLayoutManager(requireContext(),
-                LinearLayoutManager.VERTICAL, false));
-
-        valueDB = (listName, firstValue, secondValue, thirdValue, fourthValue) -> view.post(() -> {
-            adapter.notifyDataSetChanged();
-            valueDB1.values(listName, firstValue, secondValue, thirdValue, fourthValue);
-        });
+        setupRecyclerView(view);
 
         adapter = new FourElementLinearListAdapter(requireContext(),
-                list, tag, valueDB, listType, numberOfItem);
+                list, tag, sendToFragment, listType, numberOfItem);
+        sendToFragment = (listName, firstValue, secondValue, thirdValue, fourthValue) -> view.post(() -> {
+            adapter.notifyDataSetChanged();
+            getFromFragment.values(listName, firstValue, secondValue, thirdValue, fourthValue);
+        });
+
         view.setAdapter(adapter);
     }
+
 }

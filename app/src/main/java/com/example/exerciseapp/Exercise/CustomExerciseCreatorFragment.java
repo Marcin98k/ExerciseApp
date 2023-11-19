@@ -27,7 +27,7 @@ import com.example.exerciseapp.mClasses.TrainingTimer;
 import com.example.exerciseapp.mDatabases.ContentBD;
 import com.example.exerciseapp.mInterfaces.TitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
-import com.example.exerciseapp.mModels.CustomUserExerciseModel;
+import com.example.exerciseapp.mModels.CustomExerciseModel;
 import com.example.exerciseapp.mModels.ExerciseDescriptionModel;
 import com.example.exerciseapp.mModels.FourElementsModel;
 import com.example.exerciseapp.mModels.IntegerModel;
@@ -331,10 +331,10 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
     private void insertExerciseExtension(IntegerModel customExercise) {
         InsertResult exerciseExtensionResult = contentBD.insertExerciseExtension(customExercise);
 
-        CustomUserExerciseModel customUserExerciseModel = new CustomUserExerciseModel(
-                -1, userId, nameOfCustomExercise, numberOfExerciseType, numberOfExerciseID,
+        CustomExerciseModel customExerciseModel = new CustomExerciseModel(
+                -1, nameOfCustomExercise, numberOfExerciseType, userId, numberOfExerciseID,
                 (int) exerciseExtensionResult.getIndex());
-        contentBD.insertCustomUserExercise(customUserExerciseModel);
+        contentBD.insertCustomUserExercise(customExerciseModel);
     }
 
     @Override

@@ -11,11 +11,12 @@
         android:layout_marginHorizontal="15dp"
         android:orientation="vertical">
 
-        <android.widget.Button
+        <android.widget.ToggleButton
             android:id="@+id/frag_profile_toggle_button_user_gender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/gender"
+            android:textOn="@string/gender"
+            android:textOff="@string/gender"
             android:textSize="18sp"
             style="@style/MyRollUpButtonAppearance"/>
 
@@ -24,11 +25,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <android.widget.Button
+        <android.widget.ToggleButton
             android:id="@+id/frag_profile_toggle_button_user_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/dimensions"
+            android:textOn="@string/dimensions"
+            android:textOff="@string/dimensions"
             android:textSize="18sp"
             style="@style/MyRollUpButtonAppearance"/>
 
@@ -37,11 +39,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <android.widget.Button
+        <android.widget.ToggleButton
             android:id="@+id/frag_profile_toggle_button_user_goals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/goals"
+            android:textOn="@string/goals"
+            android:textOff="@string/goals"
             android:textSize="18sp"
             style="@style/MyRollUpButtonAppearance"/>
 
@@ -50,11 +53,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <android.widget.Button
+        <android.widget.ToggleButton
             android:id="@+id/frag_profile_toggle_button_user_performance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/performance"
+            android:textOn="@string/performance"
+            android:textOff="@string/performance"
             android:textSize="18sp"
             style="@style/MyRollUpButtonAppearance"/>
 
@@ -63,11 +67,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <android.widget.Button
+        <android.widget.ToggleButton
             android:id="@+id/frag_profile_toggle_button_user_level"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/level"
+            android:textOn="@string/level"
+            android:textOff="@string/level"
             android:textSize="18sp"
             style="@style/MyRollUpButtonAppearance"/>
 

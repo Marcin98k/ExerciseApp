@@ -63,13 +63,6 @@ public class FourElementListFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-//        try {
-//            updateIntegersDB1 = (UpdateIntegersDB) context;
-//        } catch (RuntimeException e) {
-//            throw new RuntimeException(context +
-//                    " must implement UpdateIntegersDB");
-//        }
-
         try {
             updateStrings1 = (UpdateStringsDB) context;
         } catch (RuntimeException e) {
@@ -126,7 +119,7 @@ public class FourElementListFragment extends Fragment {
 
             listType = (ListType) getArguments().getSerializable("listType");
             if (listType == null) {
-                listType = ListType.NULL;
+                listType = ListType.NO_ACTION;
             }
 
             numberOfItem = (NumberOfItem) getArguments().getSerializable("numberOfItem");

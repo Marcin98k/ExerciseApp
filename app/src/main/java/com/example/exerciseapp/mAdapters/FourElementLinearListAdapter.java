@@ -37,8 +37,8 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
 
     private List<FourElementLinearListModel> list;
     private String listName;
-    private static final String ZERO = "0";
-    private static final String ONE = "1";
+    private final String ZERO = "0";
+    private final String ONE = "1";
     private int oldPosition = 0;
     private char[] password;
     private ListType listType;
@@ -60,7 +60,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
         this.listType = listType;
         this.numberOfItem = numberOfItem;
 
-        if (listType.equals(ListType.MULTIPLE_CHOICE_BUTTONS)) {
+        if (listType.equals(ListType.CHECKBOX_LIST)) {
             for (int i = 0; i < list.size(); i++) {
                 if (Integer.parseInt(list.get(i).getFirstValue()) == 1) {
                     oldPosition = list.get(i).getId();
@@ -103,12 +103,12 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
             int pos = list.get(viewHolder.getBindingAdapterPosition()).getId();
 
             switch (listType) {
-                case SELECTABLE_BUTTONS:
+                case EXTERNAL_WINDOW_ACTION:
                     valueDB.values(listName, viewHolder.getBindingAdapterPosition(), pos,
                             list.get(viewHolder.getBindingAdapterPosition()).getSecondId(),
                             GlobalClass.FOURTH_VAL);
                     break;
-                case MULTIPLE_CHOICE_BUTTONS:
+                case CHECKBOX_LIST:
                     int temp;
                     if (list.get(viewHolder.getBindingAdapterPosition()).getFirstValue().equals(ZERO)) {
                         list.get(viewHolder.getBindingAdapterPosition()).setFirstValue(ONE);
@@ -121,7 +121,8 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
                     valueDB.values(listName, list.get(viewHolder.getBindingAdapterPosition()).getId(),
                             temp, 0, GlobalClass.FOURTH_VAL);
                     break;
-                case SELECTABLE_BUTTONS_STR: {
+                case STRING_INPUT_POPUP: {
+
                     AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
                     alert.setTitle(list.get(viewHolder.getBindingAdapterPosition()).getName());
                     final View customLayout = LayoutInflater.from(mContext).inflate(
@@ -173,7 +174,8 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
                     dialog.show();
                     break;
                 }
-                case SELECTABLE_BUTTONS_INT: {
+                case INTEGER_INPUT_POPUP: {
+
                     AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
                     alert.setTitle(list.get(viewHolder.getBindingAdapterPosition()).getName());
                     final View customLayout = LayoutInflater.from(mContext).inflate(
@@ -208,7 +210,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
         holder.icon.setImageResource(list.get(position).getIcon());
         holder.name.setText(list.get(position).getName());
 
-        if (listType == ListType.MULTIPLE_CHOICE_BUTTONS) {
+        if (listType == ListType.CHECKBOX_LIST) {
             if (list.get(position).getFirstValue().equals(ONE)) {
                 holder.icon.setImageResource(R.drawable.ic_check_circle);
             } else {
@@ -222,7 +224,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
             holder.firstValue.setText(list.get(position).getFirstValue());
             holder.secondValue.setText(list.get(position).getSecondValue());
         } else if (numberOfItem.equals(NumberOfItem.NULL)) {
-            Log.i(TAG, "onBindViewHolder: NULL not show TextView's");
+            Log.i(TAG, "onBindViewHolder: NO_ACTION not show TextView's");
         } else {
             holder.firstValue.setText(list.get(position).getFirstValue());
         }
@@ -237,7 +239,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
         return list.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private final ImageView icon;
         private final TextView name;

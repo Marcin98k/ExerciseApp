@@ -16,6 +16,7 @@ import com.example.exerciseapp.mModels.FourElementLinearListModel;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.LanguageModel;
 import com.example.exerciseapp.mModels.StringModel;
+import com.example.exerciseapp.mModels.UnitModel;
 import com.example.exerciseapp.mModels.UserInformationModel;
 
 import java.util.ArrayList;
@@ -128,10 +129,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String createUserUnitsTab = "CREATE TABLE " + USER_UNITS_TAB
                 + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + USER_HEIGHT + " INTEGER, "
-                + USER_WEIGHT + " INTEGER, "
-                + USER_UNIT_HEIGHT + " INTEGER, "
-                + USER_UNIT_WEIGHT + " INTEGER, "
+                + USER_HEIGHT + " INTEGER, " + USER_WEIGHT + " INTEGER, "
+                + USER_UNIT_HEIGHT + " INTEGER, " + USER_UNIT_WEIGHT + " INTEGER, "
                 + " FOREIGN KEY (" + USER_UNIT_HEIGHT + ") REFERENCES "
                 + UNIT_HEIGHT_TAB + " (" + ID + "), "
                 + " FOREIGN KEY (" + USER_UNIT_WEIGHT + ") REFERENCES "
@@ -190,41 +189,32 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public List<FourElementLinearListModel> getUserUnit(int value) {
 
-        String search = "SELECT * FROM " + USER_UNITS_TAB +
-                " WHERE " + ID + " == ?";
+        String search = "SELECT * FROM " + USER_UNITS_TAB + " WHERE " + ID + " == ?";
         String[] args = {String.valueOf(value)};
-        IntegerModel integerModel;
+
+        UnitModel unitModel;
         try (SQLiteDatabase db = getReadableDatabase();
              Cursor cursor = db.rawQuery(search, args)) {
             if (cursor.moveToFirst()) {
-                integerModel = new IntegerModel(
+                unitModel = new UnitModel.UnitModelBuilder().setAll(
                         cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(USER_HEIGHT)),
-                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_WEIGHT)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(USER_UNIT_HEIGHT)),
-                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_UNIT_WEIGHT)));
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_WEIGHT)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(USER_UNIT_WEIGHT)))
+                        .build();
             } else {
-                integerModel = new IntegerModel();
+                unitModel = new UnitModel.UnitModelBuilder().build();
             }
         }
 
         List<FourElementLinearListModel> units = new ArrayList<>();
         String[] unitsName = {"Height", "Weight"};
-        int[] valuesTab = {integerModel.getFirstValue(), integerModel.getSecondValue()};
-        String[] unitsTab = {this.getUnitHeight(integerModel.getThirdValue()),
-                this.getUnitWeight(integerModel.getForthValue())};
 
-//        Log.i("TAG", "getUserUnit: " + this.getUnitHeight(integerModel.getThirdValue()) +
-//                " :) " + integerModel.getForthValue());
-//
-//        FourElementLinearListModel model1 = new FourElementLinearListModel(1, 0, unitsName[0],
-//                String.valueOf(integerModel.getFirstValue()), getUnitHeight(integerModel.getThirdValue()),
-//                0);
-//        units.add(model1);
-//        FourElementLinearListModel model2 = new FourElementLinearListModel(2, 0, unitsName[1],
-//                String.valueOf(integerModel.getSecondValue()), getUnitWeight(integerModel.getForthValue()),
-//                0);
-//        units.add(model2);
+        int[] valuesTab = {unitModel.getHeight(), unitModel.getWeight()};
+        String[] unitsTab = {this.getUnitHeight(unitModel.getUnitHeight()),
+                this.getUnitWeight(unitModel.getUnitWeight())};
+
         for (int i = 0; i < unitsName.length; i++) {
             FourElementLinearListModel model = new FourElementLinearListModel(i, 0, unitsName[i],
                     String.valueOf(valuesTab[i]), unitsTab[i], 0);

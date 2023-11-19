@@ -1,5 +1,6 @@
 package com.example.exerciseapp;
 
+import static android.content.ContentValues.TAG;
 import static com.example.exerciseapp.mClasses.GlobalClass.*;
 
 import android.app.AlarmManager;
@@ -11,6 +12,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -98,7 +100,8 @@ public class SettingsActivity extends AppCompatActivity implements
         initializeViews();
 
         Intent intent = getIntent();
-        currentUserID = intent.getLongExtra(GlobalClass.userID, -1);
+//        currentUserID = intent.getLongExtra(GlobalClass.userID, -1);
+        currentUserID = 1;
 
         if (findViewById(R.id.act_settings_mainContainer) != null) {
 
@@ -323,22 +326,25 @@ public class SettingsActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
-        if (selectHeightFragment != null && selectHeightFragment.isVisible()) {
+        if (selectHeightFragment != null) {
             updateHeight();
-        } else if (selectWeightFragment != null && selectWeightFragment.isVisible()) {
+        } else if (selectWeightFragment != null) {
             updateWeight();
         }
     }
 
     private void updateHeight() {
         selectHeightFragment.fragmentMessage();
+        Log.i(TAG, "onBackPressed: tabs : " + tab.get(0) + " " + tab.get(1));
+
         dbHelper.updateHeight(currentUserID, tab.get(0), tab.get(1));
         clearData(selectHeightFragment);
     }
 
     private void updateWeight() {
         selectWeightFragment.fragmentMessage();
+        Log.i(TAG, "onBackPressed: tabs : " + tab.get(0) + " " + tab.get(1));
+
         dbHelper.updateWeight(currentUserID, tab.get(0), tab.get(1));
         clearData(selectWeightFragment);
     }
@@ -379,6 +385,8 @@ public class SettingsActivity extends AppCompatActivity implements
                        int fourthValue) {
         switch (listName) {
             case INFORMATION_NAME:
+                Log.i(TAG, "values: dimensionSettings" + listName + " f " + firstValue +
+                        " s: " + secondValue + " t: " + thirdValue + " fo " + fourthValue);
                 handleInformationFragment(firstValue);
                 break;
             case PERFORMANCE_NAME:
@@ -451,23 +459,23 @@ public class SettingsActivity extends AppCompatActivity implements
                 case 1:
                     performFragmentOperation(new FourElementListFragment(), FragmentAction.REPLACE,
                             true, ACCOUNT_LIST_NAME, accountList(), getString(R.string.account),
-                            ListType.SELECTABLE_BUTTONS_STR, NumberOfItem.TWO);
+                            ListType.STRING_INPUT_POPUP, NumberOfItem.TWO);
                     break;
                 case 2:
                     performFragmentOperation(new NotificationFragment(), FragmentAction.REPLACE,
                             true, NOTIFICATION_LIST_NAME, notificationList(),
-                            getString(R.string.notification), ListType.SELECTABLE_BUTTONS,
+                            getString(R.string.notification), ListType.EXTERNAL_WINDOW_ACTION,
                             NumberOfItem.ONE);
                     break;
                 case 3:
                     performFragmentOperation(new RadioButtonList(), FragmentAction.REPLACE,
                             true, LANGUAGE_LIST_NAME, languageListModel(),
-                            getString(R.string.language), ListType.RADIO_BUTTONS, NumberOfItem.ONE);
+                            getString(R.string.language), ListType.RADIO_BUTTONS_LIST, NumberOfItem.ONE);
                     break;
                 case 4:
                     performFragmentOperation(new ContactFragment(), FragmentAction.REPLACE,
                             true, ContactFragment.class.getName(), new ArrayList<>(),
-                            ContactFragment.class.getName(), ListType.NULL, NumberOfItem.NULL);
+                            ContactFragment.class.getName(), ListType.NO_ACTION, NumberOfItem.NULL);
                     break;
                 case 5:
                     showLogoutDialog();

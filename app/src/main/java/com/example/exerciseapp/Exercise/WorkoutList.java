@@ -35,17 +35,13 @@ import java.util.Objects;
 
 public class WorkoutList extends Fragment {
 
+    private final String startWorkout = "startWorkout";
     private Button startWorkoutBtn;
     private ToggleButton showHideBtn;
     private TableLayout secondPartLayout;
     private ImageView imageView;
-    private TextView nameView;
-    private TextView levelView;
-    private TextView bodyPartsView;
-    private TextView equipmentView;
-    private TextView kcalView;
-    private TextView durationView;
-    private TextView descriptionView;
+    private TextView nameView, levelView, bodyPartsView, equipmentView,
+            kcalView, durationView, descriptionView;
     private RecyclerView exerciseListView;
 
     private List<FourElementsModel> exercisesList;
@@ -89,15 +85,23 @@ public class WorkoutList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_workout_list, container, false);
-        initView(mView);
+        initializeView(mView);
+
+        contentBD = new ContentBD(requireActivity());
+        workoutList = contentBD.showWorkoutById(id);
+
+        initializeListeners();
+        fillView();
+        initializeAdapter();
         return mView;
     }
 
-    private void initView(View v) {
+    private void initializeView(View v) {
 
         startWorkoutBtn = v.findViewById(R.id.frag_workout_list_start_btn);
         showHideBtn = v.findViewById(R.id.frag_workout_list_show_hide_btn);
         secondPartLayout = v.findViewById(R.id.frag_workout_list_second_part_layout);
+        secondPartLayout.setVisibility(View.GONE);
 
         imageView = v.findViewById(R.id.frag_workout_list_image);
         nameView = v.findViewById(R.id.frag_workout_list_name);
@@ -108,10 +112,9 @@ public class WorkoutList extends Fragment {
         durationView = v.findViewById(R.id.frag_workout_list_duration);
         descriptionView = v.findViewById(R.id.frag_workout_list_description);
         exerciseListView = v.findViewById(R.id.frag_workout_list_exercise_list);
+    }
 
-        contentBD = new ContentBD(requireActivity());
-        workoutList = contentBD.showWorkoutById(id);
-
+    private void initializeListeners() {
         showHideBtn.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
                 secondPartLayout.setVisibility(View.VISIBLE);
@@ -120,65 +123,89 @@ public class WorkoutList extends Fragment {
             }
         });
 
-        startWorkoutBtn.setOnClickListener(view -> iSingleIntegerValue.
-                singleIntValue("startWorkout", 1));
+        startWorkoutBtn.setOnClickListener(view -> iSingleIntegerValue
+                .singleIntValue(startWorkout, 1));
+    }
 
-        secondPartLayout.setVisibility(View.GONE);
-
-        fillView();
-
+    private void initializeAdapter() {
         adapter = new SearchAdapter(requireContext(), exercisesList, "workoutList",
                 updateIntegersDB);
         exerciseListView.setHasFixedSize(true);
         exerciseListView.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 RecyclerView.VERTICAL, false));
         exerciseListView.setAdapter(adapter);
-
     }
 
     private void fillView() {
 
-        String temp = contentBD.showWorkoutById(workoutList.get(POSITION).getId()).
+        String exerciseIdString = contentBD.showWorkoutById(workoutList.get(POSITION).getId()).
                 get(0).getExerciseId();
-        String[] exerciseStr = temp.split(",");
-        long[] exercisesId = new long[exerciseStr.length];
-        for (int i = 0; i < exercisesId.length; i++) {
-            exercisesId[i] = Long.parseLong(exerciseStr[i]);
-        }
+        long[] exercisesId = getExerciseIds(exerciseIdString);
+        exercisesList = getExercisesList(exercisesId);
 
-        exercisesList = new ArrayList<>();
+        String[] names = {getString(R.string.beginner), getString(R.string.intermediate), getString(R.string.advanced)};
+
+        initializeTrainingTimer();
+
+        nameView.setText(workoutList.get(POSITION).getName());
+        equipmentView.setText(getEquipment());
+        kcalView.setText(String.valueOf(kcalSum));
+        bodyPartsView.setText(getBodyParts());
+        levelView.setText(names[workoutList.get(POSITION).getLevel() - 1]);
+        descriptionView.setText(workoutList.get(POSITION).getDescription());
+    }
+
+    private long[] getExerciseIds(String exerciseIdString) {
+        String[] exercisesStr = exerciseIdString.split(",");
+        long[] exercisesId = new long[exercisesStr.length];
+        for (int i = 0; i < exercisesId.length; i++) {
+            exercisesId[i] = Long.parseLong(exercisesStr[i]);
+        }
+        return exercisesId;
+    }
+
+    private List<FourElementsModel> getExercisesList(long[] exercisesId) {
+
+        List<FourElementsModel> exercisesList = new ArrayList<>();
 
         for (long l : exercisesId) {
-            List<ExerciseDescriptionModel> temp2 = contentBD.showExerciseById(l);
-            kcalSum += temp2.get(0).getKcal();
-            List<IntegerModel> extensionExe = contentBD.showExerciseExtensionId(
-                    temp2.get(0).getExtension());
+            List<ExerciseDescriptionModel> exercisesDescriptionList = contentBD.showExerciseById(l);
+            kcalSum += exercisesDescriptionList.get(0).getKcal();
+            List<IntegerModel> extensionExercise = contentBD.showExerciseExtensionId(
+                    exercisesDescriptionList.get(0).getExtension());
 
-//            1 -> type: repetition, 2 -> type = time;
-            if (temp2.get(0).getType() == 1) {
-                durationExe += (extensionExe.get(0).getSecondValue() * GlobalClass.DEFAULT_EXERCISE_TIME) +
-                        ((extensionExe.get(0).getSecondValue() - 1) * extensionExe.get(0).getFifthValue());
-                durationSum += durationExe;
-            } else {
-                durationExe += (extensionExe.get(0).getSecondValue() * extensionExe.get(0).getForthValue()) +
-                        ((extensionExe.get(0).getSecondValue() - 1) * extensionExe.get(0).getFifthValue());
-                durationSum += durationExe;
-            }
+            durationExe = calculateDurationExe(exercisesDescriptionList, extensionExercise);
+            durationExe += durationExe;
 
-            FourElementsModel model = new FourElementsModel(temp2.get(0).getId(),
-                    temp2.get(0).getImage(), temp2.get(0).getName(),
-                    String.valueOf(temp2.get(0).getKcal()), temp2.get(0).getLevel(),
-                    durationExe, temp2.get(0).getFromWhere());
+            FourElementsModel model = new FourElementsModel(exercisesDescriptionList.get(0).getId(),
+                    exercisesDescriptionList.get(0).getImage(),
+                    exercisesDescriptionList.get(0).getName(),
+                    String.valueOf(exercisesDescriptionList.get(0).getKcal()),
+                    exercisesDescriptionList.get(0).getLevel(),
+                    durationExe, exercisesDescriptionList.get(0).getFromWhere());
             exercisesList.add(model);
             durationExe = 0;
         }
+        return exercisesList;
+    }
 
-        String[] names = {getString(R.string.beginner), getString(R.string.intermediate),
-                getString(R.string.advanced)};
+    private int calculateDurationExe(List<ExerciseDescriptionModel> exercisesDescriptionList,
+                                     List<IntegerModel> extensionExercise) {
+        if (exercisesDescriptionList.get(0).getType() == 1) {
+            return (extensionExercise.get(0).getSecondValue() * GlobalClass.DEFAULT_EXERCISE_TIME)
+                    + ((extensionExercise.get(0).getSecondValue() - 1) * extensionExercise.get(0).getFifthValue());
+        } else {
+            return (extensionExercise.get(0).getSecondValue() * extensionExercise.get(0).getForthValue())
+                    + ((extensionExercise.get(0).getSecondValue() - 1) * extensionExercise.get(0).getFifthValue());
+        }
+    }
 
-        String bodyPartsText = String.join(", ",
-                contentBD.showBodyPartsById(workoutList.get(POSITION).getBodyParts()));
+    private String getBodyParts() {
+        return String.join(", ", contentBD
+                .showBodyPartsById(workoutList.get(POSITION).getBodyParts()));
+    }
 
+    private String getEquipment() {
         List<StringModel> equipmentList = new ArrayList<>();
         String equipmentIDs = workoutList.get(POSITION).getEquipment();
         String[] splitEquipment = equipmentIDs.split(",");
@@ -195,17 +222,14 @@ public class WorkoutList extends Fragment {
                 setEquipment = String.join(", ", equipmentList.get(i).getName());
             }
         }
+        return setEquipment;
+    }
 
+    private void initializeTrainingTimer() {
         TrainingTimer trainingTimer = new TrainingTimer.TrainingTimerBuilder(requireActivity())
                 .setSecond(durationSum)
                 .build();
 
         trainingTimer.dynamicIncreaseTime(durationView);
-        nameView.setText(workoutList.get(POSITION).getName());
-        equipmentView.setText(setEquipment);
-        kcalView.setText(String.valueOf(kcalSum));
-        bodyPartsView.setText(bodyPartsText);
-        levelView.setText(names[workoutList.get(POSITION).getLevel() - 1]);
-        descriptionView.setText(workoutList.get(POSITION).getDescription());
     }
 }

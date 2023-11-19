@@ -21,7 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private long currentUserID;
+    private long currentUserID = 1;
 
     private DBHelper dbHelper;
     private ContentBD contentBD;
@@ -46,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
             initView();
             initMenu();
         } else {
-            startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+            startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+//            startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
         }
         dbHelper = new DBHelper(MainActivity.this);
         contentBD = new ContentBD(MainActivity.this);

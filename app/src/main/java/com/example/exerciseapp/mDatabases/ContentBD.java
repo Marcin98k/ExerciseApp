@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import com.example.exerciseapp.mClasses.InsertResult;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
 import com.example.exerciseapp.mModels.CustomExerciseModel;
-import com.example.exerciseapp.mModels.CustomUserExerciseModel;
 import com.example.exerciseapp.mModels.ExerciseDescriptionModel;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.StringModel;
@@ -271,17 +270,16 @@ public class ContentBD extends SQLiteOpenHelper {
         return result;
     }
 
-    public boolean insertCustomUserExercise(CustomUserExerciseModel customUserExerciseModel) {
+    public boolean insertCustomUserExercise(CustomExerciseModel customExerciseModel) {
 
         try (SQLiteDatabase db = getWritableDatabase()) {
 
             ContentValues values = new ContentValues();
-            values.put(CUSTOM_USER_EXERCISE_NAME, customUserExerciseModel.getName());
-            values.put(CUSTOM_USER_EXERCISE_TYPE, customUserExerciseModel.getType());
-            values.put(CUSTOM_USER_EXERCISE_ID, customUserExerciseModel.getUserId());
-            values.put(CUSTOM_USER_EXERCISE_EXERCISE_ID, customUserExerciseModel.getExerciseID());
-            values.put(CUSTOM_USER_EXERCISE_EXERCISE_EXTENSION_ID, customUserExerciseModel
-                    .getExerciseExtensionID());
+            values.put(CUSTOM_USER_EXERCISE_NAME, customExerciseModel.getName());
+            values.put(CUSTOM_USER_EXERCISE_TYPE, customExerciseModel.getType());
+            values.put(CUSTOM_USER_EXERCISE_ID, customExerciseModel.getUserId());
+            values.put(CUSTOM_USER_EXERCISE_EXERCISE_ID, customExerciseModel.getExerciseId());
+            values.put(CUSTOM_USER_EXERCISE_EXERCISE_EXTENSION_ID, customExerciseModel.getExtensionId());
 
             return db.insert(CUSTOM_USER_EXERCISE_TAB, null, values) != -1;
         }
