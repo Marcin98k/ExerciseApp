@@ -21,17 +21,20 @@ import com.example.exerciseapp.Exercise.WorkoutList;
 import com.example.exerciseapp.mClasses.BackgroundTask;
 import com.example.exerciseapp.mClasses.CreateExerciseClass;
 import com.example.exerciseapp.mClasses.GlobalClass;
-import com.example.exerciseapp.mDatabases.ContentBD;
+import com.example.exerciseapp.mDatabases.ContentDB;
 import com.example.exerciseapp.mEnums.ExerciseType;
 import com.example.exerciseapp.mEnums.Side;
 import com.example.exerciseapp.mInterfaces.CallbackList;
 import com.example.exerciseapp.mInterfaces.ISingleIntegerValue;
 import com.example.exerciseapp.mInterfaces.NewExercise;
+import com.example.exerciseapp.mInterfaces.NewExerciseToChange;
 import com.example.exerciseapp.mInterfaces.TitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ExerciseDescriptionModel;
+import com.example.exerciseapp.mModels.ExtensionExerciseModel;
 import com.example.exerciseapp.mModels.FourElementsModel;
 import com.example.exerciseapp.mModels.IntegerModel;
+import com.example.exerciseapp.mModels.TrainingModel;
 import com.example.exerciseapp.mResource.LibraryButtonsFragment;
 import com.example.exerciseapp.mResource.LoadingFragment;
 import com.example.exerciseapp.mResource.ViewPagerFragment;
@@ -42,7 +45,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public class LibraryActivity extends AppCompatActivity implements UpdateIntegersDB,
-        ISingleIntegerValue, NewExercise, TitleChangeListener {
+        ISingleIntegerValue, NewExerciseToChange, TitleChangeListener {
 
     private final String[] fragmentTitles = new String[]{"Exercises", "Workouts"};
     private static final String FIRST_LIST = "firstList";
@@ -72,7 +75,7 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
 
-    private ContentBD contentBD;
+    private ContentDB contentDB;
     private CustomExerciseCreatorFragment creatorExerciseFragment;
     private CreateExerciseClass createExerciseClass;
 
@@ -94,7 +97,7 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
     private void initView(Bundle savedInstanceState) {
         initializeViews();
 
-        contentBD = new ContentBD(this);
+        contentDB = new ContentDB(this);
         createExerciseClass = new ViewModelProvider(this).get(CreateExerciseClass.class);
 
         Intent intent = getIntent();
@@ -216,11 +219,11 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
 
     private void fillMainExerciseList(List<FourElementsModel> mainExerciseList) {
         int[] tempTimeExercise = new int[1];
-        List<ExerciseDescriptionModel> showExercise = contentBD.showExercise();
+        List<ExerciseDescriptionModel> showExercise = contentDB.showExercise();
 
         for (int i = 0; i < showExercise.size(); i++) {
             ExerciseDescriptionModel exerciseDescriptionModel = showExercise.get(i);
-            List<IntegerModel> extensionExe = contentBD.showExerciseExtensionId(exerciseDescriptionModel.getExtension());
+            List<IntegerModel> extensionExe = contentDB.showExerciseExtensionId(exerciseDescriptionModel.getExtension());
 
             tempTimeExercise[0] = calculateTime(exerciseDescriptionModel, extensionExe);
             exerciseTimeList.add(tempTimeExercise[0]);
@@ -231,7 +234,7 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
     }
 
     private void fillWorkoutList() {
-        List<ExerciseDescriptionModel> showWorkout = contentBD.showWorkout();
+        List<ExerciseDescriptionModel> showWorkout = contentDB.showWorkout();
         workoutTimeList = new ArrayList<>();
         int[] tempTimeWorkout = new int[1];
 
@@ -240,8 +243,8 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
             long[] exercisesId = parseExerciseIds(exerciseDescriptionModel.getExerciseId());
 
             for (long l : exercisesId) {
-                List<ExerciseDescriptionModel> tempExercises = contentBD.showExerciseById(l);
-                List<IntegerModel> tempExtensions = contentBD.showExerciseExtensionId(tempExercises.get(0).getExtension());
+                List<ExerciseDescriptionModel> tempExercises = contentDB.showExerciseById(l);
+                List<IntegerModel> tempExtensions = contentDB.showExerciseExtensionId(tempExercises.get(0).getExtension());
                 tempTimeWorkout[0] += calculateTime(tempExercises.get(0), tempExtensions);
             }
 
@@ -267,15 +270,15 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
 
 
     private void fillUserExerciseList(List<FourElementsModel> userExerciseList) {
-        if (contentBD.getCount("CUSTOM_USER_EXERCISE_TAB") >= 1) {
+        if (contentDB.getCount("CUSTOM_USER_EXERCISE_TAB") >= 1) {
             int[] tempUserTimeExercise = new int[1];
-            List<ExerciseDescriptionModel> showUserExercise = contentBD.showUserExercise();
+            List<ExerciseDescriptionModel> showUserExercise = contentDB.showUserExercise();
 
             for (int i = 0; i < showUserExercise.size(); i++) {
                 ExerciseDescriptionModel exerciseDescriptionModel = showUserExercise.get(i);
 
                 if (exerciseDescriptionModel.getExtension() > 0) {
-                    List<IntegerModel> extensionExe = contentBD.showExerciseExtensionId(exerciseDescriptionModel.getExtension());
+                    List<IntegerModel> extensionExe = contentDB.showExerciseExtensionId(exerciseDescriptionModel.getExtension());
                     tempUserTimeExercise[0] = calculateTime(exerciseDescriptionModel, extensionExe);
                     exerciseTimeList.add(tempUserTimeExercise[0]);
                     tempUserTimeExercise[0] = 0;
@@ -490,7 +493,7 @@ public class LibraryActivity extends AppCompatActivity implements UpdateIntegers
     @Override
     public void createExercise(String name, ExerciseType exerciseType, int sets, int volume,
                                int rest) {
-
+        Log.i(TAG, "createExercise: library create");
         createExerciseClass.setValue(createExerciseClass.TYPE,
                 exerciseType == ExerciseType.REPETITION ? 1 : 0);
         createExerciseClass.setValue(createExerciseClass.SETS, sets);

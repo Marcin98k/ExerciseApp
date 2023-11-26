@@ -124,7 +124,7 @@ public class FourElementListFragment extends Fragment {
 
             numberOfItem = (NumberOfItem) getArguments().getSerializable("numberOfItem");
             if (numberOfItem == null) {
-                numberOfItem = NumberOfItem.NULL;
+                numberOfItem = NumberOfItem.ZERO;
             }
 
         }

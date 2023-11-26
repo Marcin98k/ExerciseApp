@@ -223,7 +223,7 @@ public class FourElementLinearListAdapter extends RecyclerView.Adapter<FourEleme
         } else if (numberOfItem.equals(NumberOfItem.TWO)) {
             holder.firstValue.setText(list.get(position).getFirstValue());
             holder.secondValue.setText(list.get(position).getSecondValue());
-        } else if (numberOfItem.equals(NumberOfItem.NULL)) {
+        } else if (numberOfItem.equals(NumberOfItem.ZERO)) {
             Log.i(TAG, "onBindViewHolder: NO_ACTION not show TextView's");
         } else {
             holder.firstValue.setText(list.get(position).getFirstValue());

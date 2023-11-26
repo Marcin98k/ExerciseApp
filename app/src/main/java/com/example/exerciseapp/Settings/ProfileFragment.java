@@ -144,7 +144,7 @@ public class ProfileFragment extends Fragment {
         initRecyclerView(performanceList, userPerformanceList, PERFORMANCE,
                 ListType.INTEGER_INPUT_POPUP, NumberOfItem.ONE);
         initRecyclerView(goalsList, userGoalsList, GOALS,
-                ListType.CHECKBOX_LIST, NumberOfItem.NULL);
+                ListType.CHECKBOX_LIST, NumberOfItem.ZERO);
         initRadioButtonList(levelList, userLevelList, LEVEL);
     }
 

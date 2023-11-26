@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.exerciseapp.R;
 import com.example.exerciseapp.mClasses.TrainingTimer;
-import com.example.exerciseapp.mDatabases.ContentBD;
+import com.example.exerciseapp.mDatabases.ContentDB;
 import com.example.exerciseapp.mInterfaces.FragmentRespond;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
@@ -49,7 +49,7 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
 
     private UpdateIntegersDB updateIntegersDB;
     private FragmentSupportListener fragmentSupportListener;
-    private ContentBD contentBD;
+    private ContentDB contentDB;
     private TrainingTimer trainingTimer;
 
     private long exerciseId;
@@ -94,7 +94,7 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
         initializeViews(v);
 
         currentSet = (byte) (currentSet + 1);
-        contentBD = new ContentBD(requireActivity());
+        contentDB = new ContentDB(requireActivity());
         exercise = getExerciseData();
 
         if (exercise.isEmpty()) {
@@ -119,15 +119,15 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
     @VisibleForTesting
     private List<ExerciseDescriptionModel> getExerciseData() {
         if (fromWhere == 0) {
-            return contentBD.showExerciseById(exerciseId);
+            return contentDB.showExerciseById(exerciseId);
         } else {
-            return contentBD.showUserExerciseById(exerciseId);
+            return contentDB.showUserExerciseById(exerciseId);
         }
     }
 
     @VisibleForTesting
     private void setupExerciseData() {
-        extension = contentBD.showExerciseExtensionId(exercise.get(POSITION).getExtension());
+        extension = contentDB.showExerciseExtensionId(exercise.get(POSITION).getExtension());
         getSet = (byte) extension.get(POSITION).getSecondValue();
         nameView.setText(exercise.get(POSITION).getName());
         rest = extension.get(POSITION).getFifthValue();

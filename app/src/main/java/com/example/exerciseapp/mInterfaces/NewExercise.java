@@ -1,8 +1,8 @@
 package com.example.exerciseapp.mInterfaces;
 
-import com.example.exerciseapp.mEnums.ExerciseType;
+import com.example.exerciseapp.mModels.ExtensionExerciseModel;
+import com.example.exerciseapp.mModels.TrainingModel;
 
 public interface NewExercise {
-
-    void createExercise(String name, ExerciseType exerciseType, int sets, int volume, int rest);
+    void createExercise(TrainingModel trainingModel, ExtensionExerciseModel extensionExerciseModel);
 }

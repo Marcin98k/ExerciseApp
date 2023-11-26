@@ -17,7 +17,7 @@ public class SimulatedExternalDatabase extends AppCompatActivity {
 
 
     private DBHelper dbHelper;
-    private ContentBD contentBD;
+    private ContentDB contentDB;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,9 +33,9 @@ public class SimulatedExternalDatabase extends AppCompatActivity {
         IntegerModel extend2 = new IntegerModel(-1, 2, 3, 0, 65, 45);
         IntegerModel extend3 = new IntegerModel(-1, 3, 4, 6, 0, 45);
 
-        contentBD.insertExerciseExtend(extend1);
-        contentBD.insertExerciseExtend(extend2);
-        contentBD.insertExerciseExtend(extend3);
+        contentDB.insertExerciseExtend(extend1);
+        contentDB.insertExerciseExtend(extend2);
+        contentDB.insertExerciseExtend(extend3);
     }
 
     private void insertWorkout() {
@@ -50,9 +50,9 @@ public class SimulatedExternalDatabase extends AppCompatActivity {
                 4, "71", 17, 15, "descriptionWorkout3",
                 "3,2,1", 0);
 
-        contentBD.insertWorkout(workout1);
-        contentBD.insertWorkout(workout2);
-        contentBD.insertWorkout(workout3);
+        contentDB.insertWorkout(workout1);
+        contentDB.insertWorkout(workout2);
+        contentDB.insertWorkout(workout3);
     }
 
     private void insertExercise() {
@@ -67,9 +67,9 @@ public class SimulatedExternalDatabase extends AppCompatActivity {
                 4, "71", 1, 15, 35, "description3",
                 3, 0);
 
-        contentBD.insertExercise(exercise1);
-        contentBD.insertExercise(exercise2);
-        contentBD.insertExercise(exercise3);
+        contentDB.insertExercise(exercise1);
+        contentDB.insertExercise(exercise2);
+        contentDB.insertExercise(exercise3);
     }
 
     private void insertTaskDate() {
@@ -77,9 +77,9 @@ public class SimulatedExternalDatabase extends AppCompatActivity {
         TaskDateModel two = new TaskDateModel(-1, 1, "2023628", 3, 0);
         TaskDateModel three = new TaskDateModel(-1, 1, "2023623", 2, 1);
 
-        contentBD.insertTaskWithDate(one);
-        contentBD.insertTaskWithDate(two);
-        contentBD.insertTaskWithDate(three);
+        contentDB.insertTaskWithDate(one);
+        contentDB.insertTaskWithDate(two);
+        contentDB.insertTaskWithDate(three);
     }
 
     private void insertContentAppearance() {
@@ -97,22 +97,22 @@ public class SimulatedExternalDatabase extends AppCompatActivity {
                 R.drawable.ic_block, "Legs", "Legs description", "BodyPart");
         AppearanceBlockModel full_body = new AppearanceBlockModel(-1,
                 R.drawable.ic_person, "Full body", "FullBody description", "BodyPart");
-        contentBD.insertAppearance(chest);
-        contentBD.insertAppearance(back);
-        contentBD.insertAppearance(shoulders);
-        contentBD.insertAppearance(arms);
-        contentBD.insertAppearance(abs);
-        contentBD.insertAppearance(legs);
-        contentBD.insertAppearance(full_body);
+        contentDB.insertAppearance(chest);
+        contentDB.insertAppearance(back);
+        contentDB.insertAppearance(shoulders);
+        contentDB.insertAppearance(arms);
+        contentDB.insertAppearance(abs);
+        contentDB.insertAppearance(legs);
+        contentDB.insertAppearance(full_body);
     }
 
     private void insertEquipment() {
         StringModel item1 = new StringModel(-1, "Dumbbells", R.drawable.ic_hexagon);
         StringModel item2 = new StringModel(-1, "ResistanceRubber", R.drawable.ic_hexagon);
         StringModel item3 = new StringModel(-1, "Paralletes", R.drawable.ic_hexagon);
-        contentBD.insertEquipment(item1);
-        contentBD.insertEquipment(item2);
-        contentBD.insertEquipment(item3);
+        contentDB.insertEquipment(item1);
+        contentDB.insertEquipment(item2);
+        contentDB.insertEquipment(item3);
     }
 
     private void insertLanguage() {

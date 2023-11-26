@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.exerciseapp.R;
 import com.example.exerciseapp.mClasses.GlobalClass;
-import com.example.exerciseapp.mDatabases.ContentBD;
+import com.example.exerciseapp.mDatabases.ContentDB;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.TaskDateModel;
 
@@ -29,7 +29,7 @@ public class CalendarFragment extends Fragment implements DatePicker.OnDateChang
     private long id;
 
     //    Initializing instances;
-    private ContentBD contentBD;
+    private ContentDB contentDB;
 
     //    Initializing interface;
     private UpdateIntegersDB updateIntegersDB;
@@ -44,7 +44,7 @@ public class CalendarFragment extends Fragment implements DatePicker.OnDateChang
         View mView = inflater.inflate(R.layout.fragment_calendar, container, false);
         datePicker = mView.findViewById(R.id.frag_date_picker);
 
-        contentBD = new ContentBD(requireActivity());
+        contentDB = new ContentDB(requireActivity());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             datePicker.setOnDateChangedListener(this);
         }
@@ -57,7 +57,7 @@ public class CalendarFragment extends Fragment implements DatePicker.OnDateChang
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, day);
-        List<TaskDateModel> taskDateList = contentBD.showTaskWithDate(
+        List<TaskDateModel> taskDateList = contentDB.showTaskWithDate(
                 year + "" + (month + 1) + "" + day);
         if (taskDateList.size() > 0) {
             id = taskDateList.get(0).getTaskId();

@@ -50,7 +50,7 @@ public class SummaryFragment extends Fragment implements FragmentRespond {
             id = getArguments().getLong("id", -1);
             extensionId = getArguments().getLong("extensionId", -1);
             duration = getArguments().getDouble("duration", 0);
-            name = getArguments().getString("name", "Null");
+            name = getArguments().getString("exerciseName", "Null");
             fromWhere = getArguments().getInt("fromWhere", -1);
         }
     }

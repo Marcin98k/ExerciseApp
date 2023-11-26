@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.example.exerciseapp.R;
 import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mClasses.TrainingTimer;
-import com.example.exerciseapp.mDatabases.ContentBD;
+import com.example.exerciseapp.mDatabases.ContentDB;
 import com.example.exerciseapp.mInterfaces.TitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ExerciseDescriptionModel;
@@ -48,7 +48,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
     private int buttonText;
     private int fromWhere;
 
-    private ContentBD contentBD;
+    private ContentDB contentDB;
     private ExerciseDescriptionModel exercise;
     private UpdateIntegersDB updateIntegersDB;
     private TitleChangeListener titleChangeListener;
@@ -100,7 +100,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_details, container, false);
-        contentBD = new ContentBD(requireActivity());
+        contentDB = new ContentDB(requireActivity());
         initializeView(mView);
         fillView();
 
@@ -130,9 +130,9 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
 
 
         if (fromWhere == ZERO) {
-            exerciseDetail = contentBD.showExerciseById(id);
+            exerciseDetail = contentDB.showExerciseById(id);
         } else {
-            exerciseDetail = contentBD.showUserExerciseById(id);
+            exerciseDetail = contentDB.showUserExerciseById(id);
         }
         exercise = exerciseDetail.get(ZERO);
 
@@ -163,7 +163,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
 
             LinkedHashSet<String> equipmentSet = new LinkedHashSet<>();
             for (String s : splitEquipment) {
-                StringModel equipmentModelDB = contentBD.showEquipment(Long.parseLong(s));
+                StringModel equipmentModelDB = contentDB.showEquipment(Long.parseLong(s));
                 equipmentSet.add(equipmentModelDB.getName());
             }
             return String.join(",\n", equipmentSet);
@@ -175,7 +175,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
             return getString(R.string.unknown);
         } else {
             return String.join(",\n ",
-                    contentBD.showBodyPartsById(exerciseDetail.get(ZERO).getBodyParts()));
+                    contentDB.showBodyPartsById(exerciseDetail.get(ZERO).getBodyParts()));
         }
     }
 
@@ -197,7 +197,7 @@ public class DetailsFragment extends Fragment implements View.OnClickListener {
     }
 
     private int calculateFullTrainingTimeInSeconds() {
-        List<IntegerModel> extensionExe = contentBD.showExerciseExtensionId(exerciseDetail.get(ZERO)
+        List<IntegerModel> extensionExe = contentDB.showExerciseExtensionId(exerciseDetail.get(ZERO)
                 .getExtension());
         IntegerModel extension = extensionExe.get(ZERO);
         int sets = extension.getSecondValue();

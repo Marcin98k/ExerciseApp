@@ -14,6 +14,7 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -24,13 +25,19 @@ import com.example.exerciseapp.mClasses.BackgroundTask;
 import com.example.exerciseapp.mClasses.CreateExerciseClass;
 import com.example.exerciseapp.mClasses.InsertResult;
 import com.example.exerciseapp.mClasses.TrainingTimer;
-import com.example.exerciseapp.mDatabases.ContentBD;
+import com.example.exerciseapp.mDatabases.ContentDB;
+import com.example.exerciseapp.mEnums.ExerciseType;
+import com.example.exerciseapp.mEnums.FromWhere;
+import com.example.exerciseapp.mEnums.TrainingType;
+import com.example.exerciseapp.mInterfaces.NewExercise;
 import com.example.exerciseapp.mInterfaces.TitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.CustomExerciseModel;
 import com.example.exerciseapp.mModels.ExerciseDescriptionModel;
+import com.example.exerciseapp.mModels.ExtensionExerciseModel;
 import com.example.exerciseapp.mModels.FourElementsModel;
 import com.example.exerciseapp.mModels.IntegerModel;
+import com.example.exerciseapp.mModels.TrainingModel;
 import com.example.exerciseapp.mResource.LoadingFragment;
 import com.example.exerciseapp.mResource.SearchList;
 import com.example.exerciseapp.mResource.ViewPagerFragment;
@@ -64,7 +71,7 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
     private String nameOfCustomExercise;
     private Integer numberOfExerciseID;
     private Integer numberOfExerciseType;
-    private Integer numberOfExerciseSets;
+    private Integer numberOfSeries;
     private Integer numberOfExerciseVolume;
     private Integer numberOfExerciseRest;
     private Long userId = 0L;
@@ -73,9 +80,11 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
 
     private ViewPagerFragment viewPagerFragment;
     private SearchList searchList;
-    private ContentBD contentBD;
+    private ContentDB contentDB;
     private CreateExerciseClass createExerciseClass;
     private TitleChangeListener titleChangeListener;
+
+    private NewExercise newExercise;
 
     public CustomExerciseCreatorFragment() {
         // Required empty public constructor
@@ -86,9 +95,10 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
         super.onAttach(context);
         try {
             titleChangeListener = (TitleChangeListener) context;
+            newExercise = (NewExercise) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context +
-                    " must implement TitleChangeListener");
+                    " must implement TitleChangeListener and/or NewExercise");
         }
     }
 
@@ -146,7 +156,7 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
     private void initClassProperties() {
 
         createExerciseClass = new ViewModelProvider(requireActivity()).get(CreateExerciseClass.class);
-        contentBD = new ContentBD(requireContext());
+        contentDB = new ContentDB(requireContext());
         fourElementsModelList = new ArrayList<>();
         fragmentManager = getChildFragmentManager();
     }
@@ -155,7 +165,7 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
 
         initExerciseValue();
         setExerciseTimeAndVolume();
-        exerciseSets.setText(String.valueOf(numberOfExerciseSets));
+        exerciseSets.setText(String.valueOf(numberOfSeries));
         exerciseName.setText(getExerciseName());
         setRestTime();
     }
@@ -163,7 +173,7 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
     private void initExerciseValue() {
 
         numberOfExerciseType = createExerciseClass.getValue(createExerciseClass.TYPE).getValue();
-        numberOfExerciseSets = createExerciseClass.getValue(createExerciseClass.SETS).getValue();
+        numberOfSeries = createExerciseClass.getValue(createExerciseClass.SETS).getValue();
         numberOfExerciseVolume = createExerciseClass.getValue(createExerciseClass.VOLUME).getValue();
         numberOfExerciseRest = createExerciseClass.getValue(createExerciseClass.REST).getValue();
         numberOfExerciseID = createExerciseClass.getValue(createExerciseClass.EXERCISE).getValue();
@@ -189,7 +199,7 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
         if (numberOfExerciseID == null || numberOfExerciseID <= 0) {
             return "---";
         } else {
-            return contentBD.showExerciseById(numberOfExerciseID).get(0).getName();
+            return contentDB.showExerciseById(numberOfExerciseID).get(0).getName();
         }
     }
 
@@ -205,6 +215,12 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
         selectExerciseBtn(selectExercise);
         selectDetailsBtn(selectDetails);
         createExerciseBtn(createExercise);
+    }
+
+    private void createExerciseBtn(Button createBtn) {
+        createBtn.setOnClickListener(v -> {
+            createExercise(createExerciseTKPattern(), createCustomExerciseTK());
+        });
     }
 
     private void selectExerciseBtn(ToggleButton btn) {
@@ -228,7 +244,7 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
     }
 
     private void prepareExerciseData() {
-        List<ExerciseDescriptionModel> showExercise = contentBD.showExercise();
+        List<ExerciseDescriptionModel> showExercise = contentDB.showExercise();
         fourElementsModelList = showExercise.stream()
                 .map(exerciseModel -> new FourElementsModel(
                         exerciseModel.getId(), exerciseModel.getImage(),
@@ -261,22 +277,23 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
             }
         });
     }
+
     private void attachViewPagerView() {
         if (viewPagerFragment == null) {
-           viewPagerFragment = createViewPagerFragment();
-           addFragmentToFragmentManager(viewPagerFragment,
-                   R.id.frag_custom_exercise_creator_volume_container, COUNTER_TAG);
+            viewPagerFragment = createViewPagerFragment();
+            addFragmentToFragmentManager(viewPagerFragment,
+                    R.id.frag_custom_exercise_creator_volume_container, COUNTER_TAG);
         } else {
             fragmentManager.beginTransaction().attach(viewPagerFragment).commit();
         }
     }
 
     private ViewPagerFragment createViewPagerFragment() {
-        ViewPagerFragment fragment = new ViewPagerFragment();
+        viewPagerFragment = new ViewPagerFragment();
         Bundle bundle = new Bundle();
         bundle.putStringArray("titles", CUSTOM_EXERCISE_TITLES);
         viewPagerFragment.setArguments(bundle);
-        return fragment;
+        return viewPagerFragment;
     }
 
     private void addFragmentToFragmentManager(Fragment fragment, int containerId, String tag) {
@@ -290,51 +307,83 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
             fragmentManager.beginTransaction().detach(viewPagerFragment).commit();
         }
     }
+    private void createExercise(TrainingModel trainingModel,
+                                ExtensionExerciseModel extensionExerciseModel) {
+        IntegerModel customExercise;
+        nameOfCustomExercise = String.valueOf(customExerciseName.getText()).trim();
 
-    private void createExerciseBtn(Button createBtn) {
-        createBtn.setOnClickListener(v -> {
-
-            IntegerModel customExercise;
-            nameOfCustomExercise = String.valueOf(customExerciseName.getText()).trim();
-
-            if (nameOfCustomExercise.equals("")) {
-                displayToast("Enter the name");
-                return;
-            }
-            if (doesExerciseExist(nameOfCustomExercise)) {
-                displayToast("An exercise with that name exist");
-            }
-
-            customExercise = createCustomExercise();
-            insertExerciseExtension(customExercise);
-        });
+        if (nameOfCustomExercise.equals("")) {
+            displayToast("Enter the name");
+            return;
+        }
+        if (doesExerciseExist(nameOfCustomExercise)) {
+            displayToast("An exercise with this name already exists");
+        }
+        customExercise = createCustomExercise();
+        insertExerciseExtension(customExercise);
+        newExercise.createExercise(trainingModel, extensionExerciseModel);
     }
+
+
+    void createExerciseTK(String exerciseName, TrainingModel trainingModel,
+                                  ExtensionExerciseModel extensionExerciseModel) {
+//        nameOfCustomExercise = String.valueOf(customExerciseName.getText()).trim();
+
+        if (exerciseName.equals("")) {
+            throw new IllegalArgumentException("Enter the name");
+        }
+        if (doesExerciseExist(exerciseName)) {
+            throw new IllegalArgumentException("An exercise with this name already exists");
+        }
+        newExercise.createExercise(trainingModel, extensionExerciseModel);
+    }
+
+    boolean doesExerciseExist(String exerciseName) {
+        return contentDB.searchByName("EXERCISE_TAB", "NAME", exerciseName);
+    }
+
+    private ExtensionExerciseModel createCustomExerciseTK() {
+        int timeExerciseValue = (numberOfExerciseType == 0) ? numberOfExerciseVolume : 0;
+        int repetitionExerciseValue = (numberOfExerciseType == 0) ? 0 : numberOfExerciseVolume;
+
+        return new ExtensionExerciseModel
+                .UserExerciseModelBuilder(-1, numberOfSeries, numberOfExerciseRest)
+                .setExerciseRepetitions(repetitionExerciseValue)
+                .setExerciseTime(timeExerciseValue)
+                .build();
+    }
+
+    private TrainingModel createExerciseTKPattern() {
+        return new TrainingModel(-1, "Image", "Name", 1, 1, 1,
+                "1,2,3", 25, 15, "description", FromWhere.USER);
+    }
+
     private void displayToast(String message) {
         Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    private boolean doesExerciseExist(String exerciseName) {
-        return contentBD.searchByName("CUSTOM_USER_EXERCISE_TAB",
-                "CUSTOM_USER_EXERCISE_NAME", exerciseName) ||
-                contentBD.searchByName("EXERCISE_TAB", "NAME", exerciseName);
     }
 
     private IntegerModel createCustomExercise() {
         int timeExerciseValue = (numberOfExerciseType == 0) ? numberOfExerciseVolume : 0;
         int repetitionExerciseValue = (numberOfExerciseType == 0) ? 0 : numberOfExerciseVolume;
 
+        new ExtensionExerciseModel
+                .UserExerciseModelBuilder(-1, numberOfSeries, numberOfExerciseRest)
+                .setExerciseRepetitions(repetitionExerciseValue)
+                .setExerciseTime(timeExerciseValue)
+                .build();
+
 //        TO-DO create a personalized model
-        return new IntegerModel(-1, Math.toIntExact(userId), numberOfExerciseSets, timeExerciseValue,
+        return new IntegerModel(-1, Math.toIntExact(userId), numberOfSeries, timeExerciseValue,
                 repetitionExerciseValue, numberOfExerciseVolume, numberOfExerciseRest);
     }
 
     private void insertExerciseExtension(IntegerModel customExercise) {
-        InsertResult exerciseExtensionResult = contentBD.insertExerciseExtension(customExercise);
+        InsertResult exerciseExtensionResult = contentDB.insertExerciseExtension(customExercise);
 
         CustomExerciseModel customExerciseModel = new CustomExerciseModel(
                 -1, nameOfCustomExercise, numberOfExerciseType, userId, numberOfExerciseID,
                 (int) exerciseExtensionResult.getIndex());
-        contentBD.insertCustomUserExercise(customExerciseModel);
+        contentDB.insertCustomUserExercise(customExerciseModel);
     }
 
     @Override

@@ -475,7 +475,7 @@ public class SettingsActivity extends AppCompatActivity implements
                 case 4:
                     performFragmentOperation(new ContactFragment(), FragmentAction.REPLACE,
                             true, ContactFragment.class.getName(), new ArrayList<>(),
-                            ContactFragment.class.getName(), ListType.NO_ACTION, NumberOfItem.NULL);
+                            ContactFragment.class.getName(), ListType.NO_ACTION, NumberOfItem.ZERO);
                     break;
                 case 5:
                     showLogoutDialog();

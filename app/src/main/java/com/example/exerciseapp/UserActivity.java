@@ -16,7 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.exerciseapp.Exercise.DetailsFragment;
 import com.example.exerciseapp.mClasses.GlobalClass;
-import com.example.exerciseapp.mDatabases.ContentBD;
+import com.example.exerciseapp.mDatabases.ContentDB;
 import com.example.exerciseapp.mEnums.Side;
 import com.example.exerciseapp.mInterfaces.TitleChangeListener;
 import com.example.exerciseapp.mInterfaces.TrainingSummaryHandler;
@@ -61,7 +61,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
     private int selectedDateToDB;
     private LocalDate today;
 
-    private ContentBD contentBD;
+    private ContentDB contentDB;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -73,7 +73,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
-        contentBD = new ContentBD(this);
+        contentDB = new ContentDB(this);
         today = LocalDate.now();
 
         initView(savedInstanceState);
@@ -217,7 +217,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
                 showToast("Not update weight");
             } else {
                 int weight = Integer.parseInt(weightStr);
-                contentBD.updateUserBioWeight(USER_ID, selectedDateToDB, weight);
+                contentDB.updateUserBioWeight(USER_ID, selectedDateToDB, weight);
                 showToast("Added to database \n day: " + selectedDateToDB + "\n weight: " + weight);
             }
         });
@@ -233,7 +233,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
 
 //    TO-DO Test values(block of code to change)
     private void fillDB() {
-        if (contentBD.getCount("USER_BIO_TAB") <= 0) {
+        if (contentDB.getCount("USER_BIO_TAB") <= 0) {
             int monthLength = today.lengthOfMonth();
             LocalDate firstDayOfMonth = today.withDayOfMonth(1);
             String firstDay = firstDayOfMonth.format(LONG_DATE_TIME_FORMATTER);
@@ -247,7 +247,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
                 } else {
                     model = new IntegerModel(iteratorForDate, 0, 0, USER_ID);
                 }
-                contentBD.insertUserBio(model);
+                contentDB.insertUserBio(model);
                 iteratorForDate++;
             }
         }
@@ -255,7 +255,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
 
     private void fillChart() {
 
-        List<IntegerModel> contentDBUserBioWeight = contentBD.getUserBioWeight(USER_ID);
+        List<IntegerModel> contentDBUserBioWeight = contentDB.getUserBioWeight(USER_ID);
         List<Entry> weightValues = createWeightValues(contentDBUserBioWeight);
         List<String> dateValues = createDateList(contentDBUserBioWeight);
 

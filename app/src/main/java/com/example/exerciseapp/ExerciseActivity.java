@@ -1,9 +1,12 @@
 package com.example.exerciseapp;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -18,13 +21,13 @@ import com.example.exerciseapp.Exercise.SummaryFragment;
 import com.example.exerciseapp.Exercise.TimeBreakFragment;
 import com.example.exerciseapp.Exercise.TimeExerciseFragment;
 import com.example.exerciseapp.mClasses.GlobalClass;
-import com.example.exerciseapp.mDatabases.ContentBD;
+import com.example.exerciseapp.mDatabases.ContentDB;
 import com.example.exerciseapp.mInterfaces.FragmentRespond;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 import com.example.exerciseapp.mInterfaces.TrainingSummaryHandler;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.UserExercisePerformedModel;
-import com.example.exerciseapp.mModels.WorkoutModel;
+import com.example.exerciseapp.mModels.WorkoutModelToChange;
 import com.example.exerciseapp.mResource.EmptyFragment;
 
 import java.text.DateFormat;
@@ -56,16 +59,17 @@ public class ExerciseActivity extends AppCompatActivity implements FragmentSuppo
     private byte typeExercise = 0;
     private double duration;
     private int rest;
+    private int tempIdForExercises = -1;
 
     private byte scenario;
     private int currentExercise;
     private byte currentFragment;
     private long idMain;
-    private List<WorkoutModel> workoutPattern;
+    private List<WorkoutModelToChange> workoutPattern;
     private long startTime;
     private boolean lastSet;
 
-    private ContentBD contentBD;
+    private ContentDB contentDB;
     private TimeExerciseFragment timeExerciseFragment;
     private RepetitionExerciseFragment repetitionExerciseFragment;
     private EmptyFragment emptyFragment;
@@ -137,7 +141,7 @@ public class ExerciseActivity extends AppCompatActivity implements FragmentSuppo
             idMain = exerciseId;
         }
         workoutPattern = new ArrayList<>();
-        contentBD = new ContentBD(this);
+        contentDB = new ContentDB(this);
     }
 
     @VisibleForTesting
@@ -158,12 +162,12 @@ public class ExerciseActivity extends AppCompatActivity implements FragmentSuppo
     private int handleSingleExercise(int sumExercise) {
 
         if (fromWhere == 0) {
-            exerciseName = contentBD.showWorkoutById(exerciseId).get(0).getName();
-            WorkoutModel singleExercise = createWorkoutModel(exerciseId, fromWhere, typeExercise, exerciseName);
+            exerciseName = contentDB.showExerciseById(exerciseId).get(0).getName();
+            WorkoutModelToChange singleExercise = createWorkoutModel(exerciseId, fromWhere, typeExercise, exerciseName);
             workoutPattern.add(singleExercise);
         } else {
-            exerciseName = contentBD.showUserExerciseById(exerciseId).get(0).getName();
-            WorkoutModel singleExercise = createWorkoutModel(exerciseId, fromWhere, typeExercise, exerciseName);
+            exerciseName = contentDB.showUserExerciseById(exerciseId).get(0).getName();
+            WorkoutModelToChange singleExercise = createWorkoutModel(exerciseId, fromWhere, typeExercise, exerciseName);
             workoutPattern.add(singleExercise);
         }
         sumExercise++;
@@ -172,8 +176,8 @@ public class ExerciseActivity extends AppCompatActivity implements FragmentSuppo
 
     @VisibleForTesting
     private int handleMultipleExercises(int sumExercise) {
-        exerciseName = contentBD.showWorkoutById(exerciseId).get(0).getName();
-        String exerciseIds = contentBD.showExercisesFromWorkout(exerciseId);
+        exerciseName = contentDB.getWorkoutById(exerciseId).get(0).getName();
+        String exerciseIds = contentDB.showExercisesFromWorkout(exerciseId);
         String[] exerciseList = exerciseIds.split(",");
         long[] exercisesId = new long[exerciseList.length];
         int exercisesIdLength = exercisesId.length;
@@ -184,22 +188,27 @@ public class ExerciseActivity extends AppCompatActivity implements FragmentSuppo
         }
 
         for (long l : exercisesId) {
-            WorkoutModel model = createWorkoutModel(l,
-                    contentBD.showExerciseById(l).get(0).getFromWhere(),
-                    (byte) contentBD.showExerciseByIdFromWorkout(l).get(0).getType(),
-                    contentBD.showExerciseById(l).get(0).getName());
+            WorkoutModelToChange model = createWorkoutModel(l,
+                    contentDB.showExerciseById(l).get(0).getFromWhere(),
+                    (byte) contentDB.showExerciseByIdFromWorkout(l).get(0).getType(),
+                    contentDB.showExerciseById(l).get(0).getName());
             workoutPattern.add(model);
+        }
+        for (WorkoutModelToChange model :
+                workoutPattern) {
+            Log.i(TAG, "handleMultipleExercises: " + model);
         }
         return sumExercise;
     }
 
-    private WorkoutModel createWorkoutModel(long id, int fromWhere, byte type, String name) {
-        return new WorkoutModel(0, id, contentBD.showExerciseById(id).get(0).getExtension(),
+    private WorkoutModelToChange createWorkoutModel(long id, int fromWhere, byte type, String name) {
+        tempIdForExercises++;
+        return new WorkoutModelToChange(tempIdForExercises, id, contentDB.showExerciseById(id).get(0).getExtension(),
                 type, name, fromWhere);
     }
 
     private void addLastExerciseToWorkoutPattern(int sumExercise) {
-        WorkoutModel lastExercise = new WorkoutModel(sumExercise, (long) MINUS_ONE, (byte) 0);
+        WorkoutModelToChange lastExercise = new WorkoutModelToChange(sumExercise + 1, (long) MINUS_ONE, (byte) 0);
         workoutPattern.add(lastExercise);
     }
 
@@ -239,19 +248,7 @@ public class ExerciseActivity extends AppCompatActivity implements FragmentSuppo
     private void swapFragments() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (lastSet && workoutPattern.get(currentExercise + 1).getExerciseId() == -1) {
-            summaryFragment = new SummaryFragment();
-            Bundle bundle = new Bundle();
-            elapsed();
-            bundle.putLong("id", idMain);
-            bundle.putDouble("duration", duration);
-            bundle.putString("exerciseName", exerciseName);
-            bundle.putLong("extensionId", extensionId);
-            bundle.putInt("fromWhere", fromWhere);
-            FragmentTransaction summaryTransaction = getSupportFragmentManager().beginTransaction();
-            summaryFragment.setArguments(bundle);
-            summaryTransaction.replace(R.id.act_exercise_container, summaryFragment, "summaryTag");
-            summaryTransaction.setReorderingAllowed(true);
-            summaryTransaction.commit();
+            addSummaryFragment(extensionId);
             return;
         }
         if (lastSet) {
@@ -305,6 +302,11 @@ public class ExerciseActivity extends AppCompatActivity implements FragmentSuppo
         currentExercise++;
         typeExercise = workoutPattern.get(workoutPattern.get(currentExercise).getId()).getType();
         if (workoutPattern.get(workoutPattern.get(currentExercise).getId()).getExerciseId() == MINUS_ONE) {
+            Log.i(TAG, "checkCondition: summary if");
+            for (WorkoutModelToChange model :
+                    workoutPattern) {
+                Log.i(TAG, "checkCondition:(if) " + model);
+            }
             addSummaryFragment(extensionId);
             return;
         }
@@ -330,13 +332,13 @@ public class ExerciseActivity extends AppCompatActivity implements FragmentSuppo
         bundle.putLong("id", idMain);
         bundle.putDouble("duration", duration);
         bundle.putString("exerciseName", exerciseName);
-        bundle.putInt("fromWhere", fromWhere);
         bundle.putLong("extensionId", extensionId);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        bundle.putInt("fromWhere", fromWhere);
+        FragmentTransaction summaryTransaction = getSupportFragmentManager().beginTransaction();
         summaryFragment.setArguments(bundle);
-        ft.replace(R.id.act_exercise_container, summaryFragment, "summaryTag");
-        ft.setReorderingAllowed(true);
-        ft.commit();
+        summaryTransaction.replace(R.id.act_exercise_container, summaryFragment, "summaryTag");
+        summaryTransaction.setReorderingAllowed(true);
+        summaryTransaction.commit();
     }
 
     @Override
@@ -388,7 +390,7 @@ public class ExerciseActivity extends AppCompatActivity implements FragmentSuppo
     }
 
     private void handleSummaryFragment(String duration, long exerciseId, long extensionId) {
-        contentBD.insertUserSummaryExercise(new UserExercisePerformedModel(currentUserId,
+        contentDB.insertUserSummaryExercise(new UserExercisePerformedModel(currentUserId,
                 getCurrentDate(), exerciseId, extensionId, duration, fromWhere));
         Intent intent = new Intent(this, LibraryActivity.class);
         intent.putExtra(GlobalClass.userID, currentUserId);

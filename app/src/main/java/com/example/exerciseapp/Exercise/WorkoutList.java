@@ -21,7 +21,7 @@ import com.example.exerciseapp.R;
 import com.example.exerciseapp.mAdapters.SearchAdapter;
 import com.example.exerciseapp.mClasses.TrainingTimer;
 import com.example.exerciseapp.mClasses.GlobalClass;
-import com.example.exerciseapp.mDatabases.ContentBD;
+import com.example.exerciseapp.mDatabases.ContentDB;
 import com.example.exerciseapp.mInterfaces.ISingleIntegerValue;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ExerciseDescriptionModel;
@@ -55,7 +55,7 @@ public class WorkoutList extends Fragment {
     private SearchAdapter adapter;
     private UpdateIntegersDB updateIntegersDB;
     private ISingleIntegerValue iSingleIntegerValue;
-    private ContentBD contentBD;
+    private ContentDB contentDB;
 
     public WorkoutList() {
         // Required empty public constructor
@@ -87,8 +87,8 @@ public class WorkoutList extends Fragment {
         View mView = inflater.inflate(R.layout.fragment_workout_list, container, false);
         initializeView(mView);
 
-        contentBD = new ContentBD(requireActivity());
-        workoutList = contentBD.showWorkoutById(id);
+        contentDB = new ContentDB(requireActivity());
+        workoutList = contentDB.getWorkoutById(id);
 
         initializeListeners();
         fillView();
@@ -138,7 +138,7 @@ public class WorkoutList extends Fragment {
 
     private void fillView() {
 
-        String exerciseIdString = contentBD.showWorkoutById(workoutList.get(POSITION).getId()).
+        String exerciseIdString = contentDB.getWorkoutById(workoutList.get(POSITION).getId()).
                 get(0).getExerciseId();
         long[] exercisesId = getExerciseIds(exerciseIdString);
         exercisesList = getExercisesList(exercisesId);
@@ -169,9 +169,9 @@ public class WorkoutList extends Fragment {
         List<FourElementsModel> exercisesList = new ArrayList<>();
 
         for (long l : exercisesId) {
-            List<ExerciseDescriptionModel> exercisesDescriptionList = contentBD.showExerciseById(l);
+            List<ExerciseDescriptionModel> exercisesDescriptionList = contentDB.showExerciseById(l);
             kcalSum += exercisesDescriptionList.get(0).getKcal();
-            List<IntegerModel> extensionExercise = contentBD.showExerciseExtensionId(
+            List<IntegerModel> extensionExercise = contentDB.showExerciseExtensionId(
                     exercisesDescriptionList.get(0).getExtension());
 
             durationExe = calculateDurationExe(exercisesDescriptionList, extensionExercise);
@@ -201,7 +201,7 @@ public class WorkoutList extends Fragment {
     }
 
     private String getBodyParts() {
-        return String.join(", ", contentBD
+        return String.join(", ", contentDB
                 .showBodyPartsById(workoutList.get(POSITION).getBodyParts()));
     }
 
@@ -215,7 +215,7 @@ public class WorkoutList extends Fragment {
             setEquipment = "NaN";
         } else {
             for (String s : splitEquipment) {
-                StringModel equipmentModelDB = contentBD.showEquipment(Long.parseLong(s));
+                StringModel equipmentModelDB = contentDB.showEquipment(Long.parseLong(s));
                 equipmentList.add(equipmentModelDB);
             }
             for (int i = 0; i < equipmentList.size(); i++) {

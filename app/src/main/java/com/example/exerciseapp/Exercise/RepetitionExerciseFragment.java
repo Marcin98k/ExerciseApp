@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.exerciseapp.R;
-import com.example.exerciseapp.mDatabases.ContentBD;
+import com.example.exerciseapp.mDatabases.ContentDB;
 import com.example.exerciseapp.mInterfaces.FragmentRespond;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
@@ -38,7 +38,7 @@ public class RepetitionExerciseFragment extends Fragment implements FragmentResp
 
     private static final String FRAGMENT_TAG = "RepetitionExerciseFragment";
 
-    private ContentBD contentBD;
+    private ContentDB contentDB;
 
     private FragmentSupportListener fragmentSupportListener;
     private UpdateIntegersDB updateIntegersDB;
@@ -69,7 +69,7 @@ public class RepetitionExerciseFragment extends Fragment implements FragmentResp
 
         initializeViews(mView);
 
-        contentBD = new ContentBD(requireActivity());
+        contentDB = new ContentDB(requireActivity());
         List<ExerciseDescriptionModel> exercise = getExerciseById(id, fromWhere);
 
         if (exercise.isEmpty()) {
@@ -101,14 +101,14 @@ public class RepetitionExerciseFragment extends Fragment implements FragmentResp
 
     private List<ExerciseDescriptionModel> getExerciseById(long id, int fromWhere) {
         if (fromWhere == 0) {
-            return contentBD.showExerciseById(id);
+            return contentDB.showExerciseById(id);
         } else {
-            return contentBD.showUserExerciseById(id);
+            return contentDB.showUserExerciseById(id);
         }
     }
 
     private IntegerModel getExerciseExtension(ExerciseDescriptionModel exerciseDescriptionModel) {
-        List<IntegerModel> extension = contentBD.showExerciseExtensionId(exerciseDescriptionModel.getExtension());
+        List<IntegerModel> extension = contentDB.showExerciseExtensionId(exerciseDescriptionModel.getExtension());
         return extension.get(0);
     }
 

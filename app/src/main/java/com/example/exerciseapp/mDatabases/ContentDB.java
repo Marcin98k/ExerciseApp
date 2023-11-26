@@ -10,18 +10,20 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 import com.example.exerciseapp.mClasses.InsertResult;
+import com.example.exerciseapp.mEnums.FromWhere;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
 import com.example.exerciseapp.mModels.CustomExerciseModel;
 import com.example.exerciseapp.mModels.ExerciseDescriptionModel;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.StringModel;
 import com.example.exerciseapp.mModels.TaskDateModel;
+import com.example.exerciseapp.mModels.TrainingModel;
 import com.example.exerciseapp.mModels.UserExercisePerformedModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContentBD extends SQLiteOpenHelper {
+public class ContentDB extends SQLiteOpenHelper {
 
     private static final String CLASS_TAG = "ContentDB";
     private static final String ID = "ID";
@@ -56,6 +58,7 @@ public class ContentBD extends SQLiteOpenHelper {
     private static final String WORKOUT_DURATION = "DURATION";
     private static final String WORKOUT_DESCRIPTION = "DESCRIPTION";
     private static final String WORKOUT_EXERCISES_ID = "EXERCISES";
+    private static final String EXERCISE_EXTENSIONS_ID = "EXERCISE_EXTENSIONS_ID";
 
 
     private static final String EQUIPMENT_TAB = "EQUIPMENT_TAB";
@@ -69,7 +72,6 @@ public class ContentBD extends SQLiteOpenHelper {
     private static final String EXERCISE_KCAL = "KCAL";
     private static final String EXERCISE_DURATION = "DURATION";
     private static final String EXERCISE_DESCRIPTION = "DESCRIPTION";
-    private static final String EXERCISE_EXTENSIONS_ID = "EXERCISE_EXTENSIONS_ID";
 
 
     private static final String EXERCISE_EXTENSIONS_TAB = "EXERCISE_EXTENSIONS_TAB";
@@ -107,7 +109,7 @@ public class ContentBD extends SQLiteOpenHelper {
     private static final String USER_BIO_WEIGHT = "USER_BIO_WEIGHT";
     private static final String USER_BIO_ID = "USER_BIO_ID";
 
-    public ContentBD(@Nullable Context context) {
+    public ContentDB(@Nullable Context context) {
         super(context, "ContentDatabase.db",
                 null, 1);
     }
@@ -138,7 +140,8 @@ public class ContentBD extends SQLiteOpenHelper {
                 + WORKOUT_KCAL + " INTEGER, "
                 + WORKOUT_DURATION + " INTEGER, "
                 + WORKOUT_DESCRIPTION + " TEXT, "
-                + WORKOUT_EXERCISES_ID + " INTEGER, "
+                + WORKOUT_EXERCISES_ID + " TEXT, "
+                + EXERCISE_EXTENSIONS_ID + " INTEGER, "
                 + FROM_WHERE + " INTEGER)";
         sqLiteDatabase.execSQL(createWorkoutTab);
 
@@ -157,7 +160,6 @@ public class ContentBD extends SQLiteOpenHelper {
                 + EXERCISE_KCAL + " INTEGER, "
                 + EXERCISE_DURATION + " INTEGER, "
                 + EXERCISE_DESCRIPTION + " TEXT, "
-                + EXERCISE_EXTENSIONS_ID + " INTEGER, "
                 + FROM_WHERE + " INTEGER)";
         sqLiteDatabase.execSQL(createExerciseTab);
 
@@ -373,7 +375,7 @@ public class ContentBD extends SQLiteOpenHelper {
                                 mainExercise.getKcal(),
                                 mainExercise.getDuration(),
                                 mainExercise.getDescription(),
-                                (int) customExerciseModel.getExtensionId(),
+                                mainExercise.getExtension(),
                                 1));
                     }
                 }
@@ -622,7 +624,6 @@ public class ContentBD extends SQLiteOpenHelper {
             values.put(EXERCISE_KCAL, exerciseDescriptionModel.getKcal());
             values.put(EXERCISE_DURATION, exerciseDescriptionModel.getDuration());
             values.put(EXERCISE_DESCRIPTION, exerciseDescriptionModel.getDescription());
-            values.put(EXERCISE_EXTENSIONS_ID, exerciseDescriptionModel.getExtension());
             values.put(FROM_WHERE, exerciseDescriptionModel.getFromWhere());
 
             return db.insert(EXERCISE_TAB, null, values) != -1;
@@ -642,7 +643,6 @@ public class ContentBD extends SQLiteOpenHelper {
             values.put(WORKOUT_KCAL, exerciseDescriptionModel.getKcal());
             values.put(WORKOUT_DURATION, exerciseDescriptionModel.getDuration());
             values.put(WORKOUT_DESCRIPTION, exerciseDescriptionModel.getDescription());
-            values.put(WORKOUT_EXERCISES_ID, exerciseDescriptionModel.getExerciseId());
             values.put(FROM_WHERE, exerciseDescriptionModel.getFromWhere());
 
             return db.insert(WORKOUT_TAB, null, values) != -1;
@@ -666,7 +666,7 @@ public class ContentBD extends SQLiteOpenHelper {
         try (SQLiteDatabase db = getReadableDatabase();
              Cursor cursor = db.query(tableName, columns, search, args, null, null,
                      null, null)) {
-            return cursor.getCount() == 0;
+            return cursor.getCount() > 0;
         }
     }
 
@@ -818,7 +818,7 @@ public class ContentBD extends SQLiteOpenHelper {
         return result;
     }
 
-    public List<ExerciseDescriptionModel> showWorkoutById(long value) {
+    public List<ExerciseDescriptionModel> getWorkoutById(long value) {
 
         List<ExerciseDescriptionModel> result = new ArrayList<>();
         String search = "SELECT * FROM " + WORKOUT_TAB + " WHERE " + ID + " == ?";
@@ -840,9 +840,50 @@ public class ContentBD extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_DESCRIPTION)),
                         cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_EXERCISES_ID)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(FROM_WHERE)));
+
                 result.add(exerciseDescriptionModel);
             }
         }
         return result;
+    }
+
+    public List<TrainingModel> getWorkoutByIdTR(long value) {
+
+        List<TrainingModel> result = new ArrayList<>();
+        String search = "SELECT * FROM " + WORKOUT_TAB + " WHERE " + ID + " == ?";
+        String[] args = {String.valueOf(value)};
+
+        try (SQLiteDatabase db = getReadableDatabase();
+             Cursor cursor = db.rawQuery(search, args)) {
+
+            if (cursor.moveToFirst()) {
+
+                new TrainingModel(-1, "Image", "Name", 1, 1, 1,
+                        "1,2,3", 25, 15, "description", FromWhere.USER);
+
+//                result.add(trainingModel);
+            }
+        }
+        return result;
+    }
+
+    public boolean insertWorkoutTK(TrainingModel trainingModel) {
+
+//        try (SQLiteDatabase db = getWritableDatabase()) {
+//
+//            ContentValues values = new ContentValues();
+//            values.put(NAME, trainingModel.getName());
+//            values.put(IMAGE, trainingModel.getImage());
+//            values.put(WORKOUT_LEVEL_ID, trainingModel.getLevelId());
+//            values.put(WORKOUT_BODY_PARTS_ID, trainingModel.getBodyPartsIds());
+//            values.put(WORKOUT_EQUIPMENT, trainingModel.getEquipmentIds());
+//            values.put(WORKOUT_KCAL, trainingModel.getKcal());
+//            values.put(WORKOUT_DURATION, trainingModel.getDuration());
+//            values.put(WORKOUT_DESCRIPTION, trainingModel.getDescription());
+//            values.put(FROM_WHERE, trainingModel.getFromWhere().ordinal());
+//
+//            return db.insert(WORKOUT_TAB, null, values) != -1;
+//        }
+        return false;
     }
 }

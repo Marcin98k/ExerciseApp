@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.example.exerciseapp.R;
 import com.example.exerciseapp.mClasses.TrainingTimer;
 import com.example.exerciseapp.mEnums.ExerciseType;
-import com.example.exerciseapp.mInterfaces.NewExercise;
+import com.example.exerciseapp.mInterfaces.NewExerciseToChange;
 
 public class CustomExerciseCounterFragment extends Fragment implements View.OnClickListener {
 
@@ -36,8 +36,7 @@ public class CustomExerciseCounterFragment extends Fragment implements View.OnCl
     private TrainingTimer trainingTimerExerciseVolume;
     private TrainingTimer trainingTimerRestVolume;
 
-
-    private NewExercise newExercise;
+    private NewExerciseToChange newExerciseToChange;
 
 
     public CustomExerciseCounterFragment() {
@@ -52,17 +51,17 @@ public class CustomExerciseCounterFragment extends Fragment implements View.OnCl
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            newExercise = (NewExercise) context;
+            newExerciseToChange = (NewExerciseToChange) context;
         } catch (NullPointerException e) {
             throw new NullPointerException(context.toString() +
-                    " must implement NewExercise");
+                    " must implement NewExerciseToChange");
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        newExercise.createExercise(SELECT_EXERCISE, exerciseType, numberOfSets, trainingVolume,
+        newExerciseToChange.createExercise(SELECT_EXERCISE, exerciseType, numberOfSets, trainingVolume,
                 restVolume);
     }
 
@@ -213,8 +212,8 @@ public class CustomExerciseCounterFragment extends Fragment implements View.OnCl
         }
         trainingTimerRestVolume.dynamicIncreaseTime(showRestVolume);
 
-        if (newExercise != null) {
-            newExercise.createExercise("selectExercise", exerciseType,
+        if (newExerciseToChange != null) {
+            newExerciseToChange.createExercise("selectExercise", exerciseType,
                     numberOfSets, trainingVolume, restVolume);
         }
     }

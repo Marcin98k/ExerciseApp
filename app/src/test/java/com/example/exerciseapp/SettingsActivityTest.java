@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class SelectPerformanceFragmentTest {
+public class SettingsActivityTest {
 
+    @Test
+    public void mTest() {
+        assertTrue(true);
+    }
 }
