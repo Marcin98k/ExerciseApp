@@ -2,17 +2,17 @@ package com.example.exerciseapp.SignInANDSingUp;
 
 import androidx.lifecycle.ViewModel;
 
-import com.example.exerciseapp.mModels.UserInformationModel;
+import com.example.exerciseapp.mModels.UserInformationModelToChange;
 
 public class RegisterViewModel extends ViewModel {
 
-    private UserInformationModel userInformationModel;
+    private UserInformationModelToChange userInformationModelToChange;
 
-    public UserInformationModel getUserInformationModel() {
-        return userInformationModel;
+    public UserInformationModelToChange getUserInformationModel() {
+        return userInformationModelToChange;
     }
 
-    public void setUserInformationModel(UserInformationModel userInformationModel) {
-        this.userInformationModel = userInformationModel;
+    public void setUserInformationModel(UserInformationModelToChange userInformationModelToChange) {
+        this.userInformationModelToChange = userInformationModelToChange;
     }
 }

@@ -14,7 +14,6 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -28,7 +27,7 @@ import com.example.exerciseapp.mClasses.TrainingTimer;
 import com.example.exerciseapp.mDatabases.ContentDB;
 import com.example.exerciseapp.mEnums.ExerciseType;
 import com.example.exerciseapp.mEnums.FromWhere;
-import com.example.exerciseapp.mEnums.TrainingType;
+import com.example.exerciseapp.mEnums.Level;
 import com.example.exerciseapp.mInterfaces.NewExercise;
 import com.example.exerciseapp.mInterfaces.TitleChangeListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
@@ -343,19 +342,14 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
     }
 
     private ExtensionExerciseModel createCustomExerciseTK() {
-        int timeExerciseValue = (numberOfExerciseType == 0) ? numberOfExerciseVolume : 0;
-        int repetitionExerciseValue = (numberOfExerciseType == 0) ? 0 : numberOfExerciseVolume;
 
-        return new ExtensionExerciseModel
-                .UserExerciseModelBuilder(-1, numberOfSeries, numberOfExerciseRest)
-                .setExerciseRepetitions(repetitionExerciseValue)
-                .setExerciseTime(timeExerciseValue)
-                .build();
+        return new ExtensionExerciseModel(-1, 1, ExerciseType.REPETITION, numberOfSeries, numberOfExerciseVolume,
+                numberOfExerciseRest);
     }
 
     private TrainingModel createExerciseTKPattern() {
-        return new TrainingModel(-1, "Image", "Name", 1, 1, 1,
-                "1,2,3", 25, 15, "description", FromWhere.USER);
+        return new TrainingModel("Image", "Name", Level.BEGINNER,
+                "1,2,3", 25, 15, "description", FromWhere.USER, 1);
     }
 
     private void displayToast(String message) {
@@ -363,18 +357,13 @@ public class CustomExerciseCreatorFragment extends Fragment implements UpdateInt
     }
 
     private IntegerModel createCustomExercise() {
-        int timeExerciseValue = (numberOfExerciseType == 0) ? numberOfExerciseVolume : 0;
-        int repetitionExerciseValue = (numberOfExerciseType == 0) ? 0 : numberOfExerciseVolume;
 
-        new ExtensionExerciseModel
-                .UserExerciseModelBuilder(-1, numberOfSeries, numberOfExerciseRest)
-                .setExerciseRepetitions(repetitionExerciseValue)
-                .setExerciseTime(timeExerciseValue)
-                .build();
+        new ExtensionExerciseModel(-1, 1,ExerciseType.TIME, numberOfSeries, numberOfExerciseVolume,
+                numberOfExerciseRest);
 
 //        TO-DO create a personalized model
-        return new IntegerModel(-1, Math.toIntExact(userId), numberOfSeries, timeExerciseValue,
-                repetitionExerciseValue, numberOfExerciseVolume, numberOfExerciseRest);
+        return new IntegerModel(-1, Math.toIntExact(userId), numberOfSeries, numberOfExerciseVolume,
+                numberOfExerciseVolume, numberOfExerciseVolume, numberOfExerciseRest);
     }
 
     private void insertExerciseExtension(IntegerModel customExercise) {

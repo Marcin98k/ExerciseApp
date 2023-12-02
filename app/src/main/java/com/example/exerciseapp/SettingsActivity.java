@@ -42,7 +42,7 @@ import com.example.exerciseapp.mInterfaces.UpdateStringsDB;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
-import com.example.exerciseapp.mModels.UserInformationModel;
+import com.example.exerciseapp.mModels.UserInformationModelToChange;
 import com.example.exerciseapp.mResource.FourElementListFragment;
 import com.example.exerciseapp.mResource.LinearListFragment;
 import com.example.exerciseapp.mResource.NotificationFragment;
@@ -209,7 +209,7 @@ public class SettingsActivity extends AppCompatActivity implements
         return new ThreeElementLinearListModel(-1, icon, name, action);
     }
 
-    private List<UserInformationModel> userInformationList() {
+    private List<UserInformationModelToChange> userInformationList() {
         return dbHelper.getInformationUser(currentUserID);
     }
 

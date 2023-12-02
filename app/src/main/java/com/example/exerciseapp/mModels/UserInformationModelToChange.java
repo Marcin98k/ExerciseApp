@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-public class UserInformationModel implements Parcelable {
+public class UserInformationModelToChange implements Parcelable {
 
     private int id;
     private String name;
@@ -22,9 +22,9 @@ public class UserInformationModel implements Parcelable {
     private String authorizationToken;
     private String newsToken;
 
-    public UserInformationModel(int id, String name, String email, String password, int gender,
-                                int units, int performance, int goals, int level, int notification,
-                                int status) {
+    public UserInformationModelToChange(int id, String name, String email, String password, int gender,
+                                        int units, int performance, int goals, int level, int notification,
+                                        int status) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -38,9 +38,9 @@ public class UserInformationModel implements Parcelable {
         this.status = status;
     }
 
-    public UserInformationModel(int id, String name, String email, String password,
-                                String authorizationToken, String newsToken, int gender,
-                                int units, int performance, int goals, int level, int notification) {
+    public UserInformationModelToChange(int id, String name, String email, String password,
+                                        String authorizationToken, String newsToken, int gender,
+                                        int units, int performance, int goals, int level, int notification) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -55,7 +55,7 @@ public class UserInformationModel implements Parcelable {
         this.newsToken = newsToken;
     }
 
-    protected UserInformationModel(Parcel in) {
+    protected UserInformationModelToChange(Parcel in) {
         id = in.readInt();
         name = in.readString();
         email = in.readString();
@@ -71,15 +71,15 @@ public class UserInformationModel implements Parcelable {
         newsToken = in.readString();
     }
 
-    public static final Creator<UserInformationModel> CREATOR = new Creator<UserInformationModel>() {
+    public static final Creator<UserInformationModelToChange> CREATOR = new Creator<UserInformationModelToChange>() {
         @Override
-        public UserInformationModel createFromParcel(Parcel in) {
-            return new UserInformationModel(in);
+        public UserInformationModelToChange createFromParcel(Parcel in) {
+            return new UserInformationModelToChange(in);
         }
 
         @Override
-        public UserInformationModel[] newArray(int size) {
-            return new UserInformationModel[size];
+        public UserInformationModelToChange[] newArray(int size) {
+            return new UserInformationModelToChange[size];
         }
     };
 

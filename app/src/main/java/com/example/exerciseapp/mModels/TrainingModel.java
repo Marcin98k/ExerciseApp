@@ -5,51 +5,81 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import com.example.exerciseapp.mEnums.ExerciseType;
 import com.example.exerciseapp.mEnums.FromWhere;
+import com.example.exerciseapp.mEnums.Level;
 
 public class TrainingModel implements Parcelable {
 
-    private final long id;
-    private final String image;
-    private final String name;
-    private final int trainingType;
-    private final long trainingId;
-    private final long levelId;
-    private final String equipmentIds;
-    private final int kcal;
-    private final int duration;
-    private final String description;
-    private final FromWhere fromWhere;
+    private String image, name;
+    private Level level;
+    private String equipmentIds;
+    private int kcal, duration;
+    private String description;
+    private FromWhere fromWhere;
+    private long userId;
 
-    public TrainingModel(long id, String image, String name, int trainingType, long trainingId,
-                         long levelId, String equipmentIds, int kcal, int duration,
-                         String description, FromWhere fromWhere) {
-        this.id = id;
+
+    public TrainingModel() {}
+
+    public TrainingModel(String image, String name, Level level, String equipmentIds, int kcal,
+                         int duration, String description, FromWhere fromWhere, long userId) {
         this.image = image;
         this.name = name;
-        this.trainingType = trainingType;
-        this.trainingId = trainingId;
-        this.levelId = levelId;
+        this.level = level;
         this.equipmentIds = equipmentIds;
         this.kcal = kcal;
         this.duration = duration;
         this.description = description;
         this.fromWhere = fromWhere;
+        this.userId = userId;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public String getEquipmentIds() {
+        return equipmentIds;
+    }
+
+    public int getKcal() {
+        return kcal;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public FromWhere getFromWhere() {
+        return fromWhere;
+    }
+
+    public long getUserId() {
+        return userId;
     }
 
     protected TrainingModel(Parcel in) {
-        id = in.readLong();
         image = in.readString();
         name = in.readString();
-        levelId = in.readLong();
-        trainingType = in.readInt();
-        trainingId = in.readLong();
+        level = Level.values()[in.readInt()];
         equipmentIds = in.readString();
         kcal = in.readInt();
         duration = in.readInt();
         description = in.readString();
         fromWhere = FromWhere.values()[in.readInt()];
+        userId = in.readInt();
     }
 
     public static final Creator<TrainingModel> CREATOR = new Creator<TrainingModel>() {
@@ -64,10 +94,6 @@ public class TrainingModel implements Parcelable {
         }
     };
 
-    public long getId() {
-        return id;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -75,16 +101,14 @@ public class TrainingModel implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel parcel, int flags) {
-        parcel.writeLong(id);
         parcel.writeString(image);
         parcel.writeString(name);
-        parcel.writeLong(levelId);
-        parcel.writeInt(trainingType);
-        parcel.writeLong(trainingId);
+        parcel.writeInt(level.ordinal());
         parcel.writeString(equipmentIds);
         parcel.writeInt(kcal);
         parcel.writeInt(duration);
         parcel.writeString(description);
         parcel.writeInt(fromWhere.ordinal());
+        parcel.writeLong(userId);
     }
 }

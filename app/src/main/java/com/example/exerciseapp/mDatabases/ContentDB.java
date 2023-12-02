@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.example.exerciseapp.mClasses.InsertResult;
 import com.example.exerciseapp.mEnums.FromWhere;
+import com.example.exerciseapp.mEnums.Level;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
 import com.example.exerciseapp.mModels.CustomExerciseModel;
 import com.example.exerciseapp.mModels.ExerciseDescriptionModel;
@@ -858,8 +859,8 @@ public class ContentDB extends SQLiteOpenHelper {
 
             if (cursor.moveToFirst()) {
 
-                new TrainingModel(-1, "Image", "Name", 1, 1, 1,
-                        "1,2,3", 25, 15, "description", FromWhere.USER);
+                new TrainingModel("Image", "Name", Level.ADVANCED,
+                        "1,2,3", 25, 15, "description", FromWhere.USER, 1);
 
 //                result.add(trainingModel);
             }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mClasses.StorageClass;
@@ -16,7 +15,7 @@ import com.example.exerciseapp.mDatabases.SimulatedExternalDatabase;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
 import com.example.exerciseapp.mModels.ExerciseDescriptionModel;
 import com.example.exerciseapp.mModels.IntegerModel;
-import com.example.exerciseapp.mModels.LanguageModel;
+import com.example.exerciseapp.mModels.LanguageModelToChange;
 import com.example.exerciseapp.mModels.StringModel;
 import com.example.exerciseapp.mModels.TaskDateModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -215,19 +214,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void insertContentAppearance() {
         AppearanceBlockModel chest = new AppearanceBlockModel(-1,
-                R.drawable.ic_person, "Chest", "Chest description", "BodyPart");
+                R.drawable.ic_person, "Chest", "Chest description", "BodyParts");
         AppearanceBlockModel back = new AppearanceBlockModel(-1,
-                R.drawable.ic_block, "Back", "Back description", "BodyPart");
+                R.drawable.ic_block, "Back", "Back description", "BodyParts");
         AppearanceBlockModel shoulders = new AppearanceBlockModel(-1,
-                R.drawable.ic_person, "Shoulders", "Shoulders description", "BodyPart");
+                R.drawable.ic_person, "Shoulders", "Shoulders description", "BodyParts");
         AppearanceBlockModel arms = new AppearanceBlockModel(-1,
-                R.drawable.ic_block, "Arms", "Arms description", "BodyPart");
+                R.drawable.ic_block, "Arms", "Arms description", "BodyParts");
         AppearanceBlockModel abs = new AppearanceBlockModel(-1,
-                R.drawable.ic_person, "ABS", "ABS description", "BodyPart");
+                R.drawable.ic_person, "ABS", "ABS description", "BodyParts");
         AppearanceBlockModel legs = new AppearanceBlockModel(-1,
-                R.drawable.ic_block, "Legs", "Legs description", "BodyPart");
+                R.drawable.ic_block, "Legs", "Legs description", "BodyParts");
         AppearanceBlockModel full_body = new AppearanceBlockModel(-1,
-                R.drawable.ic_person, "Full body", "FullBody description", "BodyPart");
+                R.drawable.ic_person, "Full body", "FullBody description", "BodyParts");
         contentDB.insertAppearance(chest);
         contentDB.insertAppearance(back);
         contentDB.insertAppearance(shoulders);
@@ -248,8 +247,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void insertLanguage() {
 
-        LanguageModel lan_pl = new LanguageModel(-1, "Polish", false, "pl", "");
-        LanguageModel lan_en = new LanguageModel(-1, "English", true, "en", "");
+        LanguageModelToChange lan_pl = new LanguageModelToChange(-1, "Polish", false, "pl", "");
+        LanguageModelToChange lan_en = new LanguageModelToChange(-1, "English", true, "en", "");
         dbHelper.insertLanguage(lan_pl);
         dbHelper.insertLanguage(lan_en);
 

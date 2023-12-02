@@ -12,6 +12,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.exerciseapp.mEnums.FromWhere;
+import com.example.exerciseapp.mEnums.Level;
 import com.example.exerciseapp.mModels.TrainingModel;
 
 import org.junit.jupiter.api.Test;
@@ -35,9 +36,9 @@ class ContentBDTest {
     @Test
     void testInsertWorkoutTK() {
 
-        TrainingModel trainingModel = new TrainingModel(-1, "Image", "Name",
-                1, 1, 1, "1,2,3", 25, 15,
-                "description", FromWhere.USER);
+        TrainingModel trainingModel = new TrainingModel("Image", "Name",
+                Level.INTERMEDIATE, "1,2,3", 25, 15,
+                "description", FromWhere.USER, 1);
 
         ContentDB yourClassInstance = new ContentDB(context);
 

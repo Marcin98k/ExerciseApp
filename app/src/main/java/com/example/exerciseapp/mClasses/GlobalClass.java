@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 
 import com.example.exerciseapp.mDatabases.DBHelper;
-import com.example.exerciseapp.mModels.LanguageModel;
+import com.example.exerciseapp.mModels.LanguageModelToChange;
 
 import java.util.Locale;
 
@@ -35,8 +35,8 @@ public class GlobalClass {
     private static String getLanguagePrefix(Context context) {
         try (DBHelper dbHelper = new DBHelper(context)) {
             return dbHelper.showLanguage().stream()
-                    .filter(LanguageModel::getStatus)
-                    .map(LanguageModel::getPrefix)
+                    .filter(LanguageModelToChange::getStatus)
+                    .map(LanguageModelToChange::getPrefix)
                     .findFirst()
                     .orElse("en");
         }

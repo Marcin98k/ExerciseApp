@@ -25,7 +25,7 @@ import com.example.exerciseapp.mDatabases.DBHelper;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 import com.example.exerciseapp.mInterfaces.UserMasterData;
 import com.example.exerciseapp.mModels.IntegerModel;
-import com.example.exerciseapp.mModels.UserInformationModel;
+import com.example.exerciseapp.mModels.UserInformationModelToChange;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -153,7 +153,7 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
         dbHelper.insertNotifications(new IntegerModel(-1,
                 1, 3, 4, 2));
 
-        newUser = dbHelper.insertUserInformation(new UserInformationModel(
+        newUser = dbHelper.insertUserInformation(new UserInformationModelToChange(
                 -1, username, email, password, "0", "0",
                 regListInt.get(0), dbHelper.getLastID("USER_UNITS"),
                 dbHelper.getLastID("USER_PERFORMANCE"),

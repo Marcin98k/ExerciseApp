@@ -14,10 +14,10 @@ import com.example.exerciseapp.mClasses.InsertResult;
 import com.example.exerciseapp.mEnums.UserDatabaseColumns;
 import com.example.exerciseapp.mModels.FourElementLinearListModel;
 import com.example.exerciseapp.mModels.IntegerModel;
-import com.example.exerciseapp.mModels.LanguageModel;
+import com.example.exerciseapp.mModels.LanguageModelToChange;
 import com.example.exerciseapp.mModels.StringModel;
 import com.example.exerciseapp.mModels.UnitModel;
-import com.example.exerciseapp.mModels.UserInformationModel;
+import com.example.exerciseapp.mModels.UserInformationModelToChange;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -346,23 +346,23 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public InsertResult insertUserInformation(UserInformationModel userInformationModel) {
+    public InsertResult insertUserInformation(UserInformationModelToChange userInformationModelToChange) {
 
         try (SQLiteDatabase db = getWritableDatabase()) {
 
             ContentValues values = new ContentValues();
-            values.put(USER_NAME, userInformationModel.getName());
-            values.put(USER_EMAIL, userInformationModel.getEmail());
-            values.put(USER_PASSWORD, userInformationModel.getPassword());
-            values.put(USER_AUTHORIZATION_TOKEN, userInformationModel.getPassword());
-            values.put(USER_NEWS_TOKEN, userInformationModel.getPassword());
-            values.put(USER_GENDER, userInformationModel.getGender());
-            values.put(USER_UNITS_ID, userInformationModel.getUnits());
-            values.put(USER_PERFORMANCE_ID, userInformationModel.getPerformance());
-            values.put(USER_GOALS_ID, userInformationModel.getGoals());
-            values.put(USER_LEVEL, userInformationModel.getLevel());
-            values.put(USER_NOTIFICATION_ID, userInformationModel.getNotification());
-            values.put(USER_ACCOUNT_STATUS, userInformationModel.getStatus());
+            values.put(USER_NAME, userInformationModelToChange.getName());
+            values.put(USER_EMAIL, userInformationModelToChange.getEmail());
+            values.put(USER_PASSWORD, userInformationModelToChange.getPassword());
+            values.put(USER_AUTHORIZATION_TOKEN, userInformationModelToChange.getPassword());
+            values.put(USER_NEWS_TOKEN, userInformationModelToChange.getPassword());
+            values.put(USER_GENDER, userInformationModelToChange.getGender());
+            values.put(USER_UNITS_ID, userInformationModelToChange.getUnits());
+            values.put(USER_PERFORMANCE_ID, userInformationModelToChange.getPerformance());
+            values.put(USER_GOALS_ID, userInformationModelToChange.getGoals());
+            values.put(USER_LEVEL, userInformationModelToChange.getLevel());
+            values.put(USER_NOTIFICATION_ID, userInformationModelToChange.getNotification());
+            values.put(USER_ACCOUNT_STATUS, userInformationModelToChange.getStatus());
 
             long insert = db.insert(USER_INFORMATION_TAB, null, values);
             boolean success = insert != -1;
@@ -370,9 +370,9 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<UserInformationModel> getInformationUser(long id) {
+    public List<UserInformationModelToChange> getInformationUser(long id) {
 
-        List<UserInformationModel> result = new ArrayList<>();
+        List<UserInformationModelToChange> result = new ArrayList<>();
         String search = "SELECT * FROM " + USER_INFORMATION_TAB +
                 " WHERE " + ID + " == ?";
         String[] args = {String.valueOf(id)};
@@ -382,7 +382,7 @@ public class DBHelper extends SQLiteOpenHelper {
              Cursor cursor = db.rawQuery(search, args)) {
 
             if (cursor.moveToFirst()) {
-                UserInformationModel userInformationModel = new UserInformationModel(
+                UserInformationModelToChange userInformationModelToChange = new UserInformationModelToChange(
                         cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
                         cursor.getString(cursor.getColumnIndexOrThrow(USER_NAME)),
                         cursor.getString(cursor.getColumnIndexOrThrow(USER_EMAIL)),
@@ -394,7 +394,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         cursor.getInt(cursor.getColumnIndexOrThrow(USER_LEVEL)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(USER_NOTIFICATION_ID)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(USER_ACCOUNT_STATUS)));
-                result.add(userInformationModel);
+                result.add(userInformationModelToChange);
             }
         }
         return result;
@@ -614,36 +614,36 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean insertLanguage(LanguageModel languageModel) {
+    public boolean insertLanguage(LanguageModelToChange languageModelToChange) {
 
         try (SQLiteDatabase db = getWritableDatabase()) {
 
             ContentValues values = new ContentValues();
-            values.put(STRING_VAL, languageModel.getName());
-            values.put(INT_VAL, languageModel.getStatus() ? 1 : 0);
-            values.put(LANGUAGE_PREFIX, languageModel.getPrefix());
-            values.put(IMG_PATH, languageModel.getImage());
+            values.put(STRING_VAL, languageModelToChange.getName());
+            values.put(INT_VAL, languageModelToChange.getStatus() ? 1 : 0);
+            values.put(LANGUAGE_PREFIX, languageModelToChange.getPrefix());
+            values.put(IMG_PATH, languageModelToChange.getImage());
 
             return db.insert(LANGUAGE_TAB, null, values) != -1;
         }
     }
 
-    public List<LanguageModel> showLanguage() {
+    public List<LanguageModelToChange> showLanguage() {
 
-        List<LanguageModel> result = new ArrayList<>();
+        List<LanguageModelToChange> result = new ArrayList<>();
         String search = "SELECT * FROM " + LANGUAGE_TAB;
 
         try (SQLiteDatabase db = getReadableDatabase();
              Cursor cursor = db.rawQuery(search, null)) {
 
             if (cursor.moveToFirst()) {
-                LanguageModel languageModel = new LanguageModel(
+                LanguageModelToChange languageModelToChange = new LanguageModelToChange(
                         cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
                         cursor.getString(cursor.getColumnIndexOrThrow(STRING_VAL)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(INT_VAL)) == 1,
                         cursor.getString(cursor.getColumnIndexOrThrow(LANGUAGE_PREFIX)),
                         cursor.getString(cursor.getColumnIndexOrThrow(IMG_PATH)));
-                result.add(languageModel);
+                result.add(languageModelToChange);
             }
         }
         return result;
