@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.ExerciseApp" parent="Theme.MaterialComponents.NoActionBar">
         <!-- Primary brand color. -->
@@ -131,5 +131,4 @@
         <item name="android:drawableStart">@drawable/ic_double_arrow_down</item>
         <item name="android:drawableEnd">@drawable/ic_double_arrow_down</item>
     </style>
->>>>>>> Stashed changes
 </resources>

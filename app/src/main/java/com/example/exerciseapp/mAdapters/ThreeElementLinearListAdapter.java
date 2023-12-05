@@ -12,9 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 import com.example.exerciseapp.R;
-import com.example.exerciseapp.mClasses.StorageClass;
+import com.example.exerciseapp.mModels.ThreeElementLinearListModel;
 
 import java.util.List;
 

@@ -80,7 +80,7 @@ public class WorkoutModelToChange {
                 "id=" + id +
                 ", exerciseId=" + exerciseId +
                 ", extensionId=" + extensionId +
-                ", type=" + type +
+                ", equipmentType=" + type +
                 ", name='" + name + '\'' +
                 ", fromWhere=" + fromWhere +
                 '}';

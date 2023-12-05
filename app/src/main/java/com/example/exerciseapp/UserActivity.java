@@ -24,13 +24,13 @@ import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mResource.CalendarFragment;
 import com.example.exerciseapp.mResource.EmptyFragment;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+//import com.github.mikephil.charting.charts.LineChart;
+//import com.github.mikephil.charting.components.XAxis;
+//import com.github.mikephil.charting.data.Entry;
+//import com.github.mikephil.charting.data.LineData;
+//import com.github.mikephil.charting.data.LineDataSet;
+//import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+//import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.time.LocalDate;
@@ -50,7 +50,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
     private final int USER_ID = 1;
     private static long currentUserID;
 
-    private LineChart lineChartWeight;
+//    private LineChart lineChartWeight;
     private Button selectDate;
     private EditText userWeight;
     private Button updateWeightBtn;
@@ -81,7 +81,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
 
         initDatePickerDialog(selectDate);
         fillDB();
-        fillChart();
+//        fillChart();
         updateWeightInDB(updateWeightBtn);
         changeDate();
     }
@@ -109,7 +109,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
         updateWeightBtn = findViewById(R.id.act_user_btn_update_weight);
         activityTitle = findViewById(R.id.act_user_title_part_one);
         fragmentTitle = findViewById(R.id.act_user_title_part_two);
-        lineChartWeight = findViewById(R.id.act_line_chart_weight);
+//        lineChartWeight = findViewById(R.id.act_line_chart_weight);
     }
 
     private void setActivityTitle() {
@@ -253,28 +253,28 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
         }
     }
 
-    private void fillChart() {
-
-        List<IntegerModel> contentDBUserBioWeight = contentDB.getUserBioWeight(USER_ID);
-        List<Entry> weightValues = createWeightValues(contentDBUserBioWeight);
-        List<String> dateValues = createDateList(contentDBUserBioWeight);
-
-        setupLineCharWeight(contentDBUserBioWeight, weightValues, dateValues);
-    }
-
-    private List<Entry> createWeightValues(List<IntegerModel> contentDBUserBioWeight) {
-        List<Entry> weightValues = new ArrayList<>();
-        float temp = 0f;
-        Entry entry;
-
-        for (IntegerModel integerModel : contentDBUserBioWeight) {
-            entry = new Entry(temp, integerModel.getSecondValue());
-            weightValues.add(entry);
-            temp++;
-        }
-
-        return weightValues;
-    }
+//    private void fillChart() {
+//
+//        List<IntegerModel> contentDBUserBioWeight = contentDB.getUserBioWeight(USER_ID);
+//        List<Entry> weightValues = createWeightValues(contentDBUserBioWeight);
+//        List<String> dateValues = createDateList(contentDBUserBioWeight);
+//
+//        setupLineCharWeight(contentDBUserBioWeight, weightValues, dateValues);
+//    }
+//
+//    private List<Entry> createWeightValues(List<IntegerModel> contentDBUserBioWeight) {
+//        List<Entry> weightValues = new ArrayList<>();
+//        float temp = 0f;
+//        Entry entry;
+//
+//        for (IntegerModel integerModel : contentDBUserBioWeight) {
+//            entry = new Entry(temp, integerModel.getSecondValue());
+//            weightValues.add(entry);
+//            temp++;
+//        }
+//
+//        return weightValues;
+//    }
 
     private List<String> createDateList(List<IntegerModel> contentDBUserBioWeight) {
         List<Integer> dateFromDBDate = new ArrayList<>();
@@ -291,24 +291,24 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
                 .collect(Collectors.toList());
     }
 
-    private void setupLineCharWeight(List<IntegerModel> contentDBUserBioWeight,
-                                     List<Entry> weightValues,
-                                     List<String> dateValues) {
-        LineDataSet lineDataSet = new LineDataSet(weightValues, "Weight");
-
-        ArrayList<ILineDataSet> iLineDataSets = new ArrayList<>();
-
-        iLineDataSets.add(lineDataSet);
-        LineData lineData = new LineData(iLineDataSets);
-        lineChartWeight.setData(lineData);
-        lineChartWeight.invalidate();
-
-        XAxis xAxis = lineChartWeight.getXAxis();
-        xAxis.setAxisMinimum(0);
-        xAxis.setAxisMaximum(contentDBUserBioWeight.size());
-
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(dateValues));
-    }
+//    private void setupLineCharWeight(List<IntegerModel> contentDBUserBioWeight,
+//                                     List<Entry> weightValues,
+//                                     List<String> dateValues) {
+//        LineDataSet lineDataSet = new LineDataSet(weightValues, "Weight");
+//
+//        ArrayList<ILineDataSet> iLineDataSets = new ArrayList<>();
+//
+//        iLineDataSets.add(lineDataSet);
+//        LineData lineData = new LineData(iLineDataSets);
+//        lineChartWeight.setData(lineData);
+//        lineChartWeight.invalidate();
+//
+//        XAxis xAxis = lineChartWeight.getXAxis();
+//        xAxis.setAxisMinimum(0);
+//        xAxis.setAxisMaximum(contentDBUserBioWeight.size());
+//
+//        xAxis.setValueFormatter(new IndexAxisValueFormatter(dateValues));
+//    }
 
     @Override
     public void values(String listName, int firstValue, int secondValue, int thirdValue,

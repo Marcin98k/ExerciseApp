@@ -1,6 +1,5 @@
 package com.example.exerciseapp.mModels;
 
-import com.example.exerciseapp.mEnums.ExerciseType;
 import com.example.exerciseapp.mEnums.FromWhere;
 import com.example.exerciseapp.mEnums.Level;
 

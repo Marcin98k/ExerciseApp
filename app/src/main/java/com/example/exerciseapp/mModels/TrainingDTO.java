@@ -92,7 +92,7 @@ public class TrainingDTO {
                     }
                     break;
                 default:
-                    throw new IllegalArgumentException("Invalid training type");
+                    throw new IllegalArgumentException("Invalid training equipmentType");
             }
             return new TrainingDTO(this);
         }

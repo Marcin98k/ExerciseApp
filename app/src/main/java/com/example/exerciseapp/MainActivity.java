@@ -11,7 +11,6 @@ import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mClasses.StorageClass;
 import com.example.exerciseapp.mDatabases.ContentDB;
 import com.example.exerciseapp.mDatabases.DBHelper;
-import com.example.exerciseapp.mDatabases.SimulatedExternalDatabase;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
 import com.example.exerciseapp.mModels.ExerciseDescriptionModel;
 import com.example.exerciseapp.mModels.IntegerModel;
@@ -38,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        new SimulatedExternalDatabase();
 
         initView();
         Intent intent = getIntent();
@@ -151,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void insertExtensionExercise() {
 
-//        id, sets, repetition(type = rep), time(type = time), rest
+//        id, sets, repetition(equipmentType = rep), time(equipmentType = time), rest
         IntegerModel extend1 = new IntegerModel(-1, 1, 8, 12, 0, 30);
         IntegerModel extend2 = new IntegerModel(-1, 2, 3, 0, 65, 45);
         IntegerModel extend3 = new IntegerModel(-1, 3, 4, 6, 0, 45);
