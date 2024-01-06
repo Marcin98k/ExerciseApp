@@ -12,7 +12,7 @@ import java.util.Objects;
 @Entity(tableName = "TRAINING")
 public class TrainingModel {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     private int id;
     @ColumnInfo(name = "IMAGE")
@@ -128,6 +128,7 @@ public class TrainingModel {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, image, name, level, equipmentIds, kcal, duration, description, fromWhere, userId);
+        return Objects.hash(id, image, name, level, equipmentIds, kcal, duration, description,
+                fromWhere, userId);
     }
 }

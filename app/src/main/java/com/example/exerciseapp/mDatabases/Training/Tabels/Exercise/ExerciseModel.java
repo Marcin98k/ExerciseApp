@@ -11,27 +11,27 @@ import java.util.Objects;
 public class ExerciseModel extends TrainingModel {
 
     @ColumnInfo(name = "BODY_PARTS")
-    private int bodyParts;
+    private long bodyParts;
 
-    public int getBodyParts() {
+    public long getBodyParts() {
         return bodyParts;
     }
 
-    public void setBodyParts(int bodyParts) {
+    public void setBodyParts(long bodyParts) {
         this.bodyParts = bodyParts;
     }
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         ExerciseModel that = (ExerciseModel) o;
-        return Objects.equals(bodyParts, that.bodyParts);
+        return bodyParts == that.bodyParts;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bodyParts);
+        return Objects.hash(super.hashCode(), bodyParts);
     }
 }

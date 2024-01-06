@@ -14,9 +14,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.exerciseapp.R;
 import com.example.exerciseapp.mClasses.SharedViewModel;
-import com.example.exerciseapp.mInterfaces.FragmentRespond;
+import com.example.exerciseapp.mInterfaces.FragmentRespondToChange;
 
-public class SelectWeightFragment extends Fragment implements FragmentRespond {
+public class SelectWeightFragmentToChange extends Fragment implements FragmentRespondToChange {
 
     private RadioGroup radioGroup;
     private RadioButton radioButton;
@@ -27,7 +27,7 @@ public class SelectWeightFragment extends Fragment implements FragmentRespond {
 
     private SharedViewModel sharedViewModel;
 
-    public SelectWeightFragment() {
+    public SelectWeightFragmentToChange() {
         // Required empty public constructor
     }
 

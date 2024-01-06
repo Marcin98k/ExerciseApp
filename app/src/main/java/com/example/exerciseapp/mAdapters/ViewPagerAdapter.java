@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.exerciseapp.Exercise.CustomExerciseCounterFragment;
-import com.example.exerciseapp.mResource.EmptyFragment;
+import com.example.exerciseapp.mResource.EmptyToChangeFragment;
 import com.example.exerciseapp.mEnums.ExerciseType;
 import com.example.exerciseapp.mResource.SearchList;
 import com.example.exerciseapp.mEnums.ViewPagerType;
@@ -48,7 +48,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
                 case 1:
                     return new SearchList("secondList", secondList);
                 default:
-                    return new EmptyFragment();
+                    return new EmptyToChangeFragment();
             }
         } else if (pagerType == ViewPagerType.Counter) {
             switch (position) {
@@ -57,10 +57,10 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
                 case 1:
                     return new CustomExerciseCounterFragment(ExerciseType.TIME);
                 default:
-                    return new EmptyFragment();
+                    return new EmptyToChangeFragment();
             }
         } else {
-            return new EmptyFragment();
+            return new EmptyToChangeFragment();
         }
     }
 

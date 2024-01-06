@@ -14,12 +14,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.exerciseapp.R;
 import com.example.exerciseapp.mClasses.SharedViewModel;
-import com.example.exerciseapp.mInterfaces.FragmentRespond;
+import com.example.exerciseapp.mInterfaces.FragmentRespondToChange;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 
 import java.util.Arrays;
 
-public class SelectGoalsFragment extends Fragment implements FragmentRespond {
+public class SelectGoalsFragmentToChange extends Fragment implements FragmentRespondToChange {
 
     private final int[] selected = new int[4];
 
@@ -28,7 +28,7 @@ public class SelectGoalsFragment extends Fragment implements FragmentRespond {
     private FragmentSupportListener fragmentSupportListener;
     private SharedViewModel sharedViewModel;
 
-    public SelectGoalsFragment() {
+    public SelectGoalsFragmentToChange() {
         // Required empty public constructor
     }
 

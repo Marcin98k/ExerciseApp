@@ -3,6 +3,7 @@ package com.example.exerciseapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +12,13 @@ import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mClasses.StorageClass;
 import com.example.exerciseapp.mDatabases.ContentDB;
 import com.example.exerciseapp.mDatabases.DBHelper;
+import com.example.exerciseapp.mDatabases.Training.Tabels.Equipment.EquipmentModel;
+import com.example.exerciseapp.mDatabases.Training.TrainingRepository;
+import com.example.exerciseapp.mDatabases.User.Tabels.Goals.GoalsModel;
+import com.example.exerciseapp.mDatabases.User.UserDatabase;
+import com.example.exerciseapp.mDatabases.User.UserRepository;
+import com.example.exerciseapp.mEnums.EquipmentType;
+import com.example.exerciseapp.mEnums.VolumeType;
 import com.example.exerciseapp.mModels.AppearanceBlockModel;
 import com.example.exerciseapp.mModels.ExerciseDescriptionModel;
 import com.example.exerciseapp.mModels.IntegerModel;
@@ -26,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DBHelper dbHelper;
     private ContentDB contentDB;
+    private TrainingRepository trainingRepository;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -37,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        trainingRepository = new TrainingRepository(this);
         initView();
         Intent intent = getIntent();
         currentUserID = intent.getLongExtra(GlobalClass.userID, -1);
@@ -47,9 +56,14 @@ public class MainActivity extends AppCompatActivity {
             initView();
             initMenu();
         } else {
-            startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+            DataForTest dataForTest = new DataForTest();
+            trainingRepository = new TrainingRepository(this);
+            Log.i("TAG", "onCreate: " + trainingRepository.getEquipmentById(1).getValue());
+//            dataForTest.createEquipment(trainingRepository);
+            startActivity(new Intent(MainActivity.this, CreateExerciseActivity.class));
 //            startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
         }
+
         dbHelper = new DBHelper(MainActivity.this);
         contentDB = new ContentDB(MainActivity.this);
 

@@ -11,13 +11,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.exerciseapp.SignInANDSingUp.SelectGenderFragment;
-import com.example.exerciseapp.SignInANDSingUp.SelectGoalsFragment;
-import com.example.exerciseapp.SignInANDSingUp.SelectHeightFragment;
-import com.example.exerciseapp.SignInANDSingUp.SelectLevelFragment;
-import com.example.exerciseapp.SignInANDSingUp.SelectPerformanceFragment;
-import com.example.exerciseapp.SignInANDSingUp.SelectWeightFragment;
-import com.example.exerciseapp.SignInANDSingUp.SignInFragment;
+import com.example.exerciseapp.SignInANDSingUp.SelectGenderFragmentToChange;
+import com.example.exerciseapp.SignInANDSingUp.SelectGoalsFragmentToChange;
+import com.example.exerciseapp.SignInANDSingUp.SelectHeightFragmentToChange;
+import com.example.exerciseapp.SignInANDSingUp.SelectLevelFragmentToChange;
+import com.example.exerciseapp.SignInANDSingUp.SelectPerformanceFragmentToChange;
+import com.example.exerciseapp.SignInANDSingUp.SelectWeightFragmentToChange;
+import com.example.exerciseapp.SignInANDSingUp.SignInFragmentToChange;
 import com.example.exerciseapp.SignInANDSingUp.SignUpFragment;
 import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mClasses.SharedViewModel;
@@ -57,12 +57,12 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
     private FragmentManager fragmentManager;
 
     private DBHelper dbHelper;
-    private SelectGenderFragment selectGenderFragment;
-    private SelectHeightFragment selectHeightFragment;
-    private SelectWeightFragment selectWeightFragment;
-    private SelectLevelFragment selectLevelFragment;
-    private SelectGoalsFragment selectGoalsFragment;
-    private SelectPerformanceFragment selectPerformanceFragment;
+    private SelectGenderFragmentToChange selectGenderFragment;
+    private SelectHeightFragmentToChange selectHeightFragment;
+    private SelectWeightFragmentToChange selectWeightFragment;
+    private SelectLevelFragmentToChange selectLevelFragment;
+    private SelectGoalsFragmentToChange selectGoalsFragment;
+    private SelectPerformanceFragmentToChange selectPerformanceFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,7 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
     private void addFirstFragmentToActivity() {
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.addToBackStack(SIGN_IN_TAG);
-        ft.add(R.id.aWelcome_FL_mainContainer, new SignInFragment(), SIGN_IN_TAG);
+        ft.add(R.id.aWelcome_FL_mainContainer, new SignInFragmentToChange(), SIGN_IN_TAG);
         ft.commit();
     }
 
@@ -122,17 +122,17 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
     }
 
     private void initFragments() {
-        this.selectGenderFragment = (SelectGenderFragment) this.fragmentManager
+        this.selectGenderFragment = (SelectGenderFragmentToChange) this.fragmentManager
                 .findFragmentByTag(GENDER_TAG);
-        this.selectHeightFragment = (SelectHeightFragment) this.fragmentManager
+        this.selectHeightFragment = (SelectHeightFragmentToChange) this.fragmentManager
                 .findFragmentByTag(HEIGHT_TAG);
-        this.selectWeightFragment = (SelectWeightFragment) this.fragmentManager
+        this.selectWeightFragment = (SelectWeightFragmentToChange) this.fragmentManager
                 .findFragmentByTag(WEIGHT_TAG);
-        this.selectLevelFragment = (SelectLevelFragment) this.fragmentManager
+        this.selectLevelFragment = (SelectLevelFragmentToChange) this.fragmentManager
                 .findFragmentByTag(LEVEL_TAG);
-        this.selectGoalsFragment = (SelectGoalsFragment) this.fragmentManager
+        this.selectGoalsFragment = (SelectGoalsFragmentToChange) this.fragmentManager
                 .findFragmentByTag(GOALS_TAG);
-        this.selectPerformanceFragment = (SelectPerformanceFragment) this.fragmentManager
+        this.selectPerformanceFragment = (SelectPerformanceFragmentToChange) this.fragmentManager
                 .findFragmentByTag(PERFORMANCE_TAG);
     }
 
@@ -232,13 +232,13 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
 
     private void handleSignIn() {
         actionBtn.setText(R.string.next);
-        replaceFragment(new SelectGenderFragment(), GENDER_TAG);
+        replaceFragment(new SelectGenderFragmentToChange(), GENDER_TAG);
     }
 
     private void handleSelectGender() {
         if (isCorrect) {
             selectGenderFragment.fragmentMessage();
-            replaceFragment(new SelectHeightFragment(), HEIGHT_TAG);
+            replaceFragment(new SelectHeightFragmentToChange(), HEIGHT_TAG);
         } else {
             Toast.makeText(WelcomeActivity.this, R.string.select, Toast.LENGTH_SHORT).show();
         }
@@ -246,18 +246,18 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
 
     private void handleSelectHeight() {
         selectHeightFragment.fragmentMessage();
-        replaceFragment(new SelectWeightFragment(), WEIGHT_TAG);
+        replaceFragment(new SelectWeightFragmentToChange(), WEIGHT_TAG);
     }
 
     private void handleSelectWeight() {
         selectWeightFragment.fragmentMessage();
-        replaceFragment(new SelectLevelFragment(), LEVEL_TAG);
+        replaceFragment(new SelectLevelFragmentToChange(), LEVEL_TAG);
     }
 
     private void handleSelectLevel() {
         if (isCorrect) {
             selectLevelFragment.fragmentMessage();
-            replaceFragment(new SelectGoalsFragment(), GOALS_TAG);
+            replaceFragment(new SelectGoalsFragmentToChange(), GOALS_TAG);
         } else {
             Toast.makeText(WelcomeActivity.this, R.string.select,
                     Toast.LENGTH_SHORT).show();
@@ -267,7 +267,7 @@ public class WelcomeActivity extends AppCompatActivity implements FragmentSuppor
     private void handleSelectGoals() {
         if (isCorrect) {
             selectGoalsFragment.fragmentMessage();
-            replaceFragment(new SelectPerformanceFragment(), PERFORMANCE_TAG);
+            replaceFragment(new SelectPerformanceFragmentToChange(), PERFORMANCE_TAG);
         } else {
             Toast.makeText(WelcomeActivity.this, R.string.select +
                     getString(R.string.min_d_one), Toast.LENGTH_SHORT).show();

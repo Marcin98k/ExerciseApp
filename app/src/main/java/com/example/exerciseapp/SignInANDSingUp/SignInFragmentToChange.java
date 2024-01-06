@@ -17,7 +17,7 @@ import com.example.exerciseapp.LibraryActivity;
 import com.example.exerciseapp.R;
 import com.example.exerciseapp.mClasses.InsertResult;
 import com.example.exerciseapp.mDatabases.DBHelper;
-import com.example.exerciseapp.mInterfaces.FragmentRespond;
+import com.example.exerciseapp.mInterfaces.FragmentRespondToChange;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.security.MessageDigest;
@@ -25,7 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SignInFragment extends Fragment implements FragmentRespond {
+public class SignInFragmentToChange extends Fragment implements FragmentRespondToChange {
 
     private EditText loginEditText;
     private EditText passwordEditText;
@@ -41,7 +41,7 @@ public class SignInFragment extends Fragment implements FragmentRespond {
 
     private DBHelper dbHelper;
 
-    public SignInFragment() {
+    public SignInFragmentToChange() {
         // Required empty public constructor
     }
 

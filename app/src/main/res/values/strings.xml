@@ -62,34 +62,9 @@
     <string name="level">Level</string>
     <string name="lists">Lists</string>
     <string name="create_exercise">Create exercise</string>
+    <string name="exercise_created">An exercise has been created</string>
     <string name="select_exercise">Select exercise</string>
     <string name="select_details">Select details</string>
-
-<!--    ***_d  d -> dots -->
-    <string name="selected_exercise_name_d">Selected exercise name:</string>
-    <string name="type_d">Type:</string>
-    <string name="sets_d">Set:</string>
-    <string name="volume_d">Volume:</string>
-    <string name="rest_d">Rest:</string>
-    <string name="home">Home</string>
-    <string name="Enter_a_name_for_the_exercise">Enter a name for the exercise</string>
-    <string name="current_set_d">Current set:</string>
-    <string name="last_set_d">Last set:</string>
-    <string name="x" translatable="false">x</string>
-    <string name="then_d">Then:</string>
-    <string name="skip">Skip</string>
-    <string name="add_15s">Add 15s</string>
-    <string name="completed">Completed</string>
-    <string name="time_d">Time:</string>
-    <string name="name_d">Name:</string>
-    <string name="level_d">Level:</string>
-    <string name="body_parts_d">Body parts:</string>
-    <string name="kcal_d">Kcal:</string>
-    <string name="equipment_d">Equipment:</string>
-    <string name="duration_d">Duration:</string>
-    <string name="description_d">Description:</string>
-    <string name="start">Start!</string>
-    <string name="selected_exercise_d">Selected exercise:</string>
     <string name="details">Details</string>
     <string name="plans">Plans</string>
     <string name="enter_number">Enter number</string>
@@ -116,5 +91,42 @@
     <string name="cm" translatable="false">cm</string>
     <string name="in" translatable="false">in</string>
     <string name="lbs" translatable="false">lbs</string>
+    <string name="exercise_name">Exercise name</string>
+    <string name="add_image_inactive">Add image(Inactive)</string>
+    <string name="exit">Exit</string>
+    <string name="save">Save</string>
+    <string name="show_hide_icon">Show/hide icon</string>
+    <string name="exercise_image">Exercise image</string>
+    <string name="enter_volume">Enter volume</string>
+    <string name="go_to_exercise_list">Go to exercise list</string>
+    <string name="enter_the_description">Enter the description...</string>
+    <string name="summary_icon">Summary icon</string>
+    <string name="created">Created</string>
+    <string name="exercise_has_been_added">Your exercise has been added to the library</string>
 
+    <!--    ***_d  d -> dots -->
+    <string name="selected_exercise_name_d">Selected exercise name:</string>
+    <string name="type_d">Type:</string>
+    <string name="sets_d">Set:</string>
+    <string name="volume_d">Volume:</string>
+    <string name="rest_d">Rest:</string>
+    <string name="home">Home</string>
+    <string name="Enter_a_name_for_the_exercise">Enter a name for the exercise</string>
+    <string name="current_set_d">Current set:</string>
+    <string name="last_set_d">Last set:</string>
+    <string name="x" translatable="false">x</string>
+    <string name="then_d">Then:</string>
+    <string name="skip">Skip</string>
+    <string name="add_15s">Add 15s</string>
+    <string name="completed">Completed</string>
+    <string name="time_d">Time:</string>
+    <string name="name_d">Name:</string>
+    <string name="level_d">Level:</string>
+    <string name="body_parts_d">Body parts:</string>
+    <string name="kcal_d">Kcal:</string>
+    <string name="equipment_d">Equipment:</string>
+    <string name="duration_d">Duration:</string>
+    <string name="description_d">Description:</string>
+    <string name="start">Start!</string>
+    <string name="selected_exercise_d">Selected exercise:</string>
 </resources>

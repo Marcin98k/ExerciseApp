@@ -76,7 +76,6 @@
     <string name="Enter_a_name_for_the_exercise">Wpisz nazwę swojego ćwiczenia</string>
     <string name="current_set_d">Obecny set:</string>
     <string name="last_set_d">Ostatni set:</string>
-    <string name="x" translatable="false">x</string>
     <string name="then_d">Następnie:</string>
     <string name="skip">Pomiń</string>
     <string name="add_15s">Dodaj 15s</string>
@@ -117,4 +116,17 @@
     <string name="select_gender">Wybierz płeć</string>
     <string name="select_height">Podaj wzorst</string>
     <string name="select_weight">Podaj wagę</string>
+    <string name="exercise_name">Nazwa ćwiczenia</string>
+    <string name="exit">Wyjść</string>
+    <string name="save">Zapisz</string>
+    <string name="show_hide_icon">Pokaż/ukryj ikone</string>
+    <string name="exercise_image">Zdjęcie ćwiczenia</string>
+    <string name="enter_volume">Wpisz objętość</string>
+    <string name="go_to_exercise_list">Przejdź do listy ćwiczeń</string>
+    <string name="enter_the_description">Wpisz opis</string>
+    <string name="summary_icon">Ikona podsumowania</string>
+    <string name="created">Stworzon</string>
+    <string name="exercise_created">Stworzono ćwiczenie</string>
+    <string name="add_image_inactive">Dodaj zdięcie(Nieaktywne)</string>
+    <string name="exercise_has_been_added">Twoje ćwiczenie zostało dodane do biblioteki</string>
 </resources>

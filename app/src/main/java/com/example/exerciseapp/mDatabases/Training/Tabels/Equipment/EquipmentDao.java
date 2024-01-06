@@ -15,6 +15,9 @@ public interface EquipmentDao {
     @Insert
     long createEquipment(EquipmentModel equipmentModel);
 
+    @Query("SELECT * FROM EQUIPMENT")
+    List<EquipmentModel> getAllEquipment();
+
     @Query("SELECT * FROM EQUIPMENT WHERE ID = :id")
     EquipmentModel getEquipmentById(int id);
 

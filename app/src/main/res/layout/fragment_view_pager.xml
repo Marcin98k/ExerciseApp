@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".mResource.ViewPagerFragment">
+    tools:mContext=".mResource.ViewPagerFragment">
 
 
     <com.google.android.material.tabs.TabLayout

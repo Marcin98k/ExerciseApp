@@ -45,7 +45,7 @@ public class EquipmentDaoTest {
 
 //        given
         EquipmentModel equipment = createEquipment(1, "Equipment name NO.1", "Equipment image NO.1",
-                EquipmentType.FREE, VolumeType.WEIGHT, 12);
+                EquipmentType.FREE, VolumeType.WEIGHT);
         equipmentDao.createEquipment(equipment);
 
 //        when
@@ -129,19 +129,19 @@ public class EquipmentDaoTest {
     private List<EquipmentModel> equipmentList() {
 
         EquipmentModel equipment1 = createEquipment(1, "Equipment name NO.1", "Equipment image NO.1",
-                EquipmentType.STATIC, VolumeType.WEIGHT, 12);
+                EquipmentType.STATIC, VolumeType.WEIGHT);
 
         EquipmentModel equipment2 = createEquipment(2, "Equipment name NO.2", "Equipment image NO.2",
-                EquipmentType.FREE, VolumeType.SPEED, 10);
+                EquipmentType.FREE, VolumeType.SPEED);
 
         EquipmentModel equipment3 = createEquipment(3, "Equipment name NO.3", "Equipment image NO.3",
-                EquipmentType.FREE, VolumeType.WEIGHT, 6);
+                EquipmentType.FREE, VolumeType.WEIGHT);
 
         return Arrays.asList(equipment1, equipment2, equipment3);
     }
 
     private EquipmentModel createEquipment(int id, String name, String image, EquipmentType equipmentType,
-                                           VolumeType volumeType, int volume) {
+                                           VolumeType volumeType) {
 
         EquipmentModel equipment = new EquipmentModel();
         equipment.setId(id);
@@ -149,9 +149,7 @@ public class EquipmentDaoTest {
         equipment.setImage(image);
         equipment.setEquipmentType(equipmentType);
         equipment.setVolumeType(volumeType);
-        equipment.setVolume(volume);
 
         return equipment;
     }
-
 }

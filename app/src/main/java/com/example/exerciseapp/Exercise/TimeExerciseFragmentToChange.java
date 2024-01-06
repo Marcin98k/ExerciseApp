@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.example.exerciseapp.R;
 import com.example.exerciseapp.mClasses.TrainingTimer;
 import com.example.exerciseapp.mDatabases.ContentDB;
-import com.example.exerciseapp.mInterfaces.FragmentRespond;
+import com.example.exerciseapp.mInterfaces.FragmentRespondToChange;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.ExerciseDescriptionModel;
@@ -25,9 +25,9 @@ import com.example.exerciseapp.mModels.IntegerModel;
 
 import java.util.List;
 
-public class TimeExerciseFragment extends Fragment implements FragmentRespond {
+public class TimeExerciseFragmentToChange extends Fragment implements FragmentRespondToChange {
 
-    private static final String TAG_TIME_EXERCISE_FRAGMENT = "TimeExerciseFragment";
+    private static final String TAG_TIME_EXERCISE_FRAGMENT = "TimeExerciseFragmentToChange";
 
     private ImageView imageView;
     private TextView nameView;
@@ -54,7 +54,7 @@ public class TimeExerciseFragment extends Fragment implements FragmentRespond {
 
     private long exerciseId;
 
-    public TimeExerciseFragment() {
+    public TimeExerciseFragmentToChange() {
         // Required empty public constructor
     }
 

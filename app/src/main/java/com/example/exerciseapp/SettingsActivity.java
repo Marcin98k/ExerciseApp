@@ -25,8 +25,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.exerciseapp.Settings.ContactFragment;
 import com.example.exerciseapp.Settings.ProfileFragment;
-import com.example.exerciseapp.SignInANDSingUp.SelectHeightFragment;
-import com.example.exerciseapp.SignInANDSingUp.SelectWeightFragment;
+import com.example.exerciseapp.SignInANDSingUp.SelectHeightFragmentToChange;
+import com.example.exerciseapp.SignInANDSingUp.SelectWeightFragmentToChange;
 import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mClasses.SharedViewModel;
 import com.example.exerciseapp.mDatabases.DBHelper;
@@ -74,8 +74,8 @@ public class SettingsActivity extends AppCompatActivity implements
 
     private Bundle bundle;
     private DBHelper dbHelper;
-    private SelectHeightFragment selectHeightFragment;
-    private SelectWeightFragment selectWeightFragment;
+    private SelectHeightFragmentToChange selectHeightFragment;
+    private SelectWeightFragmentToChange selectWeightFragment;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -411,8 +411,8 @@ public class SettingsActivity extends AppCompatActivity implements
 
     private void handleInformationFragment(int firstValue) {
         if (firstValue == 0 || firstValue == 1) {
-            Fragment fragment = (firstValue == 0) ? (selectHeightFragment = new SelectHeightFragment()) :
-                    (selectWeightFragment = new SelectWeightFragment());
+            Fragment fragment = (firstValue == 0) ? (selectHeightFragment = new SelectHeightFragmentToChange()) :
+                    (selectWeightFragment = new SelectWeightFragmentToChange());
             replaceFragmentInMainContainer(fragment, fragment.getTag());
         }
     }

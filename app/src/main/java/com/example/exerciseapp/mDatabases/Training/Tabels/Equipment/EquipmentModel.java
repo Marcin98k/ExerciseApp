@@ -2,6 +2,7 @@ package com.example.exerciseapp.mDatabases.Training.Tabels.Equipment;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import com.example.exerciseapp.mEnums.EquipmentType;
@@ -12,7 +13,7 @@ import java.util.Objects;
 @Entity(tableName = "EQUIPMENT")
 public class EquipmentModel {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     private int id;
 
@@ -27,9 +28,6 @@ public class EquipmentModel {
 
     @ColumnInfo(name="VOLUME_TYPE")
     private VolumeType volumeType;
-
-    @ColumnInfo(name = "VOLUME")
-    private int volume;
 
     public int getId() {
         return id;
@@ -71,25 +69,27 @@ public class EquipmentModel {
         this.volumeType = volumeType;
     }
 
-    public int getVolume() {
-        return volume;
-    }
-
-    public void setVolume(int volume) {
-        this.volume = volume;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EquipmentModel that = (EquipmentModel) o;
-        return id == that.id && volume == that.volume && Objects.equals(name, that.name)
-                && Objects.equals(image, that.image) && equipmentType == that.equipmentType && volumeType == that.volumeType;
+        return id == that.id && Objects.equals(name, that.name) && Objects.equals(image, that.image) && equipmentType == that.equipmentType && volumeType == that.volumeType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, image, equipmentType, volumeType, volume);
+        return Objects.hash(id, name, image, equipmentType, volumeType);
+    }
+
+    @Override
+    public String toString() {
+        return "EquipmentModel{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", image='" + image + '\'' +
+                ", equipmentType=" + equipmentType +
+                ", volumeType=" + volumeType +
+                '}';
     }
 }

@@ -15,13 +15,13 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.exerciseapp.R;
 import com.example.exerciseapp.mClasses.SharedViewModel;
-import com.example.exerciseapp.mInterfaces.FragmentRespond;
+import com.example.exerciseapp.mInterfaces.FragmentRespondToChange;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class SelectLevelFragment extends Fragment implements FragmentRespond {
+public class SelectLevelFragmentToChange extends Fragment implements FragmentRespondToChange {
     private RadioGroup radioGroup;
     private RadioButton beginnerBtn, intermediateBtn, advancedBtn;
     private RadioButton radioButton;
@@ -31,7 +31,7 @@ public class SelectLevelFragment extends Fragment implements FragmentRespond {
     private FragmentSupportListener mListener;
     private SharedViewModel sharedViewModel;
 
-    public SelectLevelFragment() {
+    public SelectLevelFragmentToChange() {
         // Required empty public constructor
     }
 

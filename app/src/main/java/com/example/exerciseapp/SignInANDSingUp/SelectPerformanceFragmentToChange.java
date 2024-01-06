@@ -12,9 +12,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.exerciseapp.R;
 import com.example.exerciseapp.mClasses.SharedViewModel;
-import com.example.exerciseapp.mInterfaces.FragmentRespond;
+import com.example.exerciseapp.mInterfaces.FragmentRespondToChange;
 
-public class SelectPerformanceFragment extends Fragment implements FragmentRespond {
+public class SelectPerformanceFragmentToChange extends Fragment implements FragmentRespondToChange {
 
     private EditText pushRepsEditText, pullRepsEditText, dipRepsEditText, squadRepsEditText;
 
@@ -22,7 +22,7 @@ public class SelectPerformanceFragment extends Fragment implements FragmentRespo
 
     private SharedViewModel sharedViewModel;
 
-    public SelectPerformanceFragment() {
+    public SelectPerformanceFragmentToChange() {
         // Required empty public constructor
     }
 

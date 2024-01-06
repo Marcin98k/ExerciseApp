@@ -1,5 +1,6 @@
 package com.example.exerciseapp.mDatabases.User;
 
+import android.app.Application;
 import android.content.Context;
 
 import androidx.room.Room;
@@ -20,7 +21,7 @@ import com.example.exerciseapp.mDatabases.User.Tabels.UnitsModel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class UserRepository {
+public class UserRepository extends Application {
 
     private final BasicUserInformationDao basicUserInformationDao;
     private final GoalsDao goalsDao;

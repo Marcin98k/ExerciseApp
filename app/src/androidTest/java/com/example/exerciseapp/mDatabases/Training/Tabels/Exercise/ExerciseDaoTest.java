@@ -47,7 +47,7 @@ public class ExerciseDaoTest {
 //        given
         ExerciseModel exercise = getExerciseModel(1, "Exercise name", "Exercise image",
                 Level.BEGINNER, "1,2,3", 25, 35, "Exercise description",
-                FromWhere.USER, 1, 5);
+                FromWhere.USER, 1, 5L);
         exerciseDao.createExercise(exercise);
 
 //        when
@@ -63,11 +63,11 @@ public class ExerciseDaoTest {
 //        given
         ExerciseModel exerciseNO1 = getExerciseModel(1, "Exercise name NO.1", "Exercise image NO. 1",
                 Level.BEGINNER, "3,2,1", 3, 50, "Exercise description NO. 1",
-                FromWhere.USER, 2, 5);
+                FromWhere.USER, 2, 5L);
 
         ExerciseModel exerciseNO2 = getExerciseModel(2, "Exercise name NO.2", "Exercise image NO. 2",
                 Level.ADVANCED, "1,2,3", 25, 35, "Exercise description NO. 2",
-                FromWhere.APPLICATION, 2, 3);
+                FromWhere.APPLICATION, 2, 3L);
 
         List<ExerciseModel> exerciseList = Arrays.asList(exerciseNO1, exerciseNO2);
 
@@ -88,15 +88,15 @@ public class ExerciseDaoTest {
 //        given
         ExerciseModel exerciseNO1 = getExerciseModel(1, "Exercise name NO.1", "Exercise image NO. 1",
                 Level.BEGINNER, "3,2,1", 3, 50, "Exercise description NO. 1",
-                FromWhere.USER, 2, 5);
+                FromWhere.USER, 2, 5L);
 
         ExerciseModel exerciseNO2 = getExerciseModel(2, "Exercise name NO.2", "Exercise image NO. 2",
                 Level.ADVANCED, "1,2,3", 25, 35, "Exercise description NO. 2",
-                FromWhere.APPLICATION, 2, 3);
+                FromWhere.APPLICATION, 2, 3L);
 
         ExerciseModel exerciseNO3 = getExerciseModel(3, "Exercise name NO.3", "Exercise image NO. 3",
                 Level.ADVANCED, "1,2,3", 25, 35, "Exercise description NO. 3",
-                FromWhere.APPLICATION, 2, 3);
+                FromWhere.APPLICATION, 2, 3L);
 
         List<ExerciseModel> exerciseList = Arrays.asList(exerciseNO2, exerciseNO3);
 
@@ -116,7 +116,7 @@ public class ExerciseDaoTest {
     private ExerciseModel getExerciseModel(int id, String name, String image, Level level,
                                            String equipmentIds, int kcal, int duration,
                                            String description, FromWhere fromWhere, Integer userId,
-                                           int bodyParts) {
+                                           Long bodyParts) {
         ExerciseModel exercise = new ExerciseModel();
         exercise.setId(id);
         exercise.setName(name);

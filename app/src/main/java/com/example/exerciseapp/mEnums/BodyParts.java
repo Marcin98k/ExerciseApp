@@ -6,5 +6,6 @@ public enum BodyParts {
     SHOULDERS,
     ARMS,
     ABS,
-    LEGS
+    LEGS,
+    FULL_BODY
 }

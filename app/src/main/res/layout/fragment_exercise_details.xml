@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:mContext=".Exercise.ExerciseDetails">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/image_exercise_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/exercise_image" />
+
+        <TextView
+            android:id="@+id/text_name_exercise_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/text_type_exercise_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/text_level_exercise_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/button_show_equipment_exercise_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show equipment"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Extension" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/view_center_exercise_details"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/text_title_sets_exercise_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="30dp"
+                android:text="Number of series"
+                app:layout_constraintEnd_toStartOf="@+id/view_center_exercise_details"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/text_sets_exercise_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/view_center_exercise_details"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/text_title_volume_exercise_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="30dp"
+                android:text="Number of volume"
+                app:layout_constraintEnd_toStartOf="@+id/view_center_exercise_details"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_title_sets_exercise_details" />
+
+
+            <TextView
+                android:id="@+id/text_volume_exercise_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/view_center_exercise_details"
+                app:layout_constraintTop_toBottomOf="@+id/text_sets_exercise_details" />
+
+            <TextView
+                android:id="@+id/text_title_break_length_exercise_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="30dp"
+                android:text="Number of break length"
+                app:layout_constraintEnd_toStartOf="@+id/view_center_exercise_details"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_title_volume_exercise_details" />
+
+            <TextView
+                android:id="@+id/text_break_length_exercise_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/view_center_exercise_details"
+                app:layout_constraintTop_toBottomOf="@+id/text_volume_exercise_details" />
+
+            <TextView
+                android:id="@+id/text_title_kcal_exercise_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="30dp"
+                android:text="Number of kcal"
+                app:layout_constraintEnd_toStartOf="@+id/view_center_exercise_details"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_title_break_length_exercise_details" />
+
+            <TextView
+                android:id="@+id/text_unit_kcal_exercise_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/view_center_exercise_details"
+                app:layout_constraintTop_toBottomOf="@+id/text_break_length_exercise_details" />
+
+            <TextView
+                android:id="@+id/text_title_sum_kcal_exercise_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="30dp"
+                android:text="Number of sum kcal"
+                app:layout_constraintEnd_toStartOf="@+id/view_center_exercise_details"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_title_kcal_exercise_details" />
+
+            <TextView
+                android:id="@+id/text_sum_kcal_exercise_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/view_center_exercise_details"
+                app:layout_constraintTop_toBottomOf="@+id/text_unit_kcal_exercise_details" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <EditText
+            android:id="@+id/edit_description_exercise_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="text"
+            android:minHeight="48dp"
+            android:hint="@string/enter_the_description"
+            android:inputType="text" />
+
+        <TextView
+            android:id="@+id/text_description_exercise_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</ScrollView>

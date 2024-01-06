@@ -4,60 +4,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Exercise.SummaryFragment">
+    tools:mContext=".Exercise.Summary">
 
     <TextView
-        android:id="@+id/id_summary_text_complete"
+        android:id="@+id/text_title_summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/frag_summary_name"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="@string/completed"
-        android:textSize="42sp"
-        android:textAlignment="center"/>
-
-    <TextView
-        android:id="@+id/frag_summary_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/frag_summary_icon"
-        app:layout_constraintStart_toStartOf="parent"
         android:text="@string/nan"
-        android:textSize="24sp"
+        android:textAlignment="center"
+        android:textSize="42sp"
+        app:layout_constraintBottom_toTopOf="@+id/text_name_summary"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/text_name_summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:padding="15dp"
-        android:textAlignment="center"/>
+        android:text="@string/nan"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/icon_summary"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/frag_summary_icon"
+        android:id="@+id/icon_summary"
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_marginHorizontal="50dp"
         android:layout_marginVertical="200dp"
         android:background="@drawable/check_circle_outline"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/summary_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/frag_summary_text_time"
+        android:id="@+id/text_title_time_summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frag_summary_icon"
         android:padding="15dp"
         android:text="@string/time_d"
+        android:textAlignment="center"
         android:textSize="24sp"
-        android:textAlignment="center"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/icon_summary" />
 
     <TextView
-        android:id="@+id/frag_summary_time"
+        android:id="@+id/text_time_summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frag_summary_text_time"
         android:text="@string/nan"
+        android:textAlignment="center"
         android:textSize="24sp"
-        android:textAlignment="center"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_title_time_summary" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,14 +14,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.exerciseapp.R;
 import com.example.exerciseapp.mClasses.SharedViewModel;
-import com.example.exerciseapp.mInterfaces.FragmentRespond;
+import com.example.exerciseapp.mInterfaces.FragmentRespondToChange;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class SelectGenderFragment extends Fragment implements FragmentRespond {
+public class SelectGenderFragmentToChange extends Fragment implements FragmentRespondToChange {
     private RadioButton maleBtn, femaleBtn, otherBtn;
     private int selectedGender;
 
@@ -30,7 +30,7 @@ public class SelectGenderFragment extends Fragment implements FragmentRespond {
     private SharedViewModel sharedViewModel;
     private RegisterViewModel registerViewModel;
 
-    public SelectGenderFragment() {
+    public SelectGenderFragmentToChange() {
         // Required empty public constructor
     }
 

@@ -9,7 +9,7 @@ import java.util.Objects;
 @Entity(tableName = "BODY_PARTS")
 public class BodyPartsModel {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     private int id;
 
@@ -30,6 +30,9 @@ public class BodyPartsModel {
 
     @ColumnInfo(name = "LEGS")
     private boolean legsStatus;
+
+    @ColumnInfo(name = "FULL_BODY")
+    private boolean fullBodyStatus;
 
     public int getId() {
         return id;
@@ -87,19 +90,28 @@ public class BodyPartsModel {
         this.legsStatus = legsStatus;
     }
 
+    public boolean isFullBodyStatus() {
+        return fullBodyStatus;
+    }
+
+    public void setFullBodyStatus(boolean fullBodyStatus) {
+        this.fullBodyStatus = fullBodyStatus;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BodyPartsModel that = (BodyPartsModel) o;
-        return id == that.id && chestStatus == that.chestStatus && backStatus == that.backStatus
-                && shouldersStatus == that.shouldersStatus && armsStatus == that.armsStatus
-                && ABSStatus == that.ABSStatus && legsStatus == that.legsStatus;
+        return id == that.id && chestStatus == that.chestStatus && backStatus == that.backStatus &&
+                shouldersStatus == that.shouldersStatus && armsStatus == that.armsStatus &&
+                ABSStatus == that.ABSStatus && legsStatus == that.legsStatus &&
+                fullBodyStatus == that.fullBodyStatus;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, chestStatus, backStatus, shouldersStatus, armsStatus, ABSStatus,
-                legsStatus);
+                legsStatus, fullBodyStatus);
     }
 }

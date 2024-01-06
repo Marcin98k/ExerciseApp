@@ -13,15 +13,15 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.exerciseapp.R;
-import com.example.exerciseapp.mInterfaces.FragmentRespond;
+import com.example.exerciseapp.mInterfaces.FragmentRespondToChange;
 import com.example.exerciseapp.mInterfaces.TrainingSummaryHandler;
 
-public class EmptyFragment extends Fragment implements FragmentRespond {
+public class EmptyToChangeFragment extends Fragment implements FragmentRespondToChange {
 
 
     private TrainingSummaryHandler trainingSummaryHandler;
 
-    public EmptyFragment() {
+    public EmptyToChangeFragment() {
         // Required empty public constructor
     }
 
@@ -34,8 +34,8 @@ public class EmptyFragment extends Fragment implements FragmentRespond {
     @Override
     public void fragmentMessage() {
         Log.i(TAG, "fragmentMessage: EmptyFrag");
-        trainingSummaryHandler.summaryMessage("EmptyFragment", "", "", 0,
-                0, 0, true);
+        trainingSummaryHandler.summaryMessage("EmptyToChangeFragment", "", "", 0,
+                0, true);
     }
 
     @Override

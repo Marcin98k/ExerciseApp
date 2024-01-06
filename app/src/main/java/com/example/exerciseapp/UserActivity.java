@@ -23,7 +23,7 @@ import com.example.exerciseapp.mInterfaces.TrainingSummaryHandler;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.IntegerModel;
 import com.example.exerciseapp.mResource.CalendarFragment;
-import com.example.exerciseapp.mResource.EmptyFragment;
+import com.example.exerciseapp.mResource.EmptyToChangeFragment;
 //import com.github.mikephil.charting.charts.LineChart;
 //import com.github.mikephil.charting.components.XAxis;
 //import com.github.mikephil.charting.data.Entry;
@@ -333,7 +333,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
         FragmentTransaction ft = fm.beginTransaction();
         ft.setReorderingAllowed(true);
         if (firstValue <= 0) {
-            ft.replace(R.id.act_user_calendar_details, new EmptyFragment(), "emptyTag");
+            ft.replace(R.id.act_user_calendar_details, new EmptyToChangeFragment(), "emptyTag");
         } else {
             DetailsFragment detailsFragment = new DetailsFragment();
             Bundle bundle = new Bundle();
@@ -347,7 +347,7 @@ public class UserActivity extends AppCompatActivity implements UpdateIntegersDB,
 
     @Override
     public void summaryMessage(String name, String exerciseName, String duration, long exerciseId,
-                               long extensionId, int fromWhere, boolean conditionVal) {
+                               long extensionId, boolean conditionVal) {
 
     }
 

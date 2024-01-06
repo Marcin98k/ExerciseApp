@@ -1,6 +1,7 @@
 package com.example.exerciseapp.mInterfaces;
 
-public interface FragmentRespond {
-    void fragmentMessage();
-}
+import com.example.exerciseapp.mEnums.FragmentErrors;
 
+public interface FragmentRespond {
+    void fragmentAnswer(FragmentErrors fragmentErrors, String message);
+}

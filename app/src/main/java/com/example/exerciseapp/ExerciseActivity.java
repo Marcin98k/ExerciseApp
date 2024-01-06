@@ -16,19 +16,19 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.exerciseapp.Exercise.RepetitionExerciseFragment;
-import com.example.exerciseapp.Exercise.SummaryFragment;
+import com.example.exerciseapp.Exercise.RepetitionExerciseFragmentToChange;
+import com.example.exerciseapp.Exercise.Summary;
 import com.example.exerciseapp.Exercise.TimeBreakFragment;
-import com.example.exerciseapp.Exercise.TimeExerciseFragment;
+import com.example.exerciseapp.Exercise.TimeExerciseFragmentToChange;
 import com.example.exerciseapp.mClasses.GlobalClass;
 import com.example.exerciseapp.mDatabases.ContentDB;
-import com.example.exerciseapp.mInterfaces.FragmentRespond;
+import com.example.exerciseapp.mInterfaces.FragmentRespondToChange;
 import com.example.exerciseapp.mInterfaces.FragmentSupportListener;
 import com.example.exerciseapp.mInterfaces.TrainingSummaryHandler;
 import com.example.exerciseapp.mInterfaces.UpdateIntegersDB;
 import com.example.exerciseapp.mModels.UserExercisePerformedModel;
 import com.example.exerciseapp.mModels.WorkoutModelToChange;
-import com.example.exerciseapp.mResource.EmptyFragment;
+import com.example.exerciseapp.mResource.EmptyToChangeFragment;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -70,10 +70,10 @@ public class ExerciseActivity extends AppCompatActivity implements FragmentSuppo
     private boolean lastSet;
 
     private ContentDB contentDB;
-    private TimeExerciseFragment timeExerciseFragment;
-    private RepetitionExerciseFragment repetitionExerciseFragment;
-    private EmptyFragment emptyFragment;
-    private SummaryFragment summaryFragment;
+    private TimeExerciseFragmentToChange timeExerciseFragment;
+    private RepetitionExerciseFragmentToChange repetitionExerciseFragment;
+    private EmptyToChangeFragment emptyFragment;
+    private Summary summaryFragment;
     private TimeBreakFragment timeBreakFragment;
 
     @Override
@@ -95,8 +95,8 @@ public class ExerciseActivity extends AppCompatActivity implements FragmentSuppo
     private void setNextButtonOnClickListener() {
         nextBtn.setOnClickListener(v -> {
             Fragment visibleFragment = getVisibilityFragment();
-            if (visibleFragment instanceof FragmentRespond) {
-                ((FragmentRespond) visibleFragment).fragmentMessage();
+            if (visibleFragment instanceof FragmentRespondToChange) {
+                ((FragmentRespondToChange) visibleFragment).fragmentMessage();
             }
         });
     }
@@ -230,15 +230,15 @@ public class ExerciseActivity extends AppCompatActivity implements FragmentSuppo
         sendToFragment.putString("exerciseName", extensionExerciseName);
         sendToFragment.putInt("fromWhere", fromWhere);
         if (type == 1) {
-            repetitionExerciseFragment = new RepetitionExerciseFragment();
+            repetitionExerciseFragment = new RepetitionExerciseFragmentToChange();
             repetitionExerciseFragment.setArguments(sendToFragment);
             ft.add(R.id.act_exercise_container, repetitionExerciseFragment, REPETITION_EXE_TAG);
         } else if (type == 2) {
-            timeExerciseFragment = new TimeExerciseFragment();
+            timeExerciseFragment = new TimeExerciseFragmentToChange();
             timeExerciseFragment.setArguments(sendToFragment);
             ft.add(R.id.act_exercise_container, timeExerciseFragment, TIME_EXE_TAG);
         } else {
-            emptyFragment = new EmptyFragment();
+            emptyFragment = new EmptyToChangeFragment();
             ft.add(R.id.act_exercise_container, emptyFragment, EMPTY_TAG);
         }
         ft.setReorderingAllowed(true);
@@ -326,7 +326,7 @@ public class ExerciseActivity extends AppCompatActivity implements FragmentSuppo
     }
 
     private void addSummaryFragment(long extensionId) {
-        summaryFragment = new SummaryFragment();
+        summaryFragment = new Summary();
         Bundle bundle = new Bundle();
         elapsed();
         bundle.putLong("id", idMain);
@@ -356,13 +356,13 @@ public class ExerciseActivity extends AppCompatActivity implements FragmentSuppo
 
     @Override
     public void summaryMessage(String name, String exerciseName, String duration, long exerciseId,
-                               long extensionId, int fromWhere, boolean conditionVal) {
+                               long extensionId, boolean conditionVal) {
         if (!conditionVal) {
             return;
         }
 
         switch (name) {
-            case "EmptyFragment":
+            case "EmptyToChangeFragment":
                 handleEmptyFragment(exerciseName, extensionId);
                 break;
             case "summaryFragment":
@@ -374,7 +374,7 @@ public class ExerciseActivity extends AppCompatActivity implements FragmentSuppo
     }
 
     private void handleEmptyFragment(String exerciseName, long extensionId) {
-        summaryFragment = new SummaryFragment();
+        summaryFragment = new Summary();
         Bundle bundle = new Bundle();
         elapsed();
         bundle.putLong("id", idMain);

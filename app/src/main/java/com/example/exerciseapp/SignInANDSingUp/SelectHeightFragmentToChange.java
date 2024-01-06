@@ -14,9 +14,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.exerciseapp.R;
 import com.example.exerciseapp.mClasses.SharedViewModel;
-import com.example.exerciseapp.mInterfaces.FragmentRespond;
+import com.example.exerciseapp.mInterfaces.FragmentRespondToChange;
 
-public class SelectHeightFragment extends Fragment implements FragmentRespond {
+public class SelectHeightFragmentToChange extends Fragment implements FragmentRespondToChange {
 
     private NumberPicker numberPicker;
     private RadioButton radioButton;
@@ -25,7 +25,7 @@ public class SelectHeightFragment extends Fragment implements FragmentRespond {
     private SharedViewModel sharedViewModel;
     private int selectedUnit;
 
-    public SelectHeightFragment() {
+    public SelectHeightFragmentToChange() {
 
     }
 

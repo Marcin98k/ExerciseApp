@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:mContext=".Exercise.CreateExercise.BasicExerciseInformation"
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <EditText
+        android:id="@+id/edit_name_basic_exercise_information"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/exercise_name"
+        android:inputType="text"
+        android:autofillHints="exercise name" />
+
+    <Button
+        android:id="@+id/edit_image_basic_exercise_information"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_image_inactive"
+        android:textAllCaps="false"
+        android:backgroundTint="@color/grey"
+        android:autofillHints="image" />
+
+    <Spinner
+        android:id="@+id/spinner_level_basic_exercise_information"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Spinner
+        android:id="@+id/spinner_exercise_type_basic_exercise_information"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <GridView
+        android:id="@+id/grid_view_basic_exercise_information"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

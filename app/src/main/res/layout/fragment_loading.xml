@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mResource.LoadingFragment">
+    tools:mContext=".mResource.LoadingFragment">
 
    <ProgressBar
        android:id="@+id/frag_loading_progress_bar"
